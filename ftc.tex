@@ -59,149 +59,27 @@ In task clustering, the clustering factor (k) is an important parameter to influ
 Below we show how to estimate ttotal. r is the number of available resources. d is the time delay between jobs and it is assumed to be the same for all jobs. It is a simplification of workflow overheads. We assume that n >> r, but n/k is not necessarily much larger than r. Normally at the beginning of workflow execution, n/k > r, which means there are more clustered jobs than available resources. To try all n tasks once, irrespective of whether they succeed or fail, one needs approximately n/(rk) execution cycle(s) since at each execution cycle we can execute at most r jobs. Therefore, the time to execute all n tasks once is n(kt+d)/(rk). And the time to complete them successfully in a faulty environment is Nn(kt+d)/(rk)=n(kt+d)/(rkγ) since each job requires N retries on average.  On the other side, at the end of the workflow execution, since n is decreasing with the process of workflow, it is possible that n/k < r, which means there are fewer jobs than the available resources. One needs just one execution cycle to execute these tasks once. The time to complete all n tasks successfully is N(kt+d)=(kt+d)/γ. Below we discuss how we estimate γ in TFM and JFM. In JFM, we have assumed that job failure is an independent event and thereby we only need to collect the failure records of jobs. γ=(1-β). In sum, in JFM, 
 In TFM, a clustered job succeeds only if all of its tasks succeed. Therefore the success rate of a clustered job is γ = (1 - α)k, and β = (1 - γ). The task failure is independent and the job failure rate β is dependent on α. In sum, in TFM,
 
-\subsection{Font}
+k* is the optimal clustering factor and ttotal* is the minimal runtime of these n tasks. Eq. (3) shows that in JFM, the job failure rate has no influence on the choice of clustering factor. In another word, in JFM we just need to set the k to be k*, which is a fixed value irrespective of the job failure rate.To find the minimal value of ttotal* in Eq. (2), let 
 
-The font type for running text (body text) is 10~point Times New Roman.
-There is no need to code normal type (roman text). For literal text, please use
-\texttt{type\-writer} (\verb|\texttt{}|)
-or \textsf{sans serif} (\verb|\textsf{}|). \emph{Italic} (\verb|\emph{}|)
-or \textbf{boldface} (\verb|\textbf{}|) should be used for emphasis.
+To discuss the relationship between the variables mentioned before, we show an example workflow with n=1000, t=5 sec, d=5 sec, and r=20. These parameters are close to the level of mProjectPP in the Montage workflow that we simulate in Section IV. 
 
-\subsection{General Layout}
-Use single (1.0) line spacing throughout the document. For the main
-body of the paper use the commands of the standard \LaTeX{}
-``article'' class. You can add packages or declare new \LaTeX{}
-functions if and only if there is no conflict between your packages
-and the \texttt{IOS-Book-Article}.
+Figure 2 shows the relationship between the expected runtime ttotal* and the clustering factor k in Eq. (1). We can see that the optimal clustering factor (in this example it is 50) does not change with different job failure rates. In comparison with TFM in Figure 3, the optimal clustering factor (in this example it is 5) is not equal to n/r. This conclusion is consistent with our previous claim since a clustered job has a higher chance to fail when the task failure rate is higher.
 
-Always give a \verb|\label| where possible and use \verb|\ref| for cross-referencing.
+Figure 4 shows the relationship between the task failure rate and the optimal clustering factor as indicated in Eq. (4). We can see that when the task failure rate is high (α>0.03), it is better to use no clustering at all (k<2).  We can also see that the optimal clustering factor k* decreases with the increase in the task failure rate. Below we discuss to determine which model a faulty environment follows if there is no knowledge about the cause of failures (transient or permanent, task or job). By analyzing the relationship between expected runtime and clustering factor we can tell whether it tends to be TFM or JFM.  There are two criteria: 1) whether the execution runtime has an exponential increase (TFM) or linear increase (JFM) when k is large enough; 2) whether the optimal clustering factor is influenced by the failure rates (If yes, TFM; otherwise JFM).Also, we assume that the jobs in this workflow and the resources are homogeneous. In section IV.E and section IV.F, we extend this model to consider task specific failures and location specific failures. The job-scheduling algorithm is First-Come-First-Serve, while one may use more complex algorithms such as HEFT [9] or Min-Min [8].. From this theoretic analysis, we conclude that 1) the lower the task failure rate is, the better runtime performance the task clustering has; 2) in TFM, adjusting the clustering factor according to the detected task failure rate can improve the runtime performance; 3) in JFM, we just need to set k=n/r. For the rest of our paper, we will only focus on the TFM.\section{Fault Tolerant Clustering}
 
+As indicated in Section II, inappropriate clustering may increase the makespan of a workflow. To improve the fault tolerance from the point of view of clustering, we propose three methods: Dynamic Clustering (DC), Selective Reclustering (SR) and Dynamic Reclustering (DR).
 
-\subsection{(Sub-)Section Headings}
-Use the standard \LaTeX{} commands for headings: {\small \verb|\section|, \verb|\subsection|, \verb|\subsubsection|, \verb|\paragraph|}.
-Headings will be automatically numbered.
+A.	Dynamic Clustering (DC)
+Dynamic Clustering adjusts the clustering factor according to the task failure rates measured from jobs that have already been completed, either successfully or failed. Currently we use the average value of task failure records.  Failure records contain the information about the number of failed tasks, the type of tasks, the resource id, and a timestamp. The type of tasks is used to detect the task specific failures and the resource id is used to detect location specific failures. Then we calculate the average task failure rate and the average job failure rate. Figure 5 shows an example where the initial clustering factor is 4 and thereby there are four tasks in a clustered job at the beginning. During execution, three out of these tasks fail. TFM suggests an optimal clustering factor to be 2, then this job will be split into two clustered jobs while each has two tasks and the two clustered jobs are then submitted for retry.  DC is not aware that there are only three failed tasks. 
+According to Eq. (4), an estimation of the minimal makespan in DC can be simplified as:                                             (5)B.	Selective Reclustering (SR)In DC, one knows the average task failure rate but the information about which tasks have failed is not available. In practice, it may be hard to identify the failed tasks, but if it is supported, we can further improve the performance with Selective Reclustering that selects the failed tasks in a clustered job and clusters them into a new clustered job, or treats them individually. SR is different to the naïve job retry in that the latter method retries all tasks of a failed job even though some of the tasks have succeeded. SR requires collecting the task ids in failure records. Figure 6 shows an example of SR. At the beginning, there are four tasks and three of them have failed. One task succeeds and exits. Only the three failed tasks are merged again into a new clustered job and the job is retried. This approach does not intend to adjust the clustering factor, although the clustering factor will be smaller and smaller naturally after each retry since there are less and less tasks in a clustered job. In this case, the clustering factor has reduced from 4 to 3. Figure 6	Selective Reclustering.C.	Dynamic Reclustering (DR)Selective Reclustering does not analyze the failure rate rather, it uses a natural way to reduce the clustering factor if the failure rate is too high. However, it requires a special ability to select the failed tasks, while DC does not. We then propose the third method, Dynamic Reclustering, which is a combination of SR and DC to see whether using both strategies can improve workflow performance. In DR, only failed tasks are merged into new clustered jobs and the clustering factor is also adjusted according to the detected task failure rates. Figure 7	Dynamic ReclusteringFigure 7 shows the steps of DR. At the last scheduling cycle, three tasks within a clustered job have failed. Therefore we have only three tasks to retry and further we need to adjust the clustering factor (in this case it is 2) according to the task failure rate. 
 
-Use initial capitals in the headings, except for articles (a, an, the), coordinate
-conjunctions (and, or, nor), and prepositions, unless they appear at the beginning
-of the heading.
+\section{Experiments and Discussions}
+In this section, we evaluate our methods with two workflows, whose runtime information is gathered from a real execution traces. The simulation-based approach allows us to control system parameters such as task failure rate in a continuous way so as to clearly demonstrate the performance of the algorithms. Our methods can also be applied to real workflow management systems as long as they support failure logging. 
+\subsection{Experiments Setup and Workflows Used}We use a real trace of the Montage workflow [1] and the Periodogram application to evaluate our models and optimization methods. The reason why we chose Montage and Periodogram is that they represent two different types of workflows. As shown in Figure 1, Montage has complex data dependencies between tasks/jobs while Periodogram is simply a bag-of-tasks. Montage is an astronomy application used to construct large image mosaics of the sky.  Runtime data are collected from real runs under the Pegasus Workflow Management System (WMS) [7]. We ran the Montage workflow with a size of 8 degree squares of sky. The workflow has 10,422 tasks and 57GB of overall data. The workflow was run on a cluster with 20 nodes. The Periodogram application is also developed by IPAC (Caltech) to identify periodic signals from light curves that arise from transiting planets and stellar variability. The Periodogram workflow we ran has ~216,600 tasks and 19GB input data. The Periodogram workflow has only one level of tasks. With these runtime information and file size, we use CloudSim [6] to simulate the workflows in a controlled environment.  CloudSim is a framework for modeling and simulation of cloud computing infrastructures and services. Internally, workflow execution is divided into four steps: first, the workflow engine releases tasks based on the dependencies between tasks; second, the clustering engine merges the released tasks into jobs; third, these jobs are submitted to the job scheduler and are matched with resources based on different criteria specified by users; fourth, each job is executed by a worker node that has input files and executable files available. Each workflow was simulated at least 100 times to assure that standard deviation in the workflow makespan is less than 10%. To make the simulation consistent with the real results in Pegasus WMS, we modified CloudSim to execute our simulations.  Figure 8 shows the system overview of our simulation. The Workflow Engine manages tasks and jobs based on their dependencies between jobs to assure that a job may only be released when all of its parent jobs have completed successfully. It also loads workflow logs that are gathered and reconstructed from prior runs. The Clustering Engine merges tasks on the same horizontal level into clustered jobs according to the suggested clustering factor (k*). The Job Scheduler is revised to match jobs to the most reliable worker nodes and avoid or even skip a worker node that has too many failures compared to others. The Failure Generator is added to generate task failures according to the specified average task failure rate. The Failure Monitor serves as an agent that suggests clustering factor based on the estimation of the task failure rate, the type of task, and the node to be matched. Based on this information, the Clustering Engine will adjust the clustering factor in DC or DR approaches. Figure 8	 System Overview\subsection{Dynamic Performance}To evaluate the performance of TFM and DC, we first simulated the Montage workflow with a fixed task failure rate (α = 0.002).   Figure 9	Clustering FactorFigure 9 shows the difference between the actual clustering factor and the suggested clustering factor at each scheduling interval. The scheduling cycle is a period when the Workflow Engine releases tasks that are ready to run and the Clustering Engine merges these tasks along with tasks that have failed. Montage has three major horizontal levels of tasks that require clustering, which are mProjectPP, mDiffFit, and mBackground. At the beginning, the Failure Monitor does not have enough failure records to identify the task failure rate. We adopt a risky strategy in that the initial clustering factor is set to be n/r so that all tasks will be tried once at the beginning. That is why the actual clustering factor at cycle 1 is approximately 25 and then it falls down quickly. After passing 5, the actual k and the suggested k overlap with each other since the Failure Monitor has collected enough data to adapt to the faulty environment. From the cycle 4 to 14, the workflow is mainly executing mDiffFit, and during that time the suggested k and actual k fall down to 6 eventually since our model requires some time to run jobs first and then predict the task failure rate. The suggested k and the actual k for mBackground fall to 3 quickly since at this step the prediction of task failure rate is already stabilized. The reason that each type of task has different clustering factors is that they have different runtime on average.   Figure 9 also reminds us that the actual k is sometimes smaller than the suggested k, which has been explained in cycle 1 to 3. At cycle 3, the actual k is smaller than the suggested k because the Clustering Engine does not have sufficient tasks to be clustered since most tasks are completed. We will address this issue and improve the performance in Section IV.D. \subsection{Performance of different Optimization Methods}TABLE I	WORKFLOW MAKESPAN (MONTAGE, UNIT: SECOND) α	Optimization Methods	NOOP	DC	SR	DR0.002	9827	9010	8168	86330.004	11390	9224	8174	86870.006	13625	9430	8181	87710.008	16989	9590	8191	88180.01	22026	9709	8202	88560.02	169075	10218	8242	89300.04	44099753	10853	8316	91530.06	N/A 	11488	8387	93440.08	N/A	11951	8461	9734TABLE II	WORKFLOW MAKESPAN (PERIODOGRAM, UNIT: SECOND) α	Optimization Methods	NOOP	DC	SR	DR0.002	17180	15141	13824	150520.004	18197	15272	13853	151060.006	18930	15360	13883	151300.008	19344	15464	13911	151590.01	19668	15566	13941	151760.02	19889	16081	14086	153630.04	21407	17141	14376	157120.06	24147	18283	14681	161090.08	26597	19511	15010	16478We compare the workflow makespan when running the workflow with DC, SR, DR and No Optimization (NOOP) with task failure rate in a range between 0.2% and 8%. Researchers [14] show that a transient failure rate is not usually more than 10%; otherwise such a system does not have much practical usage. If the task failure rate is lower than 0.1%, one doe not need to apply our methods.  Figure 10	Workflow Makespan (Periodogram)We present the workflow makespan improvement of Montage in TABLE I and the results of Periodogram in TABLE II and Figure 10. Both improvements are significant particularly with SR since it is able to identify the failed tasks. Even though DC has optimized the clustering factor according to a prediction of task failure rate, the jobs to be retried still contain both failed tasks and successful tasks. DR performs better than DC as we have expected. Both SR and DR exclude the successful tasks and only retry the failed tasks within a job. However, they require the ability to identify tasks that have failed in a clustered job, which DC does not. These tables also show that the improvement is more significant when the task failure rate is higher, which is consistent to our previous claim. Particularly for Montage, we reduce the growth of makespan from a near-exponential increase (in NOOP) to a near-linear increase, which is a giant leap for task clustering. What is more, SR performs better than DR in the two workflows, which shows that there is still a gap between dynamically adjusting the clustering factor based on task failure rate and naturally retrying failed tasks. This might be caused by the simplification of our models and it suggests us to investigate the performance issues further.\section{Refinements to Dynamic Clustering}As indicated in last section, the actual clustering factor is not consistent with the suggested clustering factor in some particular cases and n >> r may not hold. When the workflow is almost done and there are not sufficient tasks available, our simplification of model may no longer be effective. To solve this problem, we propose three methods. The Default method tries to follow the clustering factor strictly.  . When there are insufficient tasks, they are clustered into less number of jobs than the available resources ( ). The Replicative method tries to follow the clustering factor too ( ) but it replicates the jobs so as to utilize idle resources ( ) by  .The Even method tries to adjust the clustering factor ( ) so as the number of jobs is equal to the number of resources ( ).  The resource utilization is improved too. Figure 11 shows the performance of three refinements with the Montage workflow. We can see that the Replicative method can reduce the runtime by up to 19% compared to the Default method while the Even method does not improve the performance much. The reason is that adjusting the clustering factor would cause performance degradation although resource utilization is improved.  Figure 11	Performance of different refinements (Montage)\subsection{Task Specific Failures}TABLE III	PERFORMANCE WITH TASK SPECIFIC FAILURE DETECTION (MONTAGE, UNIT:SECOND). α 	Optimization Methods	DR	DR+TSFD	DC	DC+TSFD0.2	10415	10412	13804	138200.4	11830	11839	22946	229230.6	14704	14688	60429	604140.8	23238	23229	436638	435297In this section, we improve DR and DC with Task Specific Failure Detection (TSFD). The Failure Monitor module regularly collects failure records including the task id of the failed task and then calculates the task failure rate per task type. The Clustering Engine then adjusts the clustering factors based on different task failure rates. In this experiment, we set the task failure rate of mProjectPP and mDiffFit to be 0.001 while the task failure rate of mBackground ranges from 0.2 to 0.8. TABLE III shows the performance of DC+TSFD and DR+TSFD. Neither of them show significant improvement. The reason is that Montage has almost the same number (~2,000) of mProjectPP, mDiffFit and mBackground jobs. Therefore, the estimated task failure rate of mBackground is one third of its real task failure rate. Figure 3 tells that TFM is relatively robust to the change of task failure rate when the clustering factor is small. This conclusion also suggests that the estimation of task failure rate does not have to be very precise. \subsection{Location Specific Failures }In this section, we improve DC, SR and DR with Location Specific Failure Detection (LSFD).  The Failure Monitor remembers the resource id (worker node) where the failure has occurred and calculates the task failure rates for each worker node. The Job Scheduler then tries to avoid unstable worker nodes or even skip them if the task failure rates are higher than a threshold. Figure 12 shows an example when two out of twenty nodes have a higher task failure rates (from 0.2 to 0.8) while others still have a task failure rate of 0.001. We can see that the DC+LSFD has significant improvement of up to 62% while SR+LSFD and DR+LSFD do not have much improvement. The reason of the spike (DC without LSFD) is that it detects many failures and then creates many small jobs, which increases the impact of scheduling overhead and other possible overheads.  Figure 12	Performance with location specific failure detection (Montage).   
+\section{RELATED WORK}Failure analysis and modeling [12] presents system characteristics such as error and failure distribution and hazard rates. Schroeder et al. [13] has studied the statistics of the data, including the root cause of failures, the mean time between failures, and the mean time to repair. Sahoo et al. [14] analyzed the empirical and statistical properties of system errors and failures from a network of heterogeneous servers running a diverse workload. Oppenheimer et al. [15] analyzed the causes of failures from three large-scale Internet services and the effectiveness of various techniques for preventing and mitigating service failure. McConnel [16] analyzed the transient errors in computer systems and showed that transient errors follow a Weibull distribution. Benoit [19] et al. analyzed the impact of transient and fail-stop failures on the complexity of task graph scheduling. Based on these work, we measure the failure rates in a workflow and then provide methods to improve task clustering.  Task clustering [2] merges fined-grained tasks into coarse-grained jobs. After task clustering the number of jobs is reduced and the cumulative overhead is reduced too. However, their clustering strategy is static and does not consider the dynamic resource characteristics. In addition, we discover that inappropriate clustering parameters would damage the benefits of task clustering. Also, they did not consider the middleware overhead that relates to the overhead of grid middleware services, such as the time to query resources, the time to match jobs with resources, etc. These overheads are included in our model in the form of constant delays and the values are set based on real traces. Dynamic job grouping is a technique that dynamically assembles the individual fined-grained tasks into a group of jobs and send these coarse-grained jobs to the resources.  Muthuvelu [11] et al. has taken into account the characteristics of jobs and the costs of resources. Liu [10] et al. extended the work to consider the dynamic resource characteristics and the processing capability and bandwidth to constrain the sizes of coarse-grained jobs. Compared to their work, our work focuses on the failure occurrence and aims to improve the makespan of a workflow in a faulty environment. 
 
-\subsection{Footnotes and Endnotes}
-Please keep footnotes to a minimum. If they take up more space than roughly 10\% of
-the type area, list them as endnotes, before the References. Footnotes and endnotes
-should both be numbered in arabic numerals and, in the case of endnotes, preceded by
-the heading ``Endnotes''.
+\section{Future Work}In the future, we plan to apply our work to a real world framework---the Pegasus Workflow Management System and to evaluate the performance with more applications. We will also examine failures with different distribution, such as for example Weibull.  We will further evaluate the robustness of our methods to the variance of failure patterns, runtime, and overhead. The gap between DC and SR indicates that there is still space for further improvement in the approach of dynamically adjusting the workflow task clustering factor. 
+\section{ACKNOWLEDGMENT}This work is supported by NFS under grant number IIS-0905032. We thank Gideon Juve, Karan Vahi, Mats Rynge and Rajiv, Mayani for their help. 
+\bibliography{biblio}
 
-\subsection{References}
-
-References to the literature should be mentioned in the main text by arabic numerals in
-square brackets. Use the Citation-Sequence System, which means they are ``listed and
-numbered in the sequence in which they are 1st cited. ($\ldots$) Subsequent citations of the
-same document use the same numbers as that of its initial citation'' \cite{r1}.
-
-As regards the content, form and punctuation of the References, if the volume
-editor has not expressed a preference in this matter, authors should select the format
-most appropriate to their article, and use it \textit{consistently}.
-
-\section{Illustrations}
-
-\subsection{General Remarks on Illustrations}
-The text should include references to all illustrations. Refer to illustrations in the
-text as Table~1, Table~2, Figure~1, Figure~2, etc., not with the section or chapter number
-included, e.g. Table 3.2, Figure 4.3, etc. Do not use the words ``below'' or ``above''
-referring to the tables, figures, etc.
-
-Do not collect illustrations at the back of your article, but incorporate them in the
-text. Position tables and figures at the top or bottom of a page, with at least 2 lines
-extra space between tables or figures and the running text.
-
-Illustrations should be centered on the page, except for small figures that can fit
-side by side inside the type area. Tables and figures should not have text wrapped
-alongside.
-
-Place figure captions \textit{below} the figure, table captions \textit{above} the table.
-Use bold for table/figure labels and numbers, e.g.: \textbf{Table 1.}, \textbf{Figure 2.},
-and roman for the text of the caption. Keep table and figure captions justified. Center
-short figure captions only.
-
-The minimum \textit{font size} for characters in tables is 8 points, and for lettering in other
-illustrations, 6 points.
-
-On maps and other figures where a \textit{scale} is needed, use bar scales rather than
-numerical ones of the type 1:10,000.
-
-\subsection{Quality of Illustrations}
-Use only Type I fonts for lettering in illustrations.
-
-Include graphics in Encapsulated postscript (EPS) format. Do \textit{not} use illustrations
-taken from the Internet. The resolution of images intended for viewing on a screen is
-not sufficient for the printed version of the book.
-
-If you are incorporating screen captures, keep in mind that the text may not be
-legible after reproduction (using a screen capture tool, instead of the Print Screen
-option of PC's, might help to improve the quality).
-
-\subsection{Color Illustrations}
-Please note, that illustrations will only be printed in color if the volume editor agrees to
-pay the production costs for color printing. However, you should \textit{not} use color in
-illustrations that must be printed in black and white, because this will greatly reduce the
-print quality. (Note that in software the default often is color, so you may have to
-change the settings for these illustrations.)
-
-Illustrations that must be printed in colour should be enclosed as CMYK-encoded
-EPS files.
-
-
-\section{Equations}
-Number equations consecutively, not section-wise. Place the numbers in parentheses at
-the right-hand margin, level with the last line of the equation. Refer to equations in the
-text as Eq. (1), Eqs. (3) and (5).
-
-\section{Fine Tuning}
-
-\subsection{Type Area}
-\textbf{Check once more that all the text and illustrations are inside the type area and
-that the type area is used to the maximum.} You may of course end a page with one
-or more blank lines to avoid `widow' headings, or at the end of a chapter.
-
-\subsection{Capitalization}
-Use initial capitals in the title and headings, except for articles (a, an, the), coordinate
-conjunctions (and, or, nor), and prepositions, unless they appear at the beginning of the
-title or heading.
-
-\subsection{Page Numbers and Running Headlines}
-You do not need to include page numbers or running headlines. These elements will be
-added by the publisher.
-
-\section{Submitting the Manuscript}
-Submit the following to the volume editor:
-
-\begin{enumerate}
-\item The main source file, and any other required files. Do not submit more than
-one version of any item.
-
-\item Identical high resolution PDF file with all fonts embedded. First produce a
-Postscript file from \LaTeX{} with DVIPS version 5.56 or higher. The option
-``-M'' (don't make fonts) should be indicated. Use Adobe Acrobat Distiller to
-produce the PDF and choose the job option \textit{Press-Optimized}.
-\end{enumerate}
-
-\begin{thebibliography}{99}
-
-\bibitem{r1}
-\textit{Scientific Style and Format: The CBE manual for authors,
-editors and publishers}. Style Manual Committee, Council of Biology Editors.
-Sixth ed. Cambridge University Press, 1994.
-
-\bibitem{r2}
-L.U. Ante, Cem surgere: Surgite postquam sederitis, qui manducatis panem doloris,
-\textit{Omnes} \textbf{13} (1916), 114--119.
-
-\bibitem{r3}
-T.X. Confortavit, \textit{Seras}, Portarum, New York, 1995.
-
-\bibitem{r4}
-P.A. Deus, Ater hoc et filius et mater praestet nobis,
-\textit{Paterhoc} \textbf{66} (1993), 856--890.
-
-\end{thebibliography}
 \end{document}
