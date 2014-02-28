@@ -1,0 +1,207 @@
+
+\documentclass{IOS-Book-Article}
+
+\usepackage{mathptmx}
+
+%\usepackage{times}
+%\normalfont
+%\usepackage[T1]{fontenc}
+%\usepackage[mtplusscr,mtbold]{mathtime}
+%
+\begin{document}
+\begin{frontmatter}              % The preamble begins here.
+
+%\pretitle{Pretitle}
+\title{Fault Tolerance and Task Clustering\\
+ in Scientific Workflows}
+\runningtitle{Fault Tolerant Clustering}
+%\subtitle{Subtitle}
+
+\author[A]{\fnms{Weiwei} \snm{Chen}%
+\thanks{Corresponding Author: Weiwei Chen, University of Southern California, Information Sciences Institute, Marina del Rey, CA, USA; E-mail:
+weiweichen@acm.org.}},
+\author[B]{\fnms{Rafael Ferreira de} \snm{silva}}
+and
+\author[B]{\fnms{Ewa} \snm{Deelman}}
+
+\runningauthor{W. Chen et al.}
+\address[A]{University of Southern California, Information Sciences Institute, Marina del Rey, CA, USA}
+\address[B]{University of Manchester, School of Computer Science, Manchester, U.K}
+
+\begin{abstract}
+Task clustering has been proven to be an effective method to reduce execution overhead and increase the computational granularity of workflow tasks executing on distributed resources. However, a job composed of multiple tasks may have a greater risk of suffering from failures than a job composed of a single task. Our theoretic analysis and simulation results demonstrate that failures can have a significant impact on the runtime performance of workflows that use existing clustering policies that ignore failures. We therefore propose two general failure modeling frameworks (task failure model and job failure model) to address these performance issues. We show the necessity to consider the fault tolerance in the task failure model. Based on the task failure model, we propose three methods to improve the workflow performance in dynamic environments. A simulation-based evaluation is performed and it shows that our approach can improve the workflow makespan significantly for two important applications.    
+\end{abstract}
+
+\begin{keyword}
+scientific workflows\sep fault tolerance\sep scheduling\sep locality\sep high availability 
+\end{keyword}
+\end{frontmatter}
+
+\thispagestyle{empty}
+\pagestyle{empty}
+
+\section*{Introduction}
+Scientific workflows can be composed of thousands of fine computational granularity tasks and the runtime of these tasks may be even shorter than the system overhead, which is the period time during which miscellaneous work other than the user’s computation is performed by the system. If the overhead is large, the workflow execution inefficient. Task clustering [2] is a technique that merges several short tasks into a single job so that the job runtime is increased and the total system overhead is decreased. However, existing clustering strategies ignore or underestimate the impact of the occurrence of failures on system behavior, despite the current and increasing importance of failures in large-scale distributed systems, such as Grids [3], Clouds [4] and dedicated clusters. Many researchers [5][12][13][14][15] have emphasized the importance of fault tolerance design and indicated that the failure rates in modern distributed systems are significant. Among all possible failures, in our work we focus on transient failures because they are expected to be more prevalent than permanent failures [5]. For example, denser integration of semiconductor circuits and lower operating voltage levels may increase the likelihood of bit-flips when circuits are bombarded by cosmic rays and other particles [5]. Based on their occurrence, we divide the transient failures into two categories: task failure and job failure. In task clustering, a clustered job consists of multiple tasks. If the transient failure occurs to the computation of a task (task failure), other tasks within the job do not necessarily fail. If the transient failure occurs to the clustered job (job failure), all of its tasks fail. Accordingly, we have two models. In the task failure model (TFM), the failure of a task is a random event that is independent of the workflow characteristics and execution environment. The task failure rate is the average occurrence rate of task failures. Similarly we can define the job failure rate as the average occurrence rate of job failures and a job failure model (JFM) in which job failure is a random event. 
+In a faulty environment, there are several options for managing workflow failures. First, one can simply retry the entire job when its computation is not successful as in the Pegasus framework [7]. However, some of the tasks within the job may have completed successfully and it could be a waste of time and resources to retry all of the tasks. Second, the application process can be periodically checkpointed so that when a failure occurs, the amount of work to be retried is limited. However, the overheads of checkpointing can limit its benefits [5]. Third, tasks can be replicated to different nodes to avoid location-specific failures. However, inappropriate clustering (and replication) parameters may cause severe performance degradation if they create long-running clustered jobs. As we will show, a long-running job that consists of many tasks has a higher job failure rate even when the overall task failure rate is low.   
+We propose three methods to improve the existing clustering techniques (with job retry and task replication) in a faulty environment if the transient failures satisfy the task failure model. The first solution dynamically adjusts the clustering factor according to the detected task failure rate. The second technique retries the failed tasks within a job. And the last solution is a combination of the first two approaches. We further improve our methods to be able to handle the situations where task failure rate is not fully independent of workflow characteristics or execution environment. Samak [18] et al. have analyzed 1,329 real workflow executions across six distinct applications and concluded that the type and the host id of a job are among the most significant factors that impacted failures. Task specific failure is a type of failure that only occurs to some specific types of tasks. Location specific failure only occurs to some specific execution nodes. What is more, we present two refinements to handle the situation when there are fewer jobs than available resources. 
+In this paper, we assume that failures can be observed from the outputs or logs of a job. We only focus on transient failures and we assume that after a finite number of retries these jobs can be completed successfully. 
+Our contributions include two models to classify transient failures. We present three methods that can improve the runtime performance of workflows when transient failures occur to the tasks in a workflow. We evaluate our methods with two workflows in a simulation-based approach. 
+
+\section{Design and Models}
+
+\subsection{Workflow Model}
+
+We model workflows as Directed Acyclic Graphs (DAGs), where jobs represent users’ computation to be executed and directed edges represent data or control flow dependencies between the jobs. An unclustered job contains only one task that has one process or computation. A clustered job contains multiple tasks to be executed in a sequence or in parallel. In our models and experiments, tasks within a job are executed in a sequential order. However, the conclusions that we draw also apply to the case of parallel execution since parallelization only reduces the overall runtime in a linear scale, while our results will show that the influence of task failures are at an exponential scale. Oftentimes, once a job fails, the job will be retried with the same configurations. 
+
+
+In task clustering, the clustering factor (k) is an important parameter to influence the performance. We define it as the number of tasks in a clustered job. The reason why task clustering can help improve the performance is that it can reduce the scheduling cycles that workflow tasks go through since the number of jobs has decreased. The result is a reduction in the scheduling overhead and possibly other overheads as well [17]. Additionally, in the ideal case without any failures, the clustering factor is usually equal to the number of all the parallel tasks divided by the number of available resources. Such a naïve setting assures that the number of jobs is equal to the number of resources and the workflow can utilize the resources as much as possible. However, when transient failures exist, we claim that the clustering factor should be set based on the failure rates especially the task failure rate. Intuitively speaking, if the failure rate is high, the clustered jobs may need to retry more times compared to the case without clustering. Such performance degradation will counteract the benefits of reducing scheduling overheads. In this paper we only discuss the horizontal clustering [2], which clusters tasks on the same horizontal level in the DAGs. Figure 1 shows a simplified Montage workflow, which has 9 levels but we mainly focus on the major three levels (mProjectPP, mDiffFit, and mBackground). There are many other clustering methods such as vertical clustering, label clustering, and so on. Our approach can be extended to apply to them as well. \subsection{Task Failure Model and Job Failure Model}
+ The target is to reduce the estimated finish time (ttotal) of n tasks in case the failure rate for a clustered job (denoted by β) or for a task (denoted by α) is known. ttotal includes the runtime of the clustered job and its subsequent retry jobs if the first try fails. The time to run a single task once is t. k is the clustering factor indicating the number of tasks in a clustered job. For a clustered job, let the expectation of retry times be N. The process to run (and retry) a job is a Bernoulli trial with only two results: success or failure. Once a job fails, it will be retried until it is eventually completed successfully because we assume the failures are transient. By definition we have, N=1/γ=1/(1-β), while γ is the success rate of a job.
+Below we show how to estimate ttotal. r is the number of available resources. d is the time delay between jobs and it is assumed to be the same for all jobs. It is a simplification of workflow overheads. We assume that n >> r, but n/k is not necessarily much larger than r. Normally at the beginning of workflow execution, n/k > r, which means there are more clustered jobs than available resources. To try all n tasks once, irrespective of whether they succeed or fail, one needs approximately n/(rk) execution cycle(s) since at each execution cycle we can execute at most r jobs. Therefore, the time to execute all n tasks once is n(kt+d)/(rk). And the time to complete them successfully in a faulty environment is Nn(kt+d)/(rk)=n(kt+d)/(rkγ) since each job requires N retries on average.  On the other side, at the end of the workflow execution, since n is decreasing with the process of workflow, it is possible that n/k < r, which means there are fewer jobs than the available resources. One needs just one execution cycle to execute these tasks once. The time to complete all n tasks successfully is N(kt+d)=(kt+d)/γ. Below we discuss how we estimate γ in TFM and JFM. In JFM, we have assumed that job failure is an independent event and thereby we only need to collect the failure records of jobs. γ=(1-β). In sum, in JFM, 
+In TFM, a clustered job succeeds only if all of its tasks succeed. Therefore the success rate of a clustered job is γ = (1 - α)k, and β = (1 - γ). The task failure is independent and the job failure rate β is dependent on α. In sum, in TFM,
+
+\subsection{Font}
+
+The font type for running text (body text) is 10~point Times New Roman.
+There is no need to code normal type (roman text). For literal text, please use
+\texttt{type\-writer} (\verb|\texttt{}|)
+or \textsf{sans serif} (\verb|\textsf{}|). \emph{Italic} (\verb|\emph{}|)
+or \textbf{boldface} (\verb|\textbf{}|) should be used for emphasis.
+
+\subsection{General Layout}
+Use single (1.0) line spacing throughout the document. For the main
+body of the paper use the commands of the standard \LaTeX{}
+``article'' class. You can add packages or declare new \LaTeX{}
+functions if and only if there is no conflict between your packages
+and the \texttt{IOS-Book-Article}.
+
+Always give a \verb|\label| where possible and use \verb|\ref| for cross-referencing.
+
+
+\subsection{(Sub-)Section Headings}
+Use the standard \LaTeX{} commands for headings: {\small \verb|\section|, \verb|\subsection|, \verb|\subsubsection|, \verb|\paragraph|}.
+Headings will be automatically numbered.
+
+Use initial capitals in the headings, except for articles (a, an, the), coordinate
+conjunctions (and, or, nor), and prepositions, unless they appear at the beginning
+of the heading.
+
+\subsection{Footnotes and Endnotes}
+Please keep footnotes to a minimum. If they take up more space than roughly 10\% of
+the type area, list them as endnotes, before the References. Footnotes and endnotes
+should both be numbered in arabic numerals and, in the case of endnotes, preceded by
+the heading ``Endnotes''.
+
+\subsection{References}
+
+References to the literature should be mentioned in the main text by arabic numerals in
+square brackets. Use the Citation-Sequence System, which means they are ``listed and
+numbered in the sequence in which they are 1st cited. ($\ldots$) Subsequent citations of the
+same document use the same numbers as that of its initial citation'' \cite{r1}.
+
+As regards the content, form and punctuation of the References, if the volume
+editor has not expressed a preference in this matter, authors should select the format
+most appropriate to their article, and use it \textit{consistently}.
+
+\section{Illustrations}
+
+\subsection{General Remarks on Illustrations}
+The text should include references to all illustrations. Refer to illustrations in the
+text as Table~1, Table~2, Figure~1, Figure~2, etc., not with the section or chapter number
+included, e.g. Table 3.2, Figure 4.3, etc. Do not use the words ``below'' or ``above''
+referring to the tables, figures, etc.
+
+Do not collect illustrations at the back of your article, but incorporate them in the
+text. Position tables and figures at the top or bottom of a page, with at least 2 lines
+extra space between tables or figures and the running text.
+
+Illustrations should be centered on the page, except for small figures that can fit
+side by side inside the type area. Tables and figures should not have text wrapped
+alongside.
+
+Place figure captions \textit{below} the figure, table captions \textit{above} the table.
+Use bold for table/figure labels and numbers, e.g.: \textbf{Table 1.}, \textbf{Figure 2.},
+and roman for the text of the caption. Keep table and figure captions justified. Center
+short figure captions only.
+
+The minimum \textit{font size} for characters in tables is 8 points, and for lettering in other
+illustrations, 6 points.
+
+On maps and other figures where a \textit{scale} is needed, use bar scales rather than
+numerical ones of the type 1:10,000.
+
+\subsection{Quality of Illustrations}
+Use only Type I fonts for lettering in illustrations.
+
+Include graphics in Encapsulated postscript (EPS) format. Do \textit{not} use illustrations
+taken from the Internet. The resolution of images intended for viewing on a screen is
+not sufficient for the printed version of the book.
+
+If you are incorporating screen captures, keep in mind that the text may not be
+legible after reproduction (using a screen capture tool, instead of the Print Screen
+option of PC's, might help to improve the quality).
+
+\subsection{Color Illustrations}
+Please note, that illustrations will only be printed in color if the volume editor agrees to
+pay the production costs for color printing. However, you should \textit{not} use color in
+illustrations that must be printed in black and white, because this will greatly reduce the
+print quality. (Note that in software the default often is color, so you may have to
+change the settings for these illustrations.)
+
+Illustrations that must be printed in colour should be enclosed as CMYK-encoded
+EPS files.
+
+
+\section{Equations}
+Number equations consecutively, not section-wise. Place the numbers in parentheses at
+the right-hand margin, level with the last line of the equation. Refer to equations in the
+text as Eq. (1), Eqs. (3) and (5).
+
+\section{Fine Tuning}
+
+\subsection{Type Area}
+\textbf{Check once more that all the text and illustrations are inside the type area and
+that the type area is used to the maximum.} You may of course end a page with one
+or more blank lines to avoid `widow' headings, or at the end of a chapter.
+
+\subsection{Capitalization}
+Use initial capitals in the title and headings, except for articles (a, an, the), coordinate
+conjunctions (and, or, nor), and prepositions, unless they appear at the beginning of the
+title or heading.
+
+\subsection{Page Numbers and Running Headlines}
+You do not need to include page numbers or running headlines. These elements will be
+added by the publisher.
+
+\section{Submitting the Manuscript}
+Submit the following to the volume editor:
+
+\begin{enumerate}
+\item The main source file, and any other required files. Do not submit more than
+one version of any item.
+
+\item Identical high resolution PDF file with all fonts embedded. First produce a
+Postscript file from \LaTeX{} with DVIPS version 5.56 or higher. The option
+``-M'' (don't make fonts) should be indicated. Use Adobe Acrobat Distiller to
+produce the PDF and choose the job option \textit{Press-Optimized}.
+\end{enumerate}
+
+\begin{thebibliography}{99}
+
+\bibitem{r1}
+\textit{Scientific Style and Format: The CBE manual for authors,
+editors and publishers}. Style Manual Committee, Council of Biology Editors.
+Sixth ed. Cambridge University Press, 1994.
+
+\bibitem{r2}
+L.U. Ante, Cem surgere: Surgite postquam sederitis, qui manducatis panem doloris,
+\textit{Omnes} \textbf{13} (1916), 114--119.
+
+\bibitem{r3}
+T.X. Confortavit, \textit{Seras}, Portarum, New York, 1995.
+
+\bibitem{r4}
+P.A. Deus, Ater hoc et filius et mater praestet nobis,
+\textit{Paterhoc} \textbf{66} (1993), 856--890.
+
+\end{thebibliography}
+\end{document}
