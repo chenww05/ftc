@@ -2,7 +2,20 @@
 \documentclass{IOS-Book-Article}
 
 \usepackage{mathptmx}
-
+\usepackage{rotating,todonotes, xspace}
+\usepackage{amssymb}
+\usepackage[section]{placeins}
+\usepackage{makeidx}  % allows for indexgeneration
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+\usepackage{wrapfig}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{amsmath}
 %\usepackage{times}
 %\normalfont
 %\usepackage[T1]{fontenc}
@@ -20,16 +33,16 @@
 \author[A]{\fnms{Weiwei} \snm{Chen}%
 \thanks{Corresponding Author: Weiwei Chen, University of Southern California, Information Sciences Institute, Marina del Rey, CA, USA; E-mail:
 weiweichen@acm.org.}},
-\author[B]{\fnms{Rafael Ferreira de} \snm{silva}}
+\author[A]{\fnms{Rafael Ferreira de} \snm{silva}}
 and
-\author[B]{\fnms{Ewa} \snm{Deelman}}
+\author[A]{\fnms{Ewa} \snm{Deelman}}
 
 \runningauthor{W. Chen et al.}
 \address[A]{University of Southern California, Information Sciences Institute, Marina del Rey, CA, USA}
-\address[B]{University of Manchester, School of Computer Science, Manchester, U.K}
+%\address[B]{University of Manchester, School of Computer Science, Manchester, U.K}
 
 \begin{abstract}
-Task clustering has been proven to be an effective method to reduce execution overhead and increase the computational granularity of workflow tasks executing on distributed resources. However, a job composed of multiple tasks may have a greater risk of suffering from failures than a job composed of a single task. Our theoretic analysis and simulation results demonstrate that failures can have a significant impact on the runtime performance of workflows that use existing clustering policies that ignore failures. We therefore propose two general failure modeling frameworks (task failure model and job failure model) to address these performance issues. We show the necessity to consider the fault tolerance in the task failure model. Based on the task failure model, we propose three methods to improve the workflow performance in dynamic environments. A simulation-based evaluation is performed and it shows that our approach can improve the workflow makespan significantly for two important applications.    
+Large scale scientific workflows can be composed of many fine computational granularity tasks. Task clustering has been proven to be an effective method to reduce execution overhead and increase the computational granularity of workflow tasks executing on distributed resources. However, a job composed of multiple tasks may have a greater risk of suffering from failures than a job composed of a single task. Our theoretic analysis and simulation results demonstrate that transient failures can have a significant impact on the runtime performance of scientific workflows that use existing clustering policies that ignore failures. We propose a general task failure modeling framework to address these performance issues. We show the necessity to consider the fault tolerance in the task clustering methods.  We further propose three horizontal methods and one vertical method to improve the runtime performance of executing workflows in dynamic environments. A trace based simulation is performed and it shows that our methods improve the workflow makespan significantly for five important applications.    
 \end{abstract}
 
 \begin{keyword}
@@ -41,7 +54,12 @@ scientific workflows\sep fault tolerance\sep scheduling\sep locality\sep high av
 \pagestyle{empty}
 
 \section*{Introduction}
-Scientific workflows can be composed of thousands of fine computational granularity tasks and the runtime of these tasks may be even shorter than the system overhead, which is the period time during which miscellaneous work other than the user’s computation is performed by the system. If the overhead is large, the workflow execution inefficient. Task clustering [2] is a technique that merges several short tasks into a single job so that the job runtime is increased and the total system overhead is decreased. However, existing clustering strategies ignore or underestimate the impact of the occurrence of failures on system behavior, despite the current and increasing importance of failures in large-scale distributed systems, such as Grids [3], Clouds [4] and dedicated clusters. Many researchers [5][12][13][14][15] have emphasized the importance of fault tolerance design and indicated that the failure rates in modern distributed systems are significant. Among all possible failures, in our work we focus on transient failures because they are expected to be more prevalent than permanent failures [5]. For example, denser integration of semiconductor circuits and lower operating voltage levels may increase the likelihood of bit-flips when circuits are bombarded by cosmic rays and other particles [5]. Based on their occurrence, we divide the transient failures into two categories: task failure and job failure. In task clustering, a clustered job consists of multiple tasks. If the transient failure occurs to the computation of a task (task failure), other tasks within the job do not necessarily fail. If the transient failure occurs to the clustered job (job failure), all of its tasks fail. Accordingly, we have two models. In the task failure model (TFM), the failure of a task is a random event that is independent of the workflow characteristics and execution environment. The task failure rate is the average occurrence rate of task failures. Similarly we can define the job failure rate as the average occurrence rate of job failures and a job failure model (JFM) in which job failure is a random event. 
+
+Failure rate as a function of system and node Schroeder 2006
+In this section we view the sequence of failure events as a stochastic process and study the distribution of its inter- arrival times, i.e. the time between failures. Through- out we focus on system 20 as an illustrative example.
+
+
+Scientific workflows can be composed of many fine computational granularity tasks and the runtime of these tasks may be even shorter than the system overhead, which is the period time during which miscellaneous work other than the user’s computation is performed. If the overhead is large, the workflow execution inefficient. Task clustering [2] is a technique that merges several short tasks into a single job so that the job runtime is increased and the total system overhead is decreased. However, existing clustering strategies ignore or underestimate the impact of the occurrence of failures on system behavior, despite the current and increasing importance of failures in large-scale distributed systems, such as Grids [3], Clouds [4] and dedicated clusters. Many researchers [5][12][13][14][15] have emphasized the importance of fault tolerance design and indicated that the failure rates in modern distributed systems are significant. Among all possible failures, in our work we focus on transient failures because they are expected to be more prevalent than permanent failures [5]. For example, denser integration of semiconductor circuits and lower operating voltage levels may increase the likelihood of bit-flips when circuits are bombarded by cosmic rays and other particles [5]. Based on their occurrence, we divide the transient failures into two categories: task failure and job failure. In task clustering, a clustered job consists of multiple tasks. If the transient failure occurs to the computation of a task (task failure), other tasks within the job do not necessarily fail. If the transient failure occurs to the clustered job (job failure), all of its tasks fail. Accordingly, we have two models. In the task failure model (TFM), the failure of a task is a random event that is independent of the workflow characteristics and execution environment. The task failure rate is the average occurrence rate of task failures. Similarly we can define the job failure rate as the average occurrence rate of job failures and a job failure model (JFM) in which job failure is a random event. 
 In a faulty environment, there are several options for managing workflow failures. First, one can simply retry the entire job when its computation is not successful as in the Pegasus framework [7]. However, some of the tasks within the job may have completed successfully and it could be a waste of time and resources to retry all of the tasks. Second, the application process can be periodically checkpointed so that when a failure occurs, the amount of work to be retried is limited. However, the overheads of checkpointing can limit its benefits [5]. Third, tasks can be replicated to different nodes to avoid location-specific failures. However, inappropriate clustering (and replication) parameters may cause severe performance degradation if they create long-running clustered jobs. As we will show, a long-running job that consists of many tasks has a higher job failure rate even when the overall task failure rate is low.   
 We propose three methods to improve the existing clustering techniques (with job retry and task replication) in a faulty environment if the transient failures satisfy the task failure model. The first solution dynamically adjusts the clustering factor according to the detected task failure rate. The second technique retries the failed tasks within a job. And the last solution is a combination of the first two approaches. We further improve our methods to be able to handle the situations where task failure rate is not fully independent of workflow characteristics or execution environment. Samak [18] et al. have analyzed 1,329 real workflow executions across six distinct applications and concluded that the type and the host id of a job are among the most significant factors that impacted failures. Task specific failure is a type of failure that only occurs to some specific types of tasks. Location specific failure only occurs to some specific execution nodes. What is more, we present two refinements to handle the situation when there are fewer jobs than available resources. 
 In this paper, we assume that failures can be observed from the outputs or logs of a job. We only focus on transient failures and we assume that after a finite number of retries these jobs can be completed successfully. 
@@ -54,18 +72,80 @@ Scientific workflows can be composed of thousands of fine computational granular
 We model workflows as Directed Acyclic Graphs (DAGs), where jobs represent users’ computation to be executed and directed edges represent data or control flow dependencies between the jobs. An unclustered job contains only one task that has one process or computation. A clustered job contains multiple tasks to be executed in a sequence or in parallel. In our models and experiments, tasks within a job are executed in a sequential order. However, the conclusions that we draw also apply to the case of parallel execution since parallelization only reduces the overall runtime in a linear scale, while our results will show that the influence of task failures are at an exponential scale. Oftentimes, once a job fails, the job will be retried with the same configurations. 
 
 
-In task clustering, the clustering factor (k) is an important parameter to influence the performance. We define it as the number of tasks in a clustered job. The reason why task clustering can help improve the performance is that it can reduce the scheduling cycles that workflow tasks go through since the number of jobs has decreased. The result is a reduction in the scheduling overhead and possibly other overheads as well [17]. Additionally, in the ideal case without any failures, the clustering factor is usually equal to the number of all the parallel tasks divided by the number of available resources. Such a naïve setting assures that the number of jobs is equal to the number of resources and the workflow can utilize the resources as much as possible. However, when transient failures exist, we claim that the clustering factor should be set based on the failure rates especially the task failure rate. Intuitively speaking, if the failure rate is high, the clustered jobs may need to retry more times compared to the case without clustering. Such performance degradation will counteract the benefits of reducing scheduling overheads. In this paper we only discuss the horizontal clustering [2], which clusters tasks on the same horizontal level in the DAGs. Figure 1 shows a simplified Montage workflow, which has 9 levels but we mainly focus on the major three levels (mProjectPP, mDiffFit, and mBackground). There are many other clustering methods such as vertical clustering, label clustering, and so on. Our approach can be extended to apply to them as well. \subsection{Task Failure Model and Job Failure Model}
- The target is to reduce the estimated finish time (ttotal) of n tasks in case the failure rate for a clustered job (denoted by β) or for a task (denoted by α) is known. ttotal includes the runtime of the clustered job and its subsequent retry jobs if the first try fails. The time to run a single task once is t. k is the clustering factor indicating the number of tasks in a clustered job. For a clustered job, let the expectation of retry times be N. The process to run (and retry) a job is a Bernoulli trial with only two results: success or failure. Once a job fails, it will be retried until it is eventually completed successfully because we assume the failures are transient. By definition we have, N=1/γ=1/(1-β), while γ is the success rate of a job.
-Below we show how to estimate ttotal. r is the number of available resources. d is the time delay between jobs and it is assumed to be the same for all jobs. It is a simplification of workflow overheads. We assume that n >> r, but n/k is not necessarily much larger than r. Normally at the beginning of workflow execution, n/k > r, which means there are more clustered jobs than available resources. To try all n tasks once, irrespective of whether they succeed or fail, one needs approximately n/(rk) execution cycle(s) since at each execution cycle we can execute at most r jobs. Therefore, the time to execute all n tasks once is n(kt+d)/(rk). And the time to complete them successfully in a faulty environment is Nn(kt+d)/(rk)=n(kt+d)/(rkγ) since each job requires N retries on average.  On the other side, at the end of the workflow execution, since n is decreasing with the process of workflow, it is possible that n/k < r, which means there are fewer jobs than the available resources. One needs just one execution cycle to execute these tasks once. The time to complete all n tasks successfully is N(kt+d)=(kt+d)/γ. Below we discuss how we estimate γ in TFM and JFM. In JFM, we have assumed that job failure is an independent event and thereby we only need to collect the failure records of jobs. γ=(1-β). In sum, in JFM, 
-In TFM, a clustered job succeeds only if all of its tasks succeed. Therefore the success rate of a clustered job is γ = (1 - α)k, and β = (1 - γ). The task failure is independent and the job failure rate β is dependent on α. In sum, in TFM,
+In task clustering, the clustering factor (k) is an important parameter to influence the performance. We define it as the number of tasks in a clustered job. The reason why task clustering can help improve the performance is that it can reduce the scheduling cycles that workflow tasks go through since the number of jobs has decreased. The result is a reduction in the scheduling overhead and possibly other overheads as well [17]. Additionally, in the ideal case without any failures, the clustering factor is usually equal to the number of all the parallel tasks divided by the number of available resources. Such a naïve setting assures that the number of jobs is equal to the number of resources and the workflow can utilize the resources as much as possible. However, when transient failures exist, we claim that the clustering factor should be set based on the failure rates especially the task failure rate. Intuitively speaking, if the failure rate is high, the clustered jobs may need to retry more times compared to the case without clustering. Such performance degradation will counteract the benefits of reducing scheduling overheads. In this paper we only discuss the horizontal clustering [2], which clusters tasks on the same horizontal level in the DAGs. Figure 1 shows a simplified Montage workflow, which has 9 levels but we mainly focus on the major three levels (mProjectPP, mDiffFit, and mBackground). There are many other clustering methods such as vertical clustering, label clustering, and so on. Our approach can be extended to apply to them as well. \subsection{Task Failure Model}
 
-k* is the optimal clustering factor and ttotal* is the minimal runtime of these n tasks. Eq. (3) shows that in JFM, the job failure rate has no influence on the choice of clustering factor. In another word, in JFM we just need to set the k to be k*, which is a fixed value irrespective of the job failure rate.To find the minimal value of ttotal* in Eq. (2), let 
+%For system overhead $p(X|\theta)$, we assume it follows an Weibull distribution with known shape $\kappa=0.78$. When $x>0$, the PDF of $p(x|\theta, \kappa)$ is
 
-To discuss the relationship between the variables mentioned before, we show an example workflow with n=1000, t=5 sec, d=5 sec, and r=20. These parameters are close to the level of mProjectPP in the Montage workflow that we simulate in Section IV. 
+%\begin{equation}
+%f(x|\theta, \kappa)=\frac{\kappa}{\theta} (\frac{x}{\theta})^{\kappa-1}e^{-(x/\theta)^{\kappa}}  \nonumber
+%\end{equation}
 
-Figure 2 shows the relationship between the expected runtime ttotal* and the clustering factor k in Eq. (1). We can see that the optimal clustering factor (in this example it is 50) does not change with different job failure rates. In comparison with TFM in Figure 3, the optimal clustering factor (in this example it is 5) is not equal to n/r. This conclusion is consistent with our previous claim since a clustered job has a higher chance to fail when the task failure rate is higher.
+In our prior work \cite{Chen2011}, we have verified that $d$ fits gamma or Weibull distribution better than the other two distributions (Exponential and Normal). Schroeder et. al. \cite{Schroeder2006} have verified the inter-arrival time of task failures fits a Weibull distribution with a shape parameter of 0.78 or a gamma distribution better than lognormal and exponential distribution. In \cite{Sun2003, Iosup2008} Weibull distribution is one of the best fit for the workflow traces they used.  Without loss of generality, we choose Weibull distribution to represent the distribution of task runtime ($t$), system overhead ($d$) and the inter-arrival times of failures ($\gamma$).  $d$ is a random variable representing the system overheads. $t$ is a random variable representing the task runtime. has indicated that system overheads follow an exponential distribution. 
 
-Figure 4 shows the relationship between the task failure rate and the optimal clustering factor as indicated in Eq. (4). We can see that when the task failure rate is high (α>0.03), it is better to use no clustering at all (k<2).  We can also see that the optimal clustering factor k* decreases with the increase in the task failure rate. Below we discuss to determine which model a faulty environment follows if there is no knowledge about the cause of failures (transient or permanent, task or job). By analyzing the relationship between expected runtime and clustering factor we can tell whether it tends to be TFM or JFM.  There are two criteria: 1) whether the execution runtime has an exponential increase (TFM) or linear increase (JFM) when k is large enough; 2) whether the optimal clustering factor is influenced by the failure rates (If yes, TFM; otherwise JFM).Also, we assume that the jobs in this workflow and the resources are homogeneous. In section IV.E and section IV.F, we extend this model to consider task specific failures and location specific failures. The job-scheduling algorithm is First-Come-First-Serve, while one may use more complex algorithms such as HEFT [9] or Min-Min [8].. From this theoretic analysis, we conclude that 1) the lower the task failure rate is, the better runtime performance the task clustering has; 2) in TFM, adjusting the clustering factor according to the detected task failure rate can improve the runtime performance; 3) in JFM, we just need to set k=n/r. For the rest of our paper, we will only focus on the TFM.\section{Fault Tolerant Clustering}
+In Bayesian probability theory, if the posterior distribution $p(\theta|D, a, b)$ are in the same family as the prior distribution $p(\theta|a, b)$, the prior and the posterior are then called conjugate distributions. and the prior is called a conjugate prior for the likelihood function. For example, the Inverse Gamma family is conjugate to itself (or self-conjugate) with respect to a Weibull likelihood function: if the likelihood function is Weibull, choosing a Inverse Gamma prior over the mean will ensure that the posterior distribution is also Inverse Gamma. This simplifies the estimation of parameters since we can always represent our prior knowledge in a good-fit distribution intentionally. 
+The conjugate pair of Weibull distribution is Inverse Gamma distribution, which means if the prior follows an Inverse Gamma distribution with parameters (the scale parameter $a$ and the shape parameter $b$), the posterior also follows an Inverse Gamma distribution with parameters (the scale parameter $a+n$ and the shape parameter $\displaystyle b+\sum_{i=1}^n{x_i^\kappa}$). The Maximum Likelihood Estimation  (MLE \footnote{J. Aldrich. R. A. Fisher and the making of maximum likelihood 1912-1922. Statistical Science, 12(3):162–176, 1997.}) of posterior is $\displaystyle\frac{b+\displaystyle\sum_{i=1}^n{x_i^\kappa}}{a+n+1}$. It is biased since the unbiased estimation is $\displaystyle\frac{b+\displaystyle\sum_{i=1}^n{x_i^\kappa}}{a+n-1}$. 
+
+To sum up our model, we have
+After we observe data $D$, we compute the posterior distribution of $\theta$
+Conjugate prior distribution. 
+
+\begin{eqnarray}
+	\displaystyle  
+	p(\theta|X, a, b)&=&\frac{p(\theta|a, b)\times p(X|\theta)}{p(X|a, b)}\nonumber  \\
+	&\propto&p(\theta|a, b)\times p(X|\theta)\nonumber 
+\end{eqnarray}
+
+$X$ could be $d$, $t$ or $\gamma$ 
+
+$p(\theta|X,a, b)$ is called the posterior distribution. We are interested in its MLE. 
+
+$p(\theta|a, b)$ is called the prior distribution. We have already known this. 
+
+$p(X|\theta)$ is the likelihood. We only need to know its shape parameter instead of its scale parameter, which gives us much benefits. 
+
+\begin{figure*}[!htb]
+\centering
+  \includegraphics[width=0.95\linewidth]{figure5.eps}
+  \caption{Makespan with different clustering size. (n=1000 r=20 t=5 sec, d=50 sec)}
+  \label{fig:model_makespan}
+\end{figure*}
+\begin{figure*}[!htb]
+\centering
+  \includegraphics[width=0.95\linewidth]{figure6.eps}
+  \caption{Optimal clustering size (k*) with different  theta (n=1000 r=20 t=5 sec, d=50 sec)}
+  \label{fig:model_makespan}
+\end{figure*}
+The next step is to reduce the estimated finish time ($M$) of $n$ tasks in case the $t$, $d$ and $\gamma$ are known. $M$ includes the runtime of the clustered job and its subsequent retry jobs if the first try fails. The time to run a single task once is $t$. $k$ is the clustering size indicating the number of tasks in a clustered job. For a clustered job, let the expectation of retry times be $N$. The process to run (and retry) a job is a Bernoulli trial with only two results: success or failure. Once a job fails, it will be retried until it is eventually completed successfully because we assume the failures are transient. By definition we have, 
+$\displaystyle
+N=\frac{1}{1-F(kt+d)}=\frac{1}{e^{-(\displaystyle\frac{kt+d}{\theta})^{\kappa}}}
+$, $F(x)$ is the CDF of $\gamma$ under known shape parameter $\kappa$ and estimated scale parameter $\theta$. 
+
+
+
+We claim a clustered job succeeds only if all of its tasks succeed. We assume that $n \gg r$, but $n/k$ is not necessarily much larger than $r$ since $k$ could be very large. Normally at the beginning of workflow execution, $n/k > r$, which means there are more clustered jobs than available resources. To try all $n$ tasks once, irrespective of whether they succeed or fail, one needs approximately $\displaystyle \frac{n}{rk}$ execution cycle(s) since at each execution cycle we can execute at most $r$ jobs. Therefore, the time to execute all n tasks once is $\displaystyle\frac{n(kt+d)}{rk}$. And the time to complete them successfully in a faulty environment is $\displaystyle\frac{Nn(kt+d)}{rk} $ since each job requires $N$ retries on average.  On the other side, at the end of the workflow execution, since n is decreasing with the process of workflow, it is possible that $\displaystyle \frac{n}{k} < r$, which means there are fewer jobs than the available resources. One needs just one execution cycle to execute these tasks once. The time to complete all $n$ tasks successfully is $N(kt+d)$. In summary, the estimated makespan is, 
+
+\begin{equation} 
+\label{eq:jfm}
+M=
+\begin{cases}
+\cfrac{n(kt+d)}{rk}{e^{-(\cfrac{kt+d}{\theta})^{\kappa}}}, & \text{if } \cfrac{n}{k}\geq r \\
+(kt+d){e^{-(\cfrac{kt+d}{\theta})^{\kappa}}}, & \text{else}
+\end{cases}
+\end{equation}
+Let $k^*$ is the optimal clustering factor and $M^*$ is the minimal runtime of these $n$ tasks.  Fig.~\ref{fig:model_makespan} shows the three examples of $M$ using a low task failure rate ($\theta=40$s), a medium task failure rate ($\theta=30$s) and a high task failure rate ($\theta=20$s). Other parameters are $n=1000$, $t=5$ sec, $d=50$ sec, and $r=20$. These parameters are close to the level of mProjectPP in the Montage workflow that we simulate in Section IV. It is difficult to find a analytical solution of $k^*$. However, $k$ can only be integers in practice, which simplifies the searching process for $k^*$. 
+We performed a parameter searching study, where we first estimate the upper bound of $k$ as $\displaystyle\frac{n}{r}$, and the lower bound of $k$ as 1 for simplicity. Data points are divided into ten chunks and then we sample one data point from each chunk. We then select the chunk that has the lowest makespan and set the new upper and lower bounds as the borders of the selected chunk, respectively. These steps are repeated until the upper and lower bounds have converged into a data point. 
+
+But it has some : 1. it has one global minimal, 2. it is continuous. Thus we could use such as Newton's method to get the optimal $k^*$ and the minimal $M$. 
+
+Even though there are multiple local minimal makespan values, these data points are close to each other, and the difference between their values (on the order of seconds) is negligible.
+
+And then we verify our claim with a real case. 
+
+%Need matlab simulation to get the optimal k
+
+%Figure 2 shows the relationship between the expected runtime ttotal* and the clustering factor k in Eq. (1). We can see that the optimal clustering factor (in this example it is 50) does not change with different job failure rates. In comparison with TFM in Figure 3, the optimal clustering factor (in this example it is 5) is not equal to n/r. This conclusion is consistent with our previous claim since a clustered job has a higher chance to fail when the task failure rate is higher.
+
+%Figure 4 shows the relationship between the task failure rate and the optimal clustering factor as indicated in Eq. (4). We can see that when the task failure rate is high (α>0.03), it is better to use no clustering at all (k<2).  We can also see that the optimal clustering factor k* decreases with the increase in the task failure rate. %Below we discuss to determine which model a faulty environment follows if there is no knowledge about the cause of failures (transient or permanent, task or job). By analyzing the relationship between expected runtime and clustering factor we can tell whether it tends to be TFM or JFM.  There are two criteria: 1) whether the execution runtime has an exponential increase (TFM) or linear increase (JFM) when k is large enough; 2) whether the optimal clustering factor is influenced by the failure rates (If yes, TFM; otherwise JFM).%Also, we assume that the jobs in this workflow and the resources are homogeneous. In section IV.E and section IV.F, we extend this model to consider task specific failures and location specific failures. The job-scheduling algorithm is First-Come-First-Serve, while one may use more complex algorithms such as HEFT [9] or Min-Min [8].. %From this theoretic analysis, we conclude that 1) the lower the task failure rate is, the better runtime performance the task clustering has; 2) in TFM, adjusting the clustering factor according to the detected task failure rate can improve the runtime performance; 3) in JFM, we just need to set k=n/r. For the rest of our paper, we will only focus on the TFM.\section{Fault Tolerant Clustering}
 
 As indicated in Section II, inappropriate clustering may increase the makespan of a workflow. To improve the fault tolerance from the point of view of clustering, we propose three methods: Dynamic Clustering (DC), Selective Reclustering (SR) and Dynamic Reclustering (DR).
 
@@ -80,6 +160,7 @@ A.	Dynamic Clustering (DC)
 
 \section{Future Work}In the future, we plan to apply our work to a real world framework---the Pegasus Workflow Management System and to evaluate the performance with more applications. We will also examine failures with different distribution, such as for example Weibull.  We will further evaluate the robustness of our methods to the variance of failure patterns, runtime, and overhead. The gap between DC and SR indicates that there is still space for further improvement in the approach of dynamically adjusting the workflow task clustering factor. 
 \section{ACKNOWLEDGMENT}This work is supported by NFS under grant number IIS-0905032. We thank Gideon Juve, Karan Vahi, Mats Rynge and Rajiv, Mayani for their help. 
+\bibliographystyle{elsarticle-num}
 \bibliography{biblio}
 
 \end{document}
