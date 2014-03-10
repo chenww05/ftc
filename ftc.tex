@@ -43,7 +43,7 @@ and
 \address[B]{University of Innsbruck, Institute for Computer Science, Innsbruck, Austria}
 
 \begin{abstract}
-Large scale scientific workflows can be composed of many fine computational granularity tasks. Task clustering has been proven to be an effective method to reduce execution overhead and increase the computational granularity of workflow tasks executing on distributed resources. However, a job composed of multiple tasks may have a greater risk of suffering from failures than a job composed of a single task. Our theoretic analysis and simulation results demonstrate that transient failures can have a significant impact on the runtime performance of scientific workflows that use existing clustering policies that ignore failures. We propose a general task failure modeling framework to address these performance issues. We show the necessity to consider the fault tolerance in the task clustering methods.  We further propose three horizontal methods and one vertical method to improve the runtime performance of executing workflows in dynamic environments. A trace based simulation is performed and it shows that our methods improve the workflow makespan significantly for five important applications.    
+Large scale scientific workflows can be composed of many fine computational granularity tasks. Task clustering has been proven to be an effective method to reduce execution overhead and increase the computational granularity of workflow tasks executing on distributed resources. However, a job composed of multiple tasks may have a greater risk of suffering from failures than a job composed of a single task. Our theoretic analysis and simulation results demonstrate that transient failures can have a significant impact on the runtime performance of scientific workflows that use existing clustering policies that ignore failures. We propose a general task failure modeling framework to address these performance issues. We show the necessity to consider the fault tolerance in the task clustering methods.  We further propose three horizontal methods and two vertical methods to improve the runtime performance of executing workflows in dynamic environments. A trace based simulation is performed and it shows that our methods improve the workflow makespan significantly for five important applications.    
 \end{abstract}
 
 \begin{keyword}
@@ -60,11 +60,11 @@ scientific workflows\sep fault tolerance\sep scheduling\sep locality\sep high av
 Scientific workflows can be composed of many fine computational granularity tasks and the runtime of these tasks may be even shorter than the system overhead. System overhead is the period time during which miscellaneous work other than the user’s computation is performed. Task clustering \cite{Chen2013, Singh2008, Chen2012, Maheshwari2012, Ferreira-granularity-2013, Integration2012} is a technique that merges several short tasks into a single job such that the job runtime is increased and the overall system overhead is decreased. However, existing clustering strategies ignore or underestimate the impact of the occurrence of failures on system behavior, despite the current and increasing importance of failures in large-scale distributed systems, such as Grids \cite{Bresnahan2011, Deelman2004, Rubing2005}, Clouds \cite{Deelman2008, Berriman2010, Bresnahan2011} and dedicated clusters. Many researchers \cite{Zhang2004, Tang1990, Schroeder2006, Sahoo2004} have emphasized the importance of fault tolerance design and indicated that the failure rates in modern distributed systems are significant. Among all possible failures, we focus on transient failures because they are expected to be more prevalent than permanent failures \cite{Zhang2004}. For example, denser integration of semiconductor circuits and lower operating voltage levels may increase the likelihood of bit-flips when circuits are bombarded by cosmic rays and other particles \cite{Zhang2004}. 
 
 In task clustering, a clustered job consists of multiple tasks. A task is marked as failed (task failure) if is terminated by unexpected events during the computation of this task. If a task within a job fails, this job has a job failure, even though other tasks within this job do not necessarily fail. In a faulty environment, there are several options for reducing the influence of workflow failures. First, one can simply retry the entire job when its computation is not successful as in the Pegasus framework \cite{Deelman2004}. However, some of the tasks within the job may have completed successfully and it could be a waste of time and resources to retry all of the tasks. Second, the application process can be periodically checkpointed so that when a failure occurs, the amount of work to be retried is limited. However, the overheads of checkpointing can limit its benefits \cite{Zhang2004}. Third, tasks can be replicated to different nodes to avoid failures that are related to one specific worker node. However, inappropriate clustering (and replication) parameters may cause severe performance degradation if they create long-running clustered jobs. As we will show, a long-running job that consists of many tasks has a higher job failure rate even when the inter-arrival time of failures is long. 
-We propose three horizontal methods and one vertical method to improve the existing clustering techniques (with job retry and task replication) in a faulty environment. The first horizontal solution dynamically adjusts the granularity or clustering size (number of tasks in a job) according to the estimated  task failure rate. The second horizontal method retries the failed tasks within a job. And the third horizontal solution is a combination of the first two approaches. The vertical method adjusts the clustering size by dividing a failed job into two even retry jobs to reduce the job failures. We further analyze the runtime performance of combining horizontal methods and vertical methods in different ways. 
+We propose three horizontal methods and two vertical methods to improve the existing clustering techniques (with job retry and task replication) in a faulty environment. The first horizontal solution dynamically adjusts the granularity or clustering size (number of tasks in a job) according to the estimated  task failure rate. The second horizontal method retries the failed tasks within a job. And the third horizontal solution is a combination of the first two approaches. The vertical methods adjust the clustering size by dividing a failed job into two even retry jobs to reduce the job failures. We further analyze the runtime performance of combining horizontal methods and vertical methods in different ways. 
 In this paper we view the sequence of failure events as a stochastic process and study the distribution of its inter-arrival times, i.e. the time between failures. 
 
 Our work is based on an assumption that the the distribution parameter of the inter-arrival time is a function of the type of task or the node the task is executed on. Samak \cite{Samak2011} et al. have analyzed 1,329 real workflow executions across six distinct applications and concluded that the type and the host id of a job are among the most significant factors that impacted failures. Task type related failure is a type of failure that only occurs to some specific types of tasks. A node failure only occurs to some specific execution nodes. Compared to our prior work in \cite{Chen2012}, we add a parameter learning process to estimate the average task runtime, the average system overhead and the average inter-arrival time of failures. We adopt an approach of prior knowledge based Maximum Likelihood Estimation that has been recently used in machine learning. Knowledge about the parameters are modeled as a distribution with known super-parameters. The distribution of the prior and the posterior are in the same family if the likelihood distribution follows some specific distribution. For example, if the likelihood is a Weibull distribution and we model prior knowledge as an Inverse-Gamma distribution, then the posterior is also an Inverse-Gamma distribution. This simplifies the estimation of parameters and integrates the prior knowledge and runtime datasets gracefully. 
-The three horizontal methods were introduced and evaluated in \cite{Chen2012} on two workflows. In this paper, we complement this previous paper by studying (\emph{i}) the performance gain of using three horizontal methods over a baseline execution on a larger set of workflows; (\emph{ii}) the performance impact of the variance of the average task runtime, system overheads and the inter-arrival time of failures; (\emph{iii}) the performance impact of proposed vertical clustering method and its combination with horizontal methods. 
+The three horizontal methods were introduced and evaluated in \cite{Chen2012} on two workflows. In this paper, we complement this previous paper by studying (\emph{i}) the performance gain of using three horizontal methods over a baseline execution on a larger set of workflows; (\emph{ii}) the performance impact of the variance of the average task runtime, system overheads and the inter-arrival time of failures; (\emph{iii}) the performance impact of proposed vertical clustering methods and their combination with horizontal methods. 
 
 The rest of this paper is organized as follows. Section \ref{sec:related} gives an overview of the related work. Section \ref{sec:models} presents our workflow and failure models. Section \ref{sec:clustering} details our fault tolerant clustering methods. Section \ref{sec:experiments} reports experiments and results, and the paper closes with a discussion and conclusions. 
 
@@ -101,7 +101,7 @@ Figure~\ref{fig:model_system} shows a typical workflow execution environment. Th
 
 \begin{figure}[!htb]
 \centering
-  \includegraphics[width=0.95\linewidth]{figure2.eps}
+  \includegraphics[width=0.95\linewidth]{figure1.pdf}
   \caption{A workflow system model.}
   \label{fig:model_system}
 \end{figure}
@@ -116,7 +116,7 @@ Figure~\ref{fig:model_system} shows a typical workflow execution environment. Th
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=0.7\linewidth]{figure1.eps}
+	\includegraphics[width=0.6\linewidth]{figure2.pdf}
 	\captionof{figure}{Extending DAG to o-DAG. `s' denotes a system overhead. }
 	\label{fig:model_odag}
 \end{figure}
@@ -130,14 +130,14 @@ After horizontal clustering, $t_2$ and $t_3$ in $j_1$ can be executed in sequenc
 
 \begin{figure}[!htb]
 \centering
- \includegraphics[width=0.55\linewidth]{figure3.eps}
+ \includegraphics[width=0.45\linewidth]{hc.pdf}
   \captionof{figure}{An example of horizontal clustering (color indicates the horizontal level of a task).}
   \label{fig:model_hc}
 \end{figure}
 
 \begin{figure}[!htb]
 \centering
- \includegraphics[width=0.6\linewidth]{figure4.eps}
+ \includegraphics[width=0.5\linewidth]{vc.pdf}
   \captionof{figure}{An example of vertical clustering.}
   \label{fig:model_vc}
 \end{figure}
@@ -170,13 +170,13 @@ $X$ could be $s$, $t$ or $\gamma$. $p(\theta|X,a, b)$ is the posterior that we a
 
 \begin{figure*}[!htb]
 \centering
-  \includegraphics[width=0.95\linewidth]{figure5.eps}
+  \includegraphics[width=0.75\linewidth]{figure5.eps}
   \caption{Makespan with different clustering size. ($n=1000$, $r=20$, $t=5$ sec, $s=50$ sec)}
   \label{fig:model_makespan}
 \end{figure*}
 \begin{figure*}[!htb]
 \centering
-  \includegraphics[width=0.95\linewidth]{figure6.eps}
+  \includegraphics[width=0.75\linewidth]{figure6.eps}
   \caption{Optimal clustering size (k*) with different  $\theta$ ($n=1000$, $r=20$, $t=5$ sec, $s=50$ sec)}
   \label{fig:model_size}
 \end{figure*}
@@ -202,18 +202,59 @@ M=
 Let $k^*$ is the optimal clustering size and $M^*$ is the minimal runtime of these $n$ tasks.  Figure~\ref{fig:model_makespan} shows the three examples of $M$ using a low task failure rate ($\theta=40$s), a medium task failure rate ($\theta=30$s) and a high task failure rate ($\theta=20$s). Other parameters are $n=1000$, $t=5$ sec, $s=50$ sec, and $r=20$. These parameters are close to the level of mProjectPP in the Montage workflow that we simulate in Section \ref{sec:experiments}. It is difficult to find a analytical solution of $k^*$. However, there are a few constraints that can simplify the estimation of $k^*$: (\emph{i}) $k$ can only be integers in practice; (\emph{ii}) $M$ is continuous and has one minimal when $\displaystyle 1<k<\frac{n}{r}$. We use Newton's method to find the minimal $M$ and the corresponding $k$. Figure \ref{fig:model_size} shows the relationship between the optimal clustering size ($k^*$) and the estimated inter-arrival time between failures ($\gamma$), which is a non-decreasing function. It is consistent with our expectation since the longer the inter-arrival time of failures is, the lower the task failure rate is. With a lower task failure rate, a larger $k$ assures that we reduce system overheads without retrying many times.  
 
 
-%We performed a parameter searching study, where we first estimate the upper bound of $k$ as $\displaystyle\frac{n}{r}$ since after $M$ is a monotonic increasing function of $k$ when $k\geq\displaystyle\frac{n}{r}$, and the lower bound of $k$ as 1 for simplicity. Data points are divided into ten chunks and then we sample one data point from each chunk. We then select the chunk that has the lowest makespan and set the new upper and lower bounds as the borders of the selected chunk, respectively. These steps are repeated until the upper and lower bounds have converged into a data point. 
-
-
 
 From this theoretic analysis, we conclude that (\emph{i}) the longer the inter-arrival time of failures is, the better runtime performance the task clustering has; (\emph{ii}), adjusting the clustering size according to the detected inter-arrival time can improve the runtime performance. \section{Fault Tolerant Clustering}
 \label{sec:clustering}
 
-As indicated in Section \ref{sec:model}, inappropriate clustering may increase the makespan of a workflow. To improve the fault tolerance from the point of view of clustering, we propose three horizontal methods: Dynamic Clustering (\emph{DC}), Selective Reclustering (\emph{SR}) and Dynamic Reclustering (\emph{DR}) and one vertical clustering method: Binary Reclustering (\emph{BR}). 
+As indicated in Section \ref{sec:model}, inappropriate clustering may increase the makespan of a workflow. To improve the fault tolerance from the point of view of clustering, we propose three horizontal methods: Dynamic Clustering (\emph{DC}), Selective Reclustering (\emph{SR}) and Dynamic Reclustering (\emph{DR}) and two vertical clustering methods: Binary Clustering (\emph{BC}) and Binary Reclustering (\emph{BR}). 
 
-A.	Dynamic Clustering (DC)
-Dynamic Clustering adjusts the clustering size according to the task failure rates measured from jobs that have already been completed, either successfully or failed. Currently we use the average value of task failure records.  Failure records contain the information about the number of failed tasks, the type of tasks, the resource id, and a timestamp. The type of tasks is used to detect the task specific failures and the resource id is used to detect location specific failures. Then we calculate the average task failure rate and the average job failure rate. Figure 5 shows an example where the initial clustering size is 4 and thereby there are four tasks in a clustered job at the beginning. During execution, three out of these tasks fail. TFM suggests an optimal clustering size to be 2, then this job will be split into two clustered jobs while each has two tasks and the two clustered jobs are then submitted for retry.  DC is not aware that there are only three failed tasks. 
-According to Eq. (4), an estimation of the minimal makespan in DC can be simplified as:                                             (5)B.	Selective Reclustering (SR)In DC, one knows the average task failure rate but the information about which tasks have failed is not available. In practice, it may be hard to identify the failed tasks, but if it is supported, we can further improve the performance with Selective Reclustering that selects the failed tasks in a clustered job and clusters them into a new clustered job, or treats them individually. SR is different to the naïve job retry in that the latter method retries all tasks of a failed job even though some of the tasks have succeeded. SR requires collecting the task ids in failure records. Figure 6 shows an example of SR. At the beginning, there are four tasks and three of them have failed. One task succeeds and exits. Only the three failed tasks are merged again into a new clustered job and the job is retried. This approach does not intend to adjust the clustering size, although the clustering size will be smaller and smaller naturally after each retry since there are less and less tasks in a clustered job. In this case, the clustering size has reduced from 4 to 3. Figure 6	Selective Reclustering.C.	Dynamic Reclustering (DR)Selective Reclustering does not analyze the failure rate rather, it uses a natural way to reduce the clustering size if the failure rate is too high. However, it requires a special ability to select the failed tasks, while DC does not. We then propose the third method, Dynamic Reclustering, which is a combination of SR and DC to see whether using both strategies can improve workflow performance. In DR, only failed tasks are merged into new clustered jobs and the clustering size is also adjusted according to the detected task failure rates. Figure 7	Dynamic ReclusteringFigure 7 shows the steps of DR. At the last scheduling cycle, three tasks within a clustered job have failed. Therefore we have only three tasks to retry and further we need to adjust the clustering size (in this case it is 2) according to the task failure rate. 
+\begin{figure*}[!htb]
+\centering
+  \includegraphics[width=0.55\linewidth]{dc.pdf}
+  \caption{Dynamic Clustering (red boxes are failed jobs)}
+  \label{fig:clustering_dc}
+\end{figure*}\textbf{Dynamic Clustering} (\emph{DC}) sets the clustering size to be $k^*$ during the runtime based on the MLE of task runtime, system overheads and the inter-arrival time of failures from records of jobs that have already been completed, either successfully or failed. Failure records contain the information about the number of failed tasks, the type of tasks, the resource id, and a timestamp. 
+%The type of tasks is used to detect the task specific failures and the resource id is used to detect location specific failures. 
+Figure \ref{fig:clustering_dc} shows an example where the initial clustering size is 4 and thereby there are four tasks in a clustered job at the beginning. During execution, three out of these tasks ($t_1, t_2, t_3$) fail. Assuming our model suggests an optimal clustering size to be 2, then this job will be split into two clustered jobs while each has two tasks and the two clustered jobs are then submitted for retry. DC is not aware that there are only three failed tasks. This approach requires only a reclustering process that divides the original clustered job (failed) into multiple smaller clustered jobs based on the suggested $k^*$. It does not require to record which tasks exactly fail during the runtime, which makes it applicable to existing workflow management systems such as Pegasus \cite{Deelman2004}. 
+
+\begin{figure*}[!htb]
+\centering
+  \includegraphics[width=0.55\linewidth]{sr.pdf}
+  \caption{Selective Reclustering (red boxes are failed jobs)}
+  \label{fig:clustering_sr}
+\end{figure*}
+
+\textbf{Selective Reclustering} (\emph{SR}). In DC, the clustering engine knows the MLE of inter-arrival time of task failures but the information about which tasks have failed is not available. In practice, it may be hard to identify the failed tasks, but if it is supported, we can further improve the performance with Selective Reclustering that selects the failed tasks in a clustered job and clusters them into a new clustered job, or treats them individually. SR is different to the naïve job retry in that the latter method retries all tasks of a failed job even though some of the tasks have succeeded. SR requires collecting the task ids in failure records. 
+Figure \ref{fig:clustering_sr} shows an example of SR. At the first try, there are four tasks and three of them have failed. One task succeeds and exits. Only the three failed tasks are merged again into a new clustered job and the job is retried. This approach does not intend to adjust the clustering size, although the clustering size will be smaller and smaller naturally after each retry since there are less and less tasks in a clustered job. In this case, the clustering size has decreased from 4 to 3. However, the optimal clustering size may not be 3, which limits its performance if the $\gamma$ is small and $k$ should be decreased as much as possible.  
+
+\begin{figure*}[!htb]
+\centering
+  \includegraphics[width=0.55\linewidth]{dr.pdf}
+  \caption{Dynamic Reclustering (red boxes are failed jobs)}
+  \label{fig:clustering_dr}
+\end{figure*}
+
+\textbf{Dynamic Reclustering} (\emph{DR}). Selective Reclustering does not analyze the clustering size rather, it uses a natural way to reduce the clustering size if the failure rate is too high. However, it requires a special ability to select the failed tasks, while DC does not. We then propose the third method, Dynamic Reclustering, which is a combination of SR and DC to see whether using both strategies can improve workflow performance. In DR, only failed tasks are merged into new clustered jobs and the clustering size is also adjusted according to the detected task failure rates. DR also requires the ability to detect which tasks have failed in a job. Figure \ref{fig:clustering_dr} shows the steps of DR. At the first try, three tasks within a clustered job have failed. Therefore we have only three tasks to retry and further we need to decrease the clustering size (in this case it is 2) accordingly. 
+
+
+\begin{figure*}[!htb]
+\centering
+  \includegraphics[width=0.85\linewidth]{bc.pdf}
+  \caption{Binary Clustering (red boxes are failed jobs)}
+  \label{fig:clustering_bc}
+\end{figure*}
+
+\textbf{Binary Clustering} (\emph{BC}) is used in vertical clustering to adjust the clustering size. If there is a failure detected, we decrease the $k$ by half and reclusters them. In Figure \ref{fig:clustering_bc}, if there is no assumption of failures initially, we put all the tasks ($t_1, t_2, t_3, t_4$) from the same  pipeline into a clustered job. $t_3$ fails at the first try assuming it is a failure-prone task (its $\gamma$ is short). BC then divides the failed job into two even jobs and submits them again. In the second try, $j_2$ unfortunately fails again while $j_1$ succeeds and exits. Since the clustering size is already 2, BC performs no vertical clustering anymore and would continue retrying $t_3$ and $t_4$ (but still following their data dependency) until they succeed. 
+
+\begin{figure*}[!htb]
+\centering
+  \includegraphics[width=0.85\linewidth]{br.pdf}
+  \caption{Binary Clustering (red boxes are failed jobs)}
+  \label{fig:clustering_br}
+\end{figure*}
+
+\textbf{Binary Reclustering} (\emph{BR}). Similar to Selective Reclustering, Binary Reclustering only retries failed tasks. It also reduces the clustering size by half in each retry, which is similar to Binary Clustering. In Figure \ref{fig:clustering_br}, after the first try, BR only retries $t_3$ and $t_4$ and put them into a new job. Other process are the same as Binary Clustering. 
+
 
 \section{Experiments and Discussions}
 \label{sec:experiments}
