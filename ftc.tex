@@ -16,6 +16,9 @@
 \usepackage{array}
 \usepackage{multicol}
 \usepackage{amsmath}
+\usepackage{amssymb }
+\usepackage{bm}
+
 %\usepackage{times}
 %\normalfont
 %\usepackage[T1]{fontenc}
@@ -59,7 +62,7 @@ scientific workflows\sep fault tolerance\sep scheduling\sep locality\sep high av
 
 Scientific workflows can be composed of many fine computational granularity tasks and the runtime of these tasks may be even shorter than the system overhead. System overhead is the period time during which miscellaneous work other than the user’s computation is performed. Task clustering \cite{Chen2013, Singh2008, Chen2012, Maheshwari2012, Ferreira-granularity-2013, Integration2012} is a technique that merges several short tasks into a single job such that the job runtime is increased and the overall system overhead is decreased. However, existing clustering strategies ignore or underestimate the impact of the occurrence of failures on system behavior, despite the current and increasing importance of failures in large-scale distributed systems, such as Grids \cite{Bresnahan2011, Deelman2004, Rubing2005}, Clouds \cite{Deelman2008, Berriman2010, Bresnahan2011} and dedicated clusters. Many researchers \cite{Zhang2004, Tang1990, Schroeder2006, Sahoo2004} have emphasized the importance of fault tolerance design and indicated that the failure rates in modern distributed systems are significant. Among all possible failures, we focus on transient failures because they are expected to be more prevalent than permanent failures \cite{Zhang2004}. For example, denser integration of semiconductor circuits and lower operating voltage levels may increase the likelihood of bit-flips when circuits are bombarded by cosmic rays and other particles \cite{Zhang2004}. 
 
-In task clustering, a clustered job consists of multiple tasks. A task is marked as failed (task failure) if is terminated by unexpected events during the computation of this task. If a task within a job fails, this job has a job failure, even though other tasks within this job do not necessarily fail. In a faulty environment, there are several options for reducing the influence of workflow failures. First, one can simply retry the entire job when its computation is not successful as in the Pegasus framework \cite{Deelman2004}. However, some of the tasks within the job may have completed successfully and it could be a waste of time and resources to retry all of the tasks. Second, the application process can be periodically checkpointed so that when a failure occurs, the amount of work to be retried is limited. However, the overheads of checkpointing can limit its benefits \cite{Zhang2004}. Third, tasks can be replicated to different nodes to avoid failures that are related to one specific worker node. However, inappropriate clustering (and replication) parameters may cause severe performance degradation if they create long-running clustered jobs. As we will show, a long-running job that consists of many tasks has a higher job failure rate even when the inter-arrival time of failures is long. 
+In task clustering, a clustered job consists of multiple tasks. A task is marked as failed (task failure) if it is terminated by unexpected events during the computation of this task. If a task within a job fails, this job has a job failure, even though other tasks within this job do not necessarily fail. In a faulty environment, there are several options for reducing the influence of workflow failures. First, one can simply retry the entire job when its computation is not successful as in the Pegasus framework \cite{Deelman2004}. However, some of the tasks within the job may have completed successfully and it could be a waste of time and resources to retry all of the tasks. Second, the application process can be periodically checkpointed so that when a failure occurs, the amount of work to be retried is limited. However, the overheads of checkpointing can limit its benefits \cite{Zhang2004}. Third, tasks can be replicated to different nodes to avoid failures that are related to one specific worker node. However, inappropriate clustering (and replication) parameters may cause severe performance degradation if they create long-running clustered jobs. As we will show, a long-running job that consists of many tasks has a higher job failure rate even when the inter-arrival time of failures is long. 
 We propose three horizontal methods and two vertical methods to improve the existing clustering techniques (with job retry and task replication) in a faulty environment. The first horizontal solution dynamically adjusts the granularity or clustering size (number of tasks in a job) according to the estimated  task failure rate. The second horizontal method retries the failed tasks within a job. And the third horizontal solution is a combination of the first two approaches. The vertical methods adjust the clustering size by dividing a failed job into two even retry jobs to reduce the job failures. We further analyze the runtime performance of combining horizontal methods and vertical methods in different ways. 
 In this paper we view the sequence of failure events as a stochastic process and study the distribution of its inter-arrival times, i.e. the time between failures. 
 
@@ -97,7 +100,7 @@ A workflow is modeled as a directed acyclic graph (DAG), where each node in the 
 This model fits several workflow management systems such as Pegasus~\cite{Deelman2004}, Askalon~\cite{Fahringer2005}, and Taverna~\cite{Oinn2004}. In this paper, we assume there is only one execution site with multiple compute resources, such as virtual machines on the clouds. 
 
 
-Figure~\ref{fig:model_system} shows a typical workflow execution environment. The submit host prepares a workflow for execution (clustering, mapping, etc.), and worker nodes, at an execution site, execute jobs individually. The main components are introduced below:
+Figure~\ref{fig:model_system} shows a typical workflow execution environment that models a homogeneous computer cluster, for example, a dedicated cluster or a virtual cluster on Clouds. The submit host prepares a workflow for execution (clustering, mapping, etc.), and worker nodes, at an execution site, execute jobs individually. The main components are introduced below:
 
 \begin{figure}[!htb]
 \centering
@@ -147,18 +150,17 @@ Figure~\ref{fig:model_vc} illustrates an example of vertical clustering, in whic
 
 In task clustering, the clustering size ($k$) is an important parameter to influence the performance. We define it as the number of tasks in a clustered job. For example, the $k$ in Figure~\ref{fig:model_hc} is 2. The reason why task clustering can help improve the performance is that it can reduce the scheduling cycles that workflow tasks go through since the number of jobs has decreased. The result is a reduction in the scheduling overhead and possibly other overheads as well \cite{Chen2011}. Additionally, in the ideal case without any failures, the clustering size is usually equal to the number of all the parallel tasks divided by the number of available resources. Such a naïve setting assures that the number of jobs is equal to the number of resources and the workflow can utilize the resources as much as possible. However, when transient failures exist, we claim that the clustering size should be set based on the failure rates especially the task failure rate. Intuitively speaking, if the task failure rate is high, the clustered jobs may need to retry more times compared to the case without clustering. Such performance degradation will counteract the benefits of reducing scheduling overheads. In the rest of this paper, we will show how to adjust $k$ based on the estimated parameters of average task runtime $t$, average system overhead $s$ and the inter-arrival time of task failures $\gamma$. \subsection{Task Failure Model}
 
-%For system overhead $p(X|\theta)$, we assume it follows an Weibull distribution with known shape $\kappa=0.78$. When $x>0$, the PDF of $p(x|\theta, \kappa)$ is
+%For system overhead $p(X|\theta)$, we assume it follows an Weibull distribution with known shape $\phi=0.78$. When $x>0$, the PDF of $p(x|\theta, \phi)$ is
 
 %\begin{equation}
-%f(x|\theta, \kappa)=\frac{\kappa}{\theta} (\frac{x}{\theta})^{\kappa-1}e^{-(x/\theta)^{\kappa}}  \nonumber
+%f(x|\theta, \phi)=\frac{\phi}{\theta} (\frac{x}{\theta})^{\phi-1}e^{-(x/\theta)^{\phi}}  \nonumber
 %\end{equation}
 
-In our prior work \cite{Chen2011}, we have verified that system overheads $s$ fits gamma or Weibull distribution better than the other two distributions (Exponential and Normal). Schroeder et. al. \cite{Schroeder2006} have verified the inter-arrival time of task failures fits a Weibull distribution with a shape parameter of 0.78 or a gamma distribution better than lognormal and exponential distribution. In \cite{Sun2003, Iosup2008} Weibull distribution is one of the best fit for the workflow traces they used.  Without loss of generality, we choose Weibull distribution to represent the distribution of task runtime ($t$), system overhead ($s$) and the inter-arrival times of failures ($\gamma$).  $s$ is a random variable representing the system overheads. $t$ is a random variable representing the task runtime. 
+In our prior work \cite{Chen2011}, we have verified that system overheads $s$ fits Gamma or Weibull distribution better than the other two distributions (Exponential and Normal). Schroeder et. al. \cite{Schroeder2006} have verified the inter-arrival time of task failures fits a Weibull distribution with a shape parameter of 0.78 or a gamma distribution better than lognormal and exponential distribution. We will reuse this shape parameter of 0.78 in our failure model. In \cite{Sun2003, Iosup2008} Weibull, Gamma and Lognormal distribution are among the best fit for the workflow traces they used.  Without loss of generality, we choose Gamma distribution to model the task runtime ($\bm t$) and the system overhead ($\bm s$) and use Weibull distribution to model the inter-arrival times of failures ($\bm\gamma$).  $\bm s$, $\bm t$ and $\bm \gamma$ are all random variables of all tasks instead of one specific task. 
 
-In Bayesian probability theory, if the posterior distribution $p(\theta|D, a, b)$ are in the same family as the prior distribution $p(\theta|a, b)$, the prior and the posterior are then called conjugate distributions, and the prior is called a conjugate prior for the likelihood function. For example, the Inverse Gamma family is conjugate to itself (or self-conjugate) with respect to a Weibull likelihood function: if the likelihood function is Weibull, choosing a Inverse Gamma prior over the mean will ensure that the posterior distribution is also Inverse Gamma. This simplifies the estimation of parameters since we can reuse the prior work from other researchers on the failure analysis and performance analysis. 
-The conjugate pair of Weibull distribution is Inverse Gamma distribution, which means if the prior follows an Inverse Gamma distribution with parameters (the scale parameter $a$ and the shape parameter $b$), the posterior also follows an Inverse Gamma distribution with parameters (the scale parameter $a+n$ and the shape parameter $\displaystyle b+\sum_{i=1}^n{x_i^\kappa}$). The Maximum Likelihood Estimation  (MLE) of posterior is $\displaystyle\frac{b+\displaystyle\sum_{i=1}^n{x_i^\kappa}}{a+n+1}$. The understanding of the MLE has two folds: initially we do not have any data and thus the MLE is $\displaystyle\frac{b}{a}$, which means it is determined by the prior knowledge; when $n\to\infty$, the MLE is $\displaystyle\frac{\displaystyle\sum_{i=1}^n{x_i^\kappa}}{n+1}\to\bar{x}$, which means it is determined by the observed data and it is close to the average of the observed data. 
+In Bayesian probability theory, if the posterior distribution $p(\theta|D, a, b)$ are in the same family as the prior distribution $p(\theta|a, b)$, the prior and the posterior are then called conjugate distributions, and the prior is called a conjugate prior for the likelihood function. For example, the Inverse-Gamma family is conjugate to itself (or self-conjugate) with respect to a Weibull likelihood function: if the likelihood function is Weibull, choosing a Inverse-Gamma prior over the mean will ensure that the posterior distribution is also Inverse-Gamma. This simplifies the estimation of parameters since we can reuse the prior work from other researchers on the failure analysis and performance analysis. 
 
-After we observe data $D$ (runtime, failure, overhead data collected during the execution of workflows), we compute the posterior distribution of $\theta$:
+After we observe data $X$, we compute the posterior distribution of $\theta$:
 
 \begin{eqnarray}
 	\displaystyle  
@@ -166,7 +168,100 @@ After we observe data $D$ (runtime, failure, overhead data collected during the 
 	&\propto&p(\theta|a, b)\times p(X|\theta)\nonumber 
 \end{eqnarray}
 
-$X$ could be $s$, $t$ or $\gamma$. $p(\theta|X,a, b)$ is the posterior that we aim to compute. $p(\theta|a, b)$ is the prior, which we have already known from previous work. $p(X|\theta)$ is the likelihood. We only need to know its shape parameter instead of its scale parameter, which reduces the work to estimate its scale parameter. 
+$X=\{x_1, x_2, ..., x_n\}$ is the observed data of $\bm\gamma$ during the runtime. Similarly, we define $T=\{t_1, t_2, ..., t_n\}$ and $S=\{s_1, s_2, ..., s_n\}$ are the observed data of $\bm t$ and $\bm s$ respectively. $p(\theta|X,a, b)$ is the posterior that we aim to compute. $p(\theta|a, b)$ is the prior, which we have already known from previous work. $p(X|\theta)$ is the likelihood. We only need to know its shape parameter instead of its scale parameter, which reduces the work to estimate its scale parameter. 
+
+
+We model the inter-arrival time of failures ($\bm\gamma$) with a Weibull distribution that has a known shape parameter of $\phi_{\gamma}$ and an unknown scale parameter $\theta_{\gamma}$: $\bm\gamma\sim W(\theta_{\gamma}, \phi_{\gamma})$
+
+The conjugate pair of Weibull distribution with a known shape parameter $\phi_{\gamma}$ is Inverse-Gamma distribution, which means if the prior follows an Inverse-Gamma distribution $\Gamma^{-1}(a_{\gamma}, b_{\gamma})$ with the shape parameter as $a_{\gamma}$ and the scale parameter as $b_{\gamma}$, then the posterior follows an Inverse-Gamma distribution:
+\begin{equation}
+\theta_{\gamma}\sim\Gamma^{-1}(a_{\gamma}+n,\displaystyle b_{\gamma}+\sum_{i=1}^n{x_i^{\phi_{\gamma}}})
+\label{eq:theta-1}
+ \end{equation}
+The MLE (Maximum Likelihood Estimation) of the scale parameter $\theta_{\gamma}$ is:
+\begin{equation}
+MLE(\theta_{\gamma})=\displaystyle\frac{b_{\gamma}+\displaystyle\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}{a_{\gamma}+n+1}
+\end{equation}
+The understanding of the MLE has two folds: initially we do not have any data and thus the MLE is $\displaystyle\frac{b_{\gamma}}{a_{\gamma}+1}$, which means it is determined by the prior knowledge; when $n\to\infty$, the MLE $\displaystyle\frac{\displaystyle\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}{n+1}\to\overline{x^{\phi_{\gamma}}}$, which means it is determined by the observed data and it is close to the regularized average of the observed data. 
+
+We model the task runtime ($\bm t$) with a Gamma distribution with a known shape parameter $\phi_{t}$ and an unknown scale parameter $\theta_t$. The conjugate pair of Gamma distribution with a known shape parameter is also a Gamma distribution. If the prior follows $\Gamma(a_t, b_t)$, while $a_t$ is the shape parameter and $b_t$ is the rate parameter (or $\displaystyle \frac{1}{b_t}$ is the scale parameter), the posterior follows $\Gamma(a_t+n\phi_t, b_t+\displaystyle\sum_{i=1}^n{t_i})$ with $a_t+n\phi_t$ as the shape parameter and $b_t+\displaystyle\sum_{i=1}^n{t_i}$ as the rate parameter. The MLE of $\theta_t$ is $\displaystyle\frac{b_t+\displaystyle\sum_{i=1}^n{t_i}}{a_t+n\phi_t-1}$. 
+
+Similarly, if we model the system overhead $\bm s$ with a Gamma distribution with a known shape parameter $\phi_{s}$ and an unknown scale parameter $\theta_s$, and the prior is $\Gamma(a_s, b_s)$, the MLE of $\theta_s$ is $\displaystyle\frac{b_s+\displaystyle\sum_{i=1}^n{s_i}}{a_s+n\phi_s-1}$.
+%Should not consider the resource
+We have already assumed the task runtime, system overhead and inter-arrival time between failures are a function of task types. Since in scientific workflows, tasks at the different level (the deepest depth from the entry task to this task) are usually of different type, we model the runtime level by level. Given $n$ independent tasks at the same level and the distribution of the task runtime, the system overhead, and the inter-arrival time of failures, we aim to reduce the cumulative runtime $\bm M$ of completing these tasks by adjusting the clustering size $k$ (the number of tasks in a job). 
+$\bm M$ is also a random variable and it includes the system overheads and the runtime of the clustered job and its subsequent retry jobs if the first try fails. The calculation of $\bm M$ does not consider the number of resources. 
+%since that is not the concern of task clustering but the task scheduling. 
+
+The runtime of a job is a random variable indicated by $\bm d$. A clustered job succeeds only if all of its tasks succeed. The job runtime is the sum of the cumulative task runtime of $k$ tasks and a system overhead. We assume the task runtime of each task is independent of each other, therefore the cumulative task runtime of $k$ tasks is also a Gamma distribution. We also assume the system overhead is also independent of all the task runtimes and it has the same shape parameter ($\phi_{ts}=\phi_{t}=\phi_{s}$) with the task runtime. 
+%Don't know how to explain
+%In practice, this assumption means the cumulative task runtime and the system overhead are generated at the same rate (or scale). 
+%which is consistent with our o-DAG model that has one system overhead associated to one job. 
+The sum of Gamma distributions with the same shape parameter is still a Gamma distribution.  The job runtime irrespective of whether it succeeds of fails is:
+\begin{eqnarray}
+\displaystyle
+\bm{d}\sim\Gamma(\phi_{ts}, k\theta_t+\theta_s)\\
+MLE(\bm{d})=\displaystyle{(k\theta_t+\theta_s) }{(\phi_{ts}-1)}
+\label{eq:N}
+\end{eqnarray}
+%We assume that $n \gg r$, but $n/k$ is not necessarily much larger than $r$ since $k$ could be very large. Normally at the beginning of workflow execution, $n/k > r$, which means there are more clustered jobs than available resources. To try all $n$ tasks once, irrespective of whether they succeed or fail, one needs approximately $\displaystyle \frac{n}{rk}$ execution cycle(s) since at each execution cycle we can execute at most $r$ jobs. Therefore, 
+
+%We have assumed the task runtime $t\sim\Gamma^{-1}(a_t, b_t)$. $(a_t, b_t)$ are estimated from prior knowledge and/or posterior knowledge. The system overhead $s\sim\Gamma^{-1}(a_s, b_s)$ similarly. By merging the $k$ tasks together, their computational runtime still follows a Inverse-Gamma distribution with parameter $(a_t, kb_t)$. We use $\mathcal{L}(f)$ to indicate the Laplace transform of the distribution $f$ (time-series signal in Laplace transform). $d$ is a random variable that represents the job runtime, which includes the computational runtime of $k$ tasks and the system overhead $s$. The PDF of $d$ is: $M$ is a random variable represents the cumulative job runtime of $\displaystyle\frac{n}{k}$ jobs. For a given $M$, we have:
+
+Let the retry time of clustered jobs to be $N$. The process to run and retry a job is a Bernoulli trial with only two results: success or failure. Once a job fails, it will be retried until it is eventually completed successfully since we assume the failures are transient. For a given job runtime $d_i$, by definition:
+\begin{eqnarray}
+\displaystyle
+N_i=\frac{1}{1-F(d_i)}=\frac{1}{e^{-(\displaystyle\frac{d_i}{\theta_{\gamma}})^{\phi_{\gamma}}}}=e^{(\displaystyle\frac{d_i}{\theta_{\gamma}})^{\phi_{\gamma}}} 
+\label{eq:N}
+\end{eqnarray}
+
+$F(x)$ is the CDF of $\bm\gamma$. The time to complete $d_i$ successfully in a faulty environment is
+
+\begin{eqnarray}
+\displaystyle
+M_i=d_iN_i=d_ie^{(\displaystyle\frac{d_i}{\theta_{\gamma}})^{\phi_{\gamma}}} 
+\label{eq:M}
+\end{eqnarray}
+
+Equation \ref{eq:M} has involved two distributions $\bm d$ and $\theta_{\gamma}$. From Equation \ref{eq:theta-1}, we have:
+
+\begin{eqnarray}
+\displaystyle\cfrac{1}{\theta_{\gamma}}\sim\Gamma(a_{\gamma}+n,\frac{1}{\displaystyle b_{\gamma}+\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}) \\
+MLE(\displaystyle\cfrac{1}{\theta_{\gamma}})=\displaystyle\cfrac{a_{\gamma}+n-1}{\displaystyle b_{\gamma}+\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}
+\label{eq:theta}
+ \end{eqnarray}
+
+$M_i$ is a monotonic increasing function of both $d_i$ and $\displaystyle\cfrac{1}{\theta_{\gamma}}$, and the two random variables are independent of each other, therefore:
+
+
+\begin{equation} 
+\label{eq:MLE-M-i}
+MLE(M_i)=MLE(d_i)e^{(\displaystyle MLE(d_i)MLE(\cfrac{1}{\theta_{\gamma}}))^{\phi_{\gamma}}} 
+\end{equation}
+
+In both dimensions ($d_i$ and $\displaystyle\cfrac{1}{\theta_{\gamma}}$), $M_i$ is a Gamma distribution and each $M_i$ has the same distribution parameters, therefore:
+
+\begin{eqnarray} 
+\label{eq:MLE-M}
+\bm{M}&=&\displaystyle\sum_{i=1}^{\cfrac{n}{k}}M_i\sim\Gamma \nonumber\\
+MLE(\bm{M})&=&\displaystyle\cfrac{n}{rk}MLE(M_i)\\
+&=&\displaystyle\cfrac{n}{rk} MLE(d_i)e^{(\displaystyle MLE(d_i)MLE(\cfrac{1}{\theta_{\gamma}}))^{\phi_{\gamma}}} 
+\end{eqnarray}
+
+$r$ is the number of resources. In our paper, we consider a compute cluster as a homogeneous cluster, which is usually true in dedicated clusters and Clouds. 
+%On the other side, at the end of the workflow execution, since n is decreasing with the process of workflow, it is possible that $\displaystyle \frac{n}{k} < r$, which means there are fewer jobs than the available resources. One needs just one execution cycle to execute these tasks once. The time to complete all $n$ tasks successfully is $N(kt+s)$. %In summary, the estimated overall runtime is, 
+
+%\begin{equation} 
+%\label{eq:jfm}
+%M=
+%\begin{cases}
+%\cfrac{n(kt+s)}{rk}{e^{(\cfrac{kt+s}{\theta})^{\phi}}}, & \text{if } \cfrac{n}{k}\geq r \\
+%(kt+s){e^{(\cfrac{kt+s}{\theta})^{\phi}}}, & \text{else}
+%\end{cases}
+%\end{equation}
+Let $k^*$ is the optimal clustering size that minimizes Equation \ref{eq:MLE-M}.  It is difficult to find a analytical solution of $k^*$. However, there are a few constraints that can simplify the estimation of $k^*$: (\emph{i}) $k$ can only be integers in practice; (\emph{ii}) $MLE(\bm{M})$ is continuous and has one minimal. Methods such as Newton's method can be used to find the minimal $MLE(\bm{M})$ and the corresponding $k$. Figure~\ref{fig:model_makespan} shows the three examples of $MLE(\bm{M})$ using a low task failure rate ($\theta_{\gamma}=40$s), a medium task failure rate ($\theta_{\gamma}=30$s) and a high task failure rate ($\theta_{\gamma}=20$s). Other parameters are $n=50$, $\theta_{t}=5$ sec, and $\theta_{s}=50$ sec. These parameters are close to the level of mProjectPP in the Montage workflow that we simulate in Section \ref{sec:experiments}. 
+Figure \ref{fig:model_size} shows the relationship between the optimal clustering size ($k^*$) and $\theta_{\gamma}$, which is a non-decreasing function. It is consistent with our expectation since the longer the inter-arrival time of failures is, the lower the task failure rate is. With a lower task failure rate, a larger $k$ assures that we reduce system overheads without retrying many times.  
+
+
 
 \begin{figure*}[!htb]
 \centering
@@ -180,27 +275,6 @@ $X$ could be $s$, $t$ or $\gamma$. $p(\theta|X,a, b)$ is the posterior that we a
   \caption{Optimal clustering size (k*) with different  $\theta$ ($n=1000$, $r=20$, $t=5$ sec, $s=50$ sec)}
   \label{fig:model_size}
 \end{figure*}
-We have already assumed the task runtime, system overhead and inter-arrival time between failures are a function of task types. Since in scientific workflows, tasks at the different level (the deepest depth from the entry task to this task) are usually of different type, we model the runtime level by level. Given $n$ independent tasks at the same level, $n$ resources, the estimated average task runtime $t$, the estimated average system overhead $s$, and the estimated inter-arrival time of failures $\gamma$, we aim to reduct the overall runtime $M$ of completing these tasks by adjusting the clustering size $k$ (the number of tasks in a job). 
-$M$ includes the runtime of the clustered job and its subsequent retry jobs if the first try fails. For a clustered job, let the expectation of retry times be $N$. The process to run and retry a job is a Bernoulli trial with only two results: success or failure. Once a job fails, it will be retried until it is eventually completed successfully since we assume the failures are transient. By definition we have, 
-\begin{eqnarray}
-\displaystyle
-N=\frac{1}{1-F(kt+s)}=\frac{1}{e^{-(\displaystyle\frac{kt+d}{\theta})^{\kappa}}} \nonumber
-\end{eqnarray}
-
-$F(x)$ is the CDF of $t$, $s$ or $\gamma$ under known shape parameter $\kappa$ and estimated scale parameter $\theta$. 
-
-We define a clustered job succeeds only if all of its tasks succeed. We assume that $n \gg r$, but $n/k$ is not necessarily much larger than $r$ since $k$ could be very large. Normally at the beginning of workflow execution, $n/k > r$, which means there are more clustered jobs than available resources. To try all $n$ tasks once, irrespective of whether they succeed or fail, one needs approximately $\displaystyle \frac{n}{rk}$ execution cycle(s) since at each execution cycle we can execute at most $r$ jobs. Therefore, the time to execute all n tasks once is $\displaystyle\frac{n(kt+s)}{rk}$. And the time to complete them successfully in a faulty environment is $\displaystyle\frac{Nn(kt+s)}{rk} $ since each job requires $N$ retries on average.  On the other side, at the end of the workflow execution, since n is decreasing with the process of workflow, it is possible that $\displaystyle \frac{n}{k} < r$, which means there are fewer jobs than the available resources. One needs just one execution cycle to execute these tasks once. The time to complete all $n$ tasks successfully is $N(kt+d)$. In summary, the estimated overall runtime is, 
-
-\begin{equation} 
-\label{eq:jfm}
-M=
-\begin{cases}
-\cfrac{n(kt+s)}{rk}{e^{-(\cfrac{kt+s}{\theta})^{\kappa}}}, & \text{if } \cfrac{n}{k}\geq r \\
-(kt+s){e^{-(\cfrac{kt+s}{\theta})^{\kappa}}}, & \text{else}
-\end{cases}
-\end{equation}
-Let $k^*$ is the optimal clustering size and $M^*$ is the minimal runtime of these $n$ tasks.  Figure~\ref{fig:model_makespan} shows the three examples of $M$ using a low task failure rate ($\theta=40$s), a medium task failure rate ($\theta=30$s) and a high task failure rate ($\theta=20$s). Other parameters are $n=1000$, $t=5$ sec, $s=50$ sec, and $r=20$. These parameters are close to the level of mProjectPP in the Montage workflow that we simulate in Section \ref{sec:experiments}. It is difficult to find a analytical solution of $k^*$. However, there are a few constraints that can simplify the estimation of $k^*$: (\emph{i}) $k$ can only be integers in practice; (\emph{ii}) $M$ is continuous and has one minimal when $\displaystyle 1<k<\frac{n}{r}$. We use Newton's method to find the minimal $M$ and the corresponding $k$. Figure \ref{fig:model_size} shows the relationship between the optimal clustering size ($k^*$) and the estimated inter-arrival time between failures ($\gamma$), which is a non-decreasing function. It is consistent with our expectation since the longer the inter-arrival time of failures is, the lower the task failure rate is. With a lower task failure rate, a larger $k$ assures that we reduce system overheads without retrying many times.  
-
 
 
 From this theoretic analysis, we conclude that (\emph{i}) the longer the inter-arrival time of failures is, the better runtime performance the task clustering has; (\emph{ii}), adjusting the clustering size according to the detected inter-arrival time can improve the runtime performance. \section{Fault Tolerant Clustering}
@@ -260,7 +334,7 @@ Figure \ref{fig:clustering_dc} shows an example where the initial clustering siz
 \label{sec:experiments}
 In this section, we evaluate our methods with two workflows, whose runtime information is gathered from a real execution traces. The simulation-based approach allows us to control system parameters such as task failure rate in a continuous way so as to clearly demonstrate the performance of the algorithms. Our methods can also be applied to real workflow management systems as long as they support failure logging. 
 \subsection{Experiments Setup and Workflows Used}We use a real trace of the Montage workflow [1] and the Periodogram application to evaluate our models and optimization methods. The reason why we chose Montage and Periodogram is that they represent two different types of workflows. As shown in Figure 1, Montage has complex data dependencies between tasks/jobs while Periodogram is simply a bag-of-tasks. Montage is an astronomy application used to construct large image mosaics of the sky.  Runtime data are collected from real runs under the Pegasus Workflow Management System (WMS) [7]. We ran the Montage workflow with a size of 8 degree squares of sky. The workflow has 10,422 tasks and 57GB of overall data. The workflow was run on a cluster with 20 nodes. The Periodogram application is also developed by IPAC (Caltech) to identify periodic signals from light curves that arise from transiting planets and stellar variability. The Periodogram workflow we ran has ~216,600 tasks and 19GB input data. The Periodogram workflow has only one level of tasks. With these runtime information and file size, we use CloudSim [6] to simulate the workflows in a controlled environment.  CloudSim is a framework for modeling and simulation of cloud computing infrastructures and services. Internally, workflow execution is divided into four steps: first, the workflow engine releases tasks based on the dependencies between tasks; second, the clustering engine merges the released tasks into jobs; third, these jobs are submitted to the job scheduler and are matched with resources based on different criteria specified by users; fourth, each job is executed by a worker node that has input files and executable files available. Each workflow was simulated at least 100 times to assure that standard deviation in the workflow makespan is less than 10%. To make the simulation consistent with the real results in Pegasus WMS, we modified CloudSim to execute our simulations.  Figure 8 shows the system overview of our simulation. The Workflow Engine manages tasks and jobs based on their dependencies between jobs to assure that a job may only be released when all of its parent jobs have completed successfully. It also loads workflow logs that are gathered and reconstructed from prior runs. The Clustering Engine merges tasks on the same horizontal level into clustered jobs according to the suggested clustering size (k*). The Job Scheduler is revised to match jobs to the most reliable worker nodes and avoid or even skip a worker node that has too many failures compared to others. The Failure Generator is added to generate task failures according to the specified average task failure rate. The Failure Monitor serves as an agent that suggests clustering size based on the estimation of the task failure rate, the type of task, and the node to be matched. Based on this information, the Clustering Engine will adjust the clustering size in DC or DR approaches. Figure 8	 System Overview\subsection{Dynamic Performance}To evaluate the performance of TFM and DC, we first simulated the Montage workflow with a fixed task failure rate (α = 0.002).   Figure 9	clustering sizeFigure 9 shows the difference between the actual clustering size and the suggested clustering size at each scheduling interval. The scheduling cycle is a period when the Workflow Engine releases tasks that are ready to run and the Clustering Engine merges these tasks along with tasks that have failed. Montage has three major horizontal levels of tasks that require clustering, which are mProjectPP, mDiffFit, and mBackground. At the beginning, the Failure Monitor does not have enough failure records to identify the task failure rate. We adopt a risky strategy in that the initial clustering size is set to be n/r so that all tasks will be tried once at the beginning. That is why the actual clustering size at cycle 1 is approximately 25 and then it falls down quickly. After passing 5, the actual k and the suggested k overlap with each other since the Failure Monitor has collected enough data to adapt to the faulty environment. From the cycle 4 to 14, the workflow is mainly executing mDiffFit, and during that time the suggested k and actual k fall down to 6 eventually since our model requires some time to run jobs first and then predict the task failure rate. The suggested k and the actual k for mBackground fall to 3 quickly since at this step the prediction of task failure rate is already stabilized. The reason that each type of task has different clustering sizes is that they have different runtime on average.   Figure 9 also reminds us that the actual k is sometimes smaller than the suggested k, which has been explained in cycle 1 to 3. At cycle 3, the actual k is smaller than the suggested k because the Clustering Engine does not have sufficient tasks to be clustered since most tasks are completed. We will address this issue and improve the performance in Section IV.D. \subsection{Performance of different Optimization Methods}TABLE I	WORKFLOW MAKESPAN (MONTAGE, UNIT: SECOND) α	Optimization Methods	NOOP	DC	SR	DR0.002	9827	9010	8168	86330.004	11390	9224	8174	86870.006	13625	9430	8181	87710.008	16989	9590	8191	88180.01	22026	9709	8202	88560.02	169075	10218	8242	89300.04	44099753	10853	8316	91530.06	N/A 	11488	8387	93440.08	N/A	11951	8461	9734TABLE II	WORKFLOW MAKESPAN (PERIODOGRAM, UNIT: SECOND) α	Optimization Methods	NOOP	DC	SR	DR0.002	17180	15141	13824	150520.004	18197	15272	13853	151060.006	18930	15360	13883	151300.008	19344	15464	13911	151590.01	19668	15566	13941	151760.02	19889	16081	14086	153630.04	21407	17141	14376	157120.06	24147	18283	14681	161090.08	26597	19511	15010	16478We compare the workflow makespan when running the workflow with DC, SR, DR and No Optimization (NOOP) with task failure rate in a range between 0.2% and 8%. Researchers [14] show that a transient failure rate is not usually more than 10%; otherwise such a system does not have much practical usage. If the task failure rate is lower than 0.1%, one doe not need to apply our methods.  Figure 10	Workflow Makespan (Periodogram)We present the workflow makespan improvement of Montage in TABLE I and the results of Periodogram in TABLE II and Figure 10. Both improvements are significant particularly with SR since it is able to identify the failed tasks. Even though DC has optimized the clustering size according to a prediction of task failure rate, the jobs to be retried still contain both failed tasks and successful tasks. DR performs better than DC as we have expected. Both SR and DR exclude the successful tasks and only retry the failed tasks within a job. However, they require the ability to identify tasks that have failed in a clustered job, which DC does not. These tables also show that the improvement is more significant when the task failure rate is higher, which is consistent to our previous claim. Particularly for Montage, we reduce the growth of makespan from a near-exponential increase (in NOOP) to a near-linear increase, which is a giant leap for task clustering. What is more, SR performs better than DR in the two workflows, which shows that there is still a gap between dynamically adjusting the clustering size based on task failure rate and naturally retrying failed tasks. This might be caused by the simplification of our models and it suggests us to investigate the performance issues further.\section{Future Work}In the future, we plan to apply our work to a real world framework---the Pegasus Workflow Management System and to evaluate the performance with more applications. We will also examine failures with different distribution, such as for example Weibull.  We will further evaluate the robustness of our methods to the variance of failure patterns, runtime, and overhead. The gap between DC and SR indicates that there is still space for further improvement in the approach of dynamically adjusting the workflow task clustering size. 
-\section{ACKNOWLEDGMENT}This work is supported by NFS under grant number IIS-0905032. We thank Gideon Juve, Karan Vahi, Mats Rynge and Rajiv, Mayani for their help. 
+\section{ACKNOWLEDGMENT}This work is supported by NFS under grant number IIS-0905032. We thank Gideon Juve, Karan Vahi, Mats Rynge and Rajiv Mayani for their help. 
 \bibliographystyle{elsarticle-num}
 \bibliography{biblio}
 
