@@ -188,7 +188,7 @@ In our paper, $D$ can be the observed inter-arrival time of failures $X$, the ob
 $X=\{x_1, x_2, ..., x_n\}$ is the observed data of $\bm\gamma$ during the runtime. Similarly, we define $RT=\{t_1, t_2, ..., t_n\}$ and $S=\{s_1, s_2, ..., s_n\}$ are the observed data of $\bm t$ and $\bm s$ respectively. $p(\theta|X,a, b)$ is the posterior that we aim to compute. $p(\theta|a, b)$ is the prior, which we have already known from previous work. $p(X|\theta)$ is the likelihood. We only need to know its shape parameter instead of its scale parameter, which reduces the work to estimate its scale parameter. 
 
 
-More specifically, we model the inter-arrival time of failures ($\bm\gamma$) with a Weibull distribution that has a known shape parameter of $\phi_{\gamma}$ and an unknown scale parameter $\theta_{\gamma}$: $\bm\gamma\sim W(\theta_{\gamma}, \phi_{\gamma})$
+More specifically, we model the inter-arrival time of failures ($\bm\gamma$) with a Weibull distribution as \cite{Schroeder2006} that has a known shape parameter of $\phi_{\gamma}$ and an unknown scale parameter $\theta_{\gamma}$: $\bm\gamma\sim W(\theta_{\gamma}, \phi_{\gamma})$. 
 
 The conjugate pair of a Weibull distribution with a known shape parameter $\phi_{\gamma}$ is an Inverse-Gamma distribution, which means if the prior follows an Inverse-Gamma distribution $\Gamma^{-1}(a_{\gamma}, b_{\gamma})$ with the shape parameter as $a_{\gamma}$ and the scale parameter as $b_{\gamma}$, then the posterior follows an Inverse-Gamma distribution:
 \begin{equation}
@@ -201,7 +201,7 @@ MLE(\theta_{\gamma})=\displaystyle\frac{b_{\gamma}+\displaystyle\sum_{i=1}^n{x_i
 \end{equation}
 The understanding of the MLE has two folds: initially we do not have any data and thus the MLE is $\displaystyle\frac{b_{\gamma}}{a_{\gamma}+1}$, which means it is determined by the prior knowledge; when $n\to\infty$, the MLE $\displaystyle\frac{\displaystyle\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}{n+1}\to\overline{x^{\phi_{\gamma}}}$, which means it is determined by the observed data and it is close to the regularized average of the observed data. The static estimation process only utilizes the prior knowledge and the dynamic estimation process uses both the prior and the posterior knowledge. 
 
-We model the task runtime ($\bm t$) with a Gamma distribution with a known shape parameter $\phi_{t}$ and an unknown scale parameter $\theta_t$. The conjugate pair of Gamma distribution with a known shape parameter is also a Gamma distribution. If the prior follows $\Gamma(a_t, b_t)$, while $a_t$ is the shape parameter and $b_t$ is the rate parameter (or $\displaystyle \frac{1}{b_t}$ is the scale parameter), the posterior follows $\Gamma(a_t+n\phi_t, b_t+\displaystyle\sum_{i=1}^n{t_i})$ with $a_t+n\phi_t$ as the shape parameter and $b_t+\displaystyle\sum_{i=1}^n{t_i}$ as the rate parameter. The MLE of $\theta_t$ is $\displaystyle\frac{b_t+\displaystyle\sum_{i=1}^n{t_i}}{a_t+n\phi_t-1}$. 
+We model the task runtime ($\bm t$) with a Gamma distribution as \cite{Sun2003, Iosup2008} with a known shape parameter $\phi_{t}$ and an unknown scale parameter $\theta_t$. The conjugate pair of Gamma distribution with a known shape parameter is also a Gamma distribution. If the prior follows $\Gamma(a_t, b_t)$, while $a_t$ is the shape parameter and $b_t$ is the rate parameter (or $\displaystyle \frac{1}{b_t}$ is the scale parameter), the posterior follows $\Gamma(a_t+n\phi_t, b_t+\displaystyle\sum_{i=1}^n{t_i})$ with $a_t+n\phi_t$ as the shape parameter and $b_t+\displaystyle\sum_{i=1}^n{t_i}$ as the rate parameter. The MLE of $\theta_t$ is $\displaystyle\frac{b_t+\displaystyle\sum_{i=1}^n{t_i}}{a_t+n\phi_t-1}$. 
 
 Similarly, if we model the system overhead $\bm s$ with a Gamma distribution with a known shape parameter $\phi_{s}$ and an unknown scale parameter $\theta_s$, and the prior is $\Gamma(a_s, b_s)$, the MLE of $\theta_s$ is $\displaystyle\frac{b_s+\displaystyle\sum_{i=1}^n{s_i}}{a_s+n\phi_s-1}$.
 %Should not consider the resource
@@ -281,11 +281,11 @@ Let $k^*$ be the optimal clustering size that minimizes Equation \ref{eq:MLE-M}.
 
 \begin{eqnarray} 
 \label{eq:k_optimal}
-k^*=\arg min\{\bm{M}\} \nonumber
+k^*=\arg min\{MLE(\bm{M})\} 
 \end{eqnarray}
 
-It is difficult to find a analytical solution of $k^*$. However, there are a few constraints that can simplify the estimation of $k^*$: (\emph{i}) $k$ can only be integers in practice; (\emph{ii}) $MLE(\bm{M})$ is continuous and has one minimal. Methods such as Newton's method can be used to find the minimal $MLE(\bm{M})$ and the corresponding $k$. Figure~\ref{fig:model_makespan} shows an example of $MLE(\bm{M})$ using static estimation with a low task failure rate ($\theta_{\gamma}=40$s), a medium task failure rate ($\theta_{\gamma}=30$s) and a high task failure rate ($\theta_{\gamma}=20$s). Other parameters are $n=50$, $\theta_{t}=5$ sec, and $\theta_{s}=50$ sec and all the shape parameters are 2 for simplicity. These parameters are close to the level of mProjectPP in the Montage workflow that we simulate in Section \ref{sec:experiments}. 
-Figure \ref{fig:model_size} shows the relationship between the optimal clustering size ($k^*$) and $\theta_{\gamma}$, which is a non-decreasing function. The optimal clustering size when $\theta_{\gamma}=20,30,40$ is 4,5 and 6 respectively. 
+It is difficult to find a analytical solution of $k^*$. However, there are a few constraints that can simplify the estimation of $k^*$: (\emph{i}) $k$ can only be an integer in practice; (\emph{ii}) $MLE(\bm{M})$ is continuous and has one minimal. Methods such as Newton's method can be used to find the minimal $MLE(\bm{M})$ and the corresponding $k$. Figure~\ref{fig:model_makespan} shows an example of $MLE(\bm{M})$ using static estimation with a low task failure rate ($\theta_{\gamma}=40$s), a medium task failure rate ($\theta_{\gamma}=30$s) and a high task failure rate ($\theta_{\gamma}=20$s). Other parameters are $n=50$, $\theta_{t}=5$ sec, and $\theta_{s}=50$ sec and all the shape parameters are 2 for simplicity. These parameters are close to the level of mProjectPP in the Montage workflow that we simulate in Section \ref{sec:experiments}. 
+Figure \ref{fig:model_size} shows the relationship between the optimal clustering size ($k^*$) and $\theta_{\gamma}$, which is a non-decreasing function. The optimal clustering size (marked with red dots in Figure~\ref{fig:model_size}) when $\theta_{\gamma}=20,30,40$ is 4,5 and 6 respectively. 
  It is consistent with our expectation since the longer the inter-arrival time of failures is, the lower the task failure rate is. With a lower task failure rate, a larger $k$ assures that we reduce system overheads without retrying many times.  
 
 
@@ -293,7 +293,7 @@ Figure \ref{fig:model_size} shows the relationship between the optimal clusterin
 \begin{figure*}[!htb]
 \centering
   \includegraphics[width=0.75\linewidth]{model_makespan.eps}
-  \caption{Makespan with different clustering size and $\theta_{\gamma}$. ($n=1000$, $r=20$, $\theta_t=5$ sec, $\theta_s=50$ sec)}
+  \caption{Makespan with different clustering size and $\theta_{\gamma}$. ($n=1000$, $r=20$, $\theta_t=5$ sec, $\theta_s=50$ sec). The red dots are the minimums. }
   \label{fig:model_makespan}
 \end{figure*}
 \begin{figure*}[!htb]
@@ -335,8 +335,13 @@ Horizontal Clustering (HC) merges multiple tasks that are at the same horizontal
 			\EndWhile
 			\State \textbf{return} $CL$
 		\EndProcedure
+		\Procedure{Reclustering}{$J$}\Comment{$J$ is a failed job}
+			\State $J_{new}\gets$\ \Call{CopyOf}{$J$} \Comment{Copy Job $J$}
+			\State $W \gets W + J_{new}$ \Comment{and reexecute it}
+		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
+
 
 \begin{figure*}[!htb]
 \centering
@@ -359,7 +364,27 @@ Figure \ref{fig:clustering_hc} shows an example where the initial clustering siz
 \end{figure*}
 
 \textbf{Selective Reclustering} (\emph{SR}). In HC, the clustering engine does not adjust the clustering size even when it continuously sees many failures. We further improve the performance with Selective Reclustering that selects the failed tasks in a clustered job and merges them into a new clustered job. SR is different to the HC in that the latter method retries all tasks of a failed job even though some of the tasks have succeeded. SR requires task level monitoring in workflow management systems. 
-Figure \ref{fig:clustering_sr} shows an example of SR. At the first try, there are four tasks and three of them ($t_1, t_2, t_3$) have failed. One task ($t_4$) succeeds and exits. Only the three failed tasks are merged again into a new clustered job $j_2$ and the job is retried. This approach does not intend to adjust the clustering size, although the clustering size will be smaller and smaller spontaneously after each retry since there are less and less tasks in a clustered job. In this case, the clustering size has decreased from 4 to 3. However, the optimal clustering size may not be 3, which limits its performance if the $\theta_{\gamma}$ is small and $k$ should be decreased as much as possible. The advantage of SR is that it is simple to implement and be incorporated into existing workflow management systems without loss of much efficiency as shown in Section~\ref{sec:experiments}. It also serves as a comparison with the Dynamic Reclustering approach that we propose below.  
+Figure \ref{fig:clustering_sr} shows an example of SR. At the first try, there are four tasks and three of them ($t_1, t_2, t_3$) have failed. One task ($t_4$) succeeds and exits. Only the three failed tasks are merged again into a new clustered job $j_2$ and the job is retried. This approach does not intend to adjust the clustering size, although the clustering size will be smaller and smaller spontaneously after each retry since there are less and less tasks in a clustered job. In this case, the clustering size has decreased from 4 to 3. However, the optimal clustering size may not be 3, which limits its performance if the $\theta_{\gamma}$ is small and $k$ should be decreased as much as possible. The advantage of SR is that it is simple to implement and be incorporated into existing workflow management systems without loss of much efficiency as shown in Section~\ref{sec:experiments}. It also serves as a comparison with the Dynamic Reclustering approach that we propose below. Algorithm \ref{alg:evaluation_sr} shows the pseudocode of SR. The Clustering and Merge procedures are the same as those in HC. 
+
+\begin{algorithm}[!htb]
+	\footnotesize
+	\caption{Selective Reclustering algorithm. }
+	\label{alg:evaluation_sr}
+	\begin{algorithmic}[1]
+		\Require $W$: workflow; $C$: max number of tasks per job defined by \emph{clusters.size} or \emph{clusters.num}
+			\Procedure{Reclustering}{$J$}\Comment{$J$ is a failed job}
+			\State $TL \gets$\ \Call{GetTasks}{$J$}
+			\State $J_{new}\gets$\{\}\Comment{An empty job}
+			\ForAll{Task $t$ in $TL$}
+				\If{$t$ is failed}
+					\State $J_{new}$.add ($t$)
+				\EndIf
+			\EndFor
+			\State $W \gets W + J_{new}$ \Comment{and reexecute it}
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+ 
 
 \begin{figure*}[!htb]
 \centering
@@ -370,7 +395,30 @@ Figure \ref{fig:clustering_hc} shows an example where the initial clustering siz
 
 \textbf{Dynamic Reclustering} (\emph{DR}). Selective Reclustering does not analyze the clustering size rather, it uses a self-adjusted approach to reduce the clustering size if the failure rate is too high. However, it is blind about the optimal clustering size and the actual clustering size may be larger or smaller than the optimal clustering size. We then propose the second method, Dynamic Reclustering. In DR, only failed tasks are merged into new clustered jobs and the clustering size is set to be $k^*$ according to Equation \ref{eq:k_optimal}. DR requires the ability to detect which tasks have failed in a job. 
 
-Figure \ref{fig:clustering_dr} shows an example where the initial clustering size is 4 and thereby there are four tasks in a clustered job at the beginning. At the first try, three tasks within a clustered job have failed. Therefore we have only three tasks to retry and further we need to decrease the clustering size (in this case it is 2) accordingly. We end up with two new jobs $j_2$ (that has $t_1$ and $t_2$) and $j_3$ that has $t_3$. 
+Figure \ref{fig:clustering_dr} shows an example where the initial clustering size is 4 and thereby there are four tasks in a clustered job at the beginning. At the first try, three tasks within a clustered job have failed. Therefore we have only three tasks to retry and further we need to decrease the clustering size (in this case it is 2) accordingly. We end up with two new jobs $j_2$ (that has $t_1$ and $t_2$) and $j_3$ that has $t_3$. Algorithm \ref{alg:evaluation_dr} shows the pseudocode of DR. The Clustering and Merge procedures are the same as those in HC. 
+
+\begin{algorithm}[!htb]
+	\footnotesize
+	\caption{Dynamic Reclustering algorithm.}
+	\label{alg:evaluation_dr}
+	\begin{algorithmic}[1]
+		\Require $W$: workflow; $C$: max number of tasks per job defined by \emph{clusters.size} or \emph{clusters.num}
+			\Procedure{Reclustering}{$J$}\Comment{$J$ is a failed job}
+			\State $TL \gets$\ \Call{GetTasks}{$J$}
+			\State $J_{new}\gets$\{\}\Comment{An empty job}
+			\ForAll{Task $t$ in $TL$}
+				\If{$t$ is failed}
+					\State $J_{new}$.add ($t$)
+				\EndIf
+				\If{$J_{new}.size() > k^*$}
+					\State $W \gets W + J_{new}$
+					\State $J_{new}\gets$\{\}
+				\EndIf
+			\EndFor
+			\State $W \gets W + J_{new}$ \Comment{and reexecute it}
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
 
 \begin{figure*}[!htb]
 \centering
@@ -380,7 +428,53 @@ Figure \ref{fig:clustering_hc} shows an example where the initial clustering siz
 \end{figure*}
 
 \textbf{Vertical Reclustering} (\emph{VR}). VR is an extension of Vertical Clustering. Similar to Selective Reclustering, Vertical Reclustering only retries failed tasks.
-If there is a failure detected, we decrease $k$ by half and recluster them. In Figure \ref{fig:clustering_vr}, if there is no assumption of failures initially, we put all the tasks ($t_1, t_2, t_3, t_4$) from the same  pipeline into a clustered job. $t_3$ fails at the first try assuming it is a failure-prone task (its $\theta_{\gamma}$ is short). VR retries only the failed tasks ($t_3$) and tasks that are not completed ($t_4$) and merges them again into a new job $j_2$. In the second try, $j_2$ unfortunately fails. Since the clustering size is already 2, VR performs no vertical clustering anymore and would continue retrying $t_3$ and $t_4$ (but still following their data dependency) until they succeed. 
+If there is a failure detected, we decrease $k$ by half and recluster them. In Figure \ref{fig:clustering_vr}, if there is no assumption of failures initially, we put all the tasks ($t_1, t_2, t_3, t_4$) from the same  pipeline into a clustered job. $t_3$ fails at the first try assuming it is a failure-prone task (its $\theta_{\gamma}$ is short). VR retries only the failed tasks ($t_3$) and tasks that are not completed ($t_4$) and merges them again into a new job $j_2$. In the second try, $j_2$ unfortunately fails and we divide it into two tasks ($t_3$ and $t_4$). Since the clustering size is already 1, VR performs no vertical clustering anymore and would continue retrying $t_3$ and $t_4$ (but still following their data dependency) until they succeed. Algorithm \ref{alg:evaluation_vr} shows the pseudocode of VR. 
+
+\begin{algorithm}[!htb]
+	\footnotesize
+	\caption{Vertical Reclustering algorithm.}
+	\label{alg:evaluation_vr}
+	\begin{algorithmic}[1]
+		\Require $W$: workflow; $C$: max number of tasks per job defined by \emph{clusters.size} or \emph{clusters.num}
+		\Procedure{Clustering}{$W,C$}
+			\For{$level < depth(W)$}
+				\State $TL\gets $\ \Call{GetTasksAtLevel}{$W,level$} \Comment{Partition $W$ based on depth}
+				\State $CL, TL_{merged}\gets$  \ \Call{Merge}{$TL,C$} \Comment{Returns a list of clustered jobs}
+				\State $W \gets W - TL_{merged} + CL$  \Comment{Merge dependencies as well} 
+			\EndFor
+		\EndProcedure
+		\Procedure{Merge}{$TL, C$}
+			\State $TL_{merged}\gets TL$\Comment{All the tasks that have been merged}
+			\State $CL\gets$\{\}\Comment{An empty list of clustered jobs}
+			\ForAll{$t$ in $TL$}
+				\State $J\gets$ \{$t$\}\Comment{An empty job}
+				\While{$t$ has only one child $t_{child}$}
+					\State $J$.add ($t_{child}$)
+					\State $TL_{merged}\gets TL_{merged} + t_{child}$ 
+					\State $t\gets t_{child}$
+				\EndWhile
+				\State  $CL$.add( $J$)
+			\EndFor
+			\State \textbf{return} $CL$, $TL_{merged}$
+		\EndProcedure
+		\Procedure{Reclustering}{$J$}\Comment{$J$ is a failed job}
+			\State $TL \gets$\ \Call{GetTasks}{$J$}
+			\State $k^*\gets J.size() / 2$ \Comment{Reduce the clustering size by half}
+			\State $J_{new}\gets$\{\}\Comment{An empty job}
+			\ForAll{Task $t$ in $TL$}
+				\If{$t$ is failed or not completed}
+					\State $J_{new}$.add ($t$)
+				\EndIf
+				\If{$J_{new}.size() > k^*$}
+					\State $W \gets W + J_{new}$
+					\State $J_{new}\gets$\{\}
+				\EndIf
+			\EndFor
+			\State $W \gets W + J_{new}$ \Comment{and reexecute it}
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
 
 
 \section{Experiments and Discussions}
@@ -482,7 +576,7 @@ We collected workflow execution traces~\cite{Juve2013, Chen2011} (including over
 Three sets of experiments are conducted. Experiment 1 evaluates the performance of our fault tolerant clustering methods (DR, VR, and SR) over a baseline execution (HC) that is not fault tolerant for the five workflows. The goal of the experiment is to identify conditions where each method works best and worst. In addition, we also evaluate the performance improvement under different $\theta_{\gamma}$ (the inter-arrival time of task failures). The range of $\theta_{\gamma}$ is chosen from 10x to 1x of the average task runtime such that the workflows do not run forever and we can visualize the performance difference better. 
 
 
-Experiment 2 evaluates the performance impact of the variation of the average task runtime per level (defined as the average of all the tasks per level) and the average system overheads per level for one scientific workflow application (CyberShake). In particular, we are interested in the performance of DR based on the results of Experiment 1. The original average task runtime of all the tasks of the CyberShake workflow is about 23 seconds as shown in Table~\ref{tab:evaluation_workflows}. In this experiment, we multiply the average task runtime by a multiplier from 0.5 to 1.3. The scale parameter of the system overheads ($\theta_{s}$) is 50 seconds originally based on our traces and we multiply the system overheads by a multiplier from 0.2 to 1.8. 
+Experiment 2 evaluates the performance impact of the variation of the average task runtime per level (defined as the average of all the tasks per level) and the average system overheads per level for one scientific workflow application (CyberShake). In particular, we are interested in the performance of DR based on the results of Experiment 1 and we use $\theta_{\gamma}=100$ since it has the maximum difference between the four methods. The original average task runtime of all the tasks of the CyberShake workflow is about 23 seconds as shown in Table~\ref{tab:evaluation_workflows}. In this experiment, we multiply the average task runtime by a multiplier from 0.5 to 1.3. The scale parameter of the system overheads ($\theta_{s}$) is 50 seconds originally based on our traces and we multiply the system overheads by a multiplier from 0.2 to 1.8.  
 
 Experiment 3 evaluates the performance of dynamic estimation and static estimation. In the static estimation process, we only use the prior knowledge to estimate the MLEs of $\theta_t$, $\theta_s$ and $\theta_{\gamma}$. In the dynamic estimation process, we also leverage the runtime data collected during the execution and update the MLEs respectively. In this experiment, we decrease $\theta_{\gamma}$ from 500 seconds to 50 seconds at time $T$ to simulate the scenario where there are more failures coming than expected. Theoretically speaking, the later we change $\theta_{\gamma}$, the less the reclustering is influenced by the estimation error and thus the less the makespan is. There is one special case when $T\to 0$, which means the prior knowledge is wrong at the very beginning. 
 
@@ -512,7 +606,7 @@ Table~\ref{tab:evaluation_methods} summarizes the clustering methods to be evalu
 \begin{figure}[!htb]
 \centering
   \includegraphics[width=1\linewidth]{sipht.eps}
-  \caption{SIPHT Workflow}
+  \caption{Experiment 1: SIPHT Workflow}
   \label{fig:expr_sipht}
 \end{figure}
 
@@ -522,19 +616,18 @@ Figure~\ref{fig:expr_sipht}, \ref{fig:expr_genome}, \ref{fig:expr_cybershake}, \
 \begin{figure}[!htb]
 \centering
   \includegraphics[width=1.0\linewidth]{genome.eps}
-  \caption{Epigenomics Workflow}
+  \caption{Experiment 1: Epigenomics Workflow}
   \label{fig:expr_genome}
 \end{figure}
 
 
-1). DR, SR and VR have significantly improved the makespan compared to HC in a large scale. With the decrease of the inter-arrival time ($\theta_{\gamma}$) and there are more failures generated, the performance difference 
- becomes more significant. 
+1). DR, SR and VR have significantly improved the makespan compared to HC in a large scale. By decreasing of the inter-arrival time ($\theta_{\gamma}$) and consequently more failures are generated, the performance difference becomes more significant. 
 
 
 \begin{figure}[!htb]
 \centering
   \includegraphics[width=1.0\linewidth]{cybershake.eps}
-  \caption{CyberShake Workflow}
+  \caption{Experiment 1: CyberShake Workflow}
   \label{fig:expr_cybershake}
 \end{figure}
 
@@ -549,7 +642,7 @@ Figure~\ref{fig:expr_sipht}, \ref{fig:expr_genome}, \ref{fig:expr_cybershake}, \
 \begin{figure}[!htb]
 \centering
   \includegraphics[width=1\linewidth]{ligo.eps}
-  \caption{LIGO Workflow}
+  \caption{Experiment 1: LIGO Workflow}
   \label{fig:expr_ligo}
 \end{figure}
 
@@ -562,7 +655,7 @@ Figure~\ref{fig:expr_sipht}, \ref{fig:expr_genome}, \ref{fig:expr_cybershake}, \
 \begin{figure}[!htb]
 \centering
   \includegraphics[width=1\linewidth]{montage.eps}
-  \caption{Montage Workflow}
+  \caption{Experiment 1: Montage Workflow}
   \label{fig:expr_montage}
 \end{figure}
 
@@ -571,7 +664,7 @@ Figure~\ref{fig:expr_sipht}, \ref{fig:expr_genome}, \ref{fig:expr_cybershake}, \
 \begin{figure}[!htb]
 \centering
   \includegraphics[width=1\linewidth]{t.eps}
-  \caption{ Influence of Varying Task Runtime on Makespan (CyberShake)}
+  \caption{Experiment 2:  Influence of Varying Task Runtime on Makespan (CyberShake)}
   \label{fig:expr_t}
 \end{figure}
 
@@ -581,18 +674,18 @@ Figure~\ref{fig:expr_t} shows the performance of our methods with different mult
 \begin{figure}[!htb]
 \centering
   \includegraphics[width=1\linewidth]{d.eps}
-  \caption{Influence of Varying System Overhead on Makespan (CyberShake)}
+  \caption{Experiment 2: Influence of Varying System Overhead on Makespan (CyberShake)}
   \label{fig:expr_d}
 \end{figure}
 
-Figure~\ref{fig:expr_d} shows the results with different multiplier of $\theta_{s}$ for the CyberShake workflow. Similarly, we can see that with the increase of the multiplier, the makespan increases for all the methods and DR performs best. However, the increase is less significant than that in Figure~\ref{fig:expr_t}. The reason is we may have multiple tasks in a clustered job but only one system overhead. 
+Figure~\ref{fig:expr_d} shows the results with different multiplier of $\theta_{s}$ for the CyberShake workflow. Similarly, we can see that with the increase of the multiplier, the makespan increases for all the methods and DR performs best. However, the increase is less significant than that in Figure~\ref{fig:expr_t}. The reason is we may have multiple tasks in a clustered job but only one system overhead per job.
 
 
 \paragraph{\textbf{Experiment 3}}
 \begin{figure}[!htb]
 \centering
   \includegraphics[width=1\linewidth]{versus.eps}
-  \caption{Static Estimation vs. Dynamic Estimation (CyberShake)}
+  \caption{Experiment 3: Static Estimation vs. Dynamic Estimation (CyberShake)}
   \label{fig:expr_static_dynamic}
 \end{figure}
 
