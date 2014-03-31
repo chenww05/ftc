@@ -310,8 +310,7 @@ From this theoretic analysis, we conclude that (\emph{i}) the longer the inter-a
 As indicated in Section \ref{sec:model}, inappropriate clustering may increase the makespan of executing a workflow. To improve the fault tolerance from the point of view of clustering, we propose three methods: Dynamic Reclustering (\emph{DR}), Selective Reclustering (\emph{SR}) and Vertical Reclustering (\emph{VR}). In the experiments, we compare the performance of our fault tolerant clustering methods to an existing version of Horizontal Clustering (HC)~\cite{Singh2008} technique. In this subsection, we first briefly describe this algorithm.
 
 \textbf{Horizontal Clustering} (\emph{HC}). 
-Horizontal Clustering (HC) merges multiple tasks that are at the same horizontal level of the workflow. The clustering granularity (number of tasks within a cluster) of a clustered job is controlled by the user, who defines either the number of tasks per clustered job (\emph{clusters.size}), or the number of clustered jobs per horizontal level of the workflow (\emph{clusters.num}). This algorithm has been implemented and used in Pegasus~\cite{Singh2008}. For simplicity, we define \emph{clusters.num} as the number of available resources. In our prior work~\cite{Chen2013a,Chen2013b}, we have compared the runtime performance with different clustering granularity. The pseudocode of the HC technique is shown in Algorithm~\ref{alg:evaluation_hc}. 
-
+Horizontal Clustering (HC) merges multiple tasks that are at the same horizontal level of the workflow. The clustering granularity (number of tasks within a cluster) of a clustered job is controlled by the user, who defines either the number of tasks per clustered job (\emph{clusters.size}), or the number of clustered jobs per horizontal level of the workflow (\emph{clusters.num}). This algorithm has been implemented and used in Pegasus~\cite{Singh2008}. For simplicity, we define \emph{clusters.num} as the number of available resources. In our prior work~\cite{Chen2013a,Chen2013b}, we have compared the runtime performance with different clustering granularity. The pseudocode of the HC technique is shown in Algorithm~\ref{alg:evaluation_hc}. The Clustering and Merge Procedure are called in the initial task clustering process while the Reclustering Procedure is called when there is a failed job returned. 
 
 \begin{algorithm}[!htb]
 	\footnotesize
@@ -337,7 +336,7 @@ Horizontal Clustering (HC) merges multiple tasks that are at the same horizontal
 		\EndProcedure
 		\Procedure{Reclustering}{$J$}\Comment{$J$ is a failed job}
 			\State $J_{new}\gets$\ \Call{CopyOf}{$J$} \Comment{Copy Job $J$}
-			\State $W \gets W + J_{new}$ \Comment{and reexecute it}
+			\State $W \gets W + J_{new}$ \Comment{Reexecute it}
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
@@ -380,7 +379,7 @@ Figure \ref{fig:clustering_hc} shows an example where the initial clustering siz
 					\State $J_{new}$.add ($t$)
 				\EndIf
 			\EndFor
-			\State $W \gets W + J_{new}$ \Comment{and reexecute it}
+			\State $W \gets W + J_{new}$ \Comment{Reexecute it}
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
@@ -405,7 +404,7 @@ Figure \ref{fig:clustering_hc} shows an example where the initial clustering siz
 		\Require $W$: workflow; $C$: max number of tasks per job defined by \emph{clusters.size} or \emph{clusters.num}
 			\Procedure{Reclustering}{$J$}\Comment{$J$ is a failed job}
 			\State $TL \gets$\ \Call{GetTasks}{$J$}
-			\State $J_{new}\gets$\{\}\Comment{An empty job}
+			\State $J_{new}\gets$\{\}
 			\ForAll{Task $t$ in $TL$}
 				\If{$t$ is failed}
 					\State $J_{new}$.add ($t$)
@@ -415,7 +414,7 @@ Figure \ref{fig:clustering_hc} shows an example where the initial clustering siz
 					\State $J_{new}\gets$\{\}
 				\EndIf
 			\EndFor
-			\State $W \gets W + J_{new}$ \Comment{and reexecute it}
+			\State $W \gets W + J_{new}$ \Comment{Reexecute it}
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
@@ -435,19 +434,19 @@ If there is a failure detected, we decrease $k$ by half and recluster them. In F
 	\caption{Vertical Reclustering algorithm.}
 	\label{alg:evaluation_vr}
 	\begin{algorithmic}[1]
-		\Require $W$: workflow; $C$: max number of tasks per job defined by \emph{clusters.size} or \emph{clusters.num}
-		\Procedure{Clustering}{$W,C$}
+		\Require $W$: workflow; 
+		\Procedure{Clustering}{$W$}
 			\For{$level < depth(W)$}
 				\State $TL\gets $\ \Call{GetTasksAtLevel}{$W,level$} \Comment{Partition $W$ based on depth}
-				\State $CL, TL_{merged}\gets$  \ \Call{Merge}{$TL,C$} \Comment{Returns a list of clustered jobs}
+				\State $CL, TL_{merged}\gets$  \ \Call{Merge}{$TL$} \Comment{Returns a list of clustered jobs}
 				\State $W \gets W - TL_{merged} + CL$  \Comment{Merge dependencies as well} 
 			\EndFor
 		\EndProcedure
-		\Procedure{Merge}{$TL, C$}
+		\Procedure{Merge}{$TL$}
 			\State $TL_{merged}\gets TL$\Comment{All the tasks that have been merged}
 			\State $CL\gets$\{\}\Comment{An empty list of clustered jobs}
 			\ForAll{$t$ in $TL$}
-				\State $J\gets$ \{$t$\}\Comment{An empty job}
+				\State $J\gets$ \{$t$\}
 				\While{$t$ has only one child $t_{child}$}
 					\State $J$.add ($t_{child}$)
 					\State $TL_{merged}\gets TL_{merged} + t_{child}$ 
@@ -460,7 +459,7 @@ If there is a failure detected, we decrease $k$ by half and recluster them. In F
 		\Procedure{Reclustering}{$J$}\Comment{$J$ is a failed job}
 			\State $TL \gets$\ \Call{GetTasks}{$J$}
 			\State $k^*\gets J.size() / 2$ \Comment{Reduce the clustering size by half}
-			\State $J_{new}\gets$\{\}\Comment{An empty job}
+			\State $J_{new}\gets$\{\}
 			\ForAll{Task $t$ in $TL$}
 				\If{$t$ is failed or not completed}
 					\State $J_{new}$.add ($t$)
@@ -470,7 +469,7 @@ If there is a failure detected, we decrease $k$ by half and recluster them. In F
 					\State $J_{new}\gets$\{\}
 				\EndIf
 			\EndFor
-			\State $W \gets W + J_{new}$ \Comment{and reexecute it}
+			\State $W \gets W + J_{new}$ \Comment{Reexecute it}
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
