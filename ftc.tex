@@ -28,8 +28,8 @@
 \begin{frontmatter}              % The preamble begins here.
 
 %\pretitle{Pretitle}
-\title{Fault Tolerance and Task Clustering\\
- in Scientific Workflows}
+\title{Dynamic and Online Fault Tolerant \\
+ Clustering in Scientific Workflows}
 \runningtitle{Fault Tolerant Clustering}
 %\subtitle{Subtitle}
 
@@ -37,20 +37,22 @@
 \thanks{Corresponding Author: Weiwei Chen, University of Southern California, Information Sciences Institute, Marina del Rey, CA, USA; E-mail:
 weiweichen@acm.org.}},
 \author[A]{Rafael Ferreira de Silva}, 
-\author[A]{{Ewa Deelman}}
-and 
-\author[B]{{Thomas} {Fahringer}}
+\author[A]{{Ewa Deelman}},
+\author[B]{{Thomas Fahringer}}
+and
+\author[C]{Rizos Sakellariou}
 
 \runningauthor{W. Chen et al.}
 \address[A]{University of Southern California, Information Sciences Institute, Marina del Rey, CA, USA}
 \address[B]{University of Innsbruck, Institute for Computer Science, Innsbruck, Austria}
+\address[C]{University of Manchester, School of Computer Science, Manchester, U.K.}
 
 \begin{abstract}
 Large scale scientific workflows can be composed of many fine computational granularity tasks. Task clustering has been proven to be an effective method to reduce execution overhead and increase the computational granularity of workflow tasks executing on distributed resources. However, a job composed of multiple tasks may have a greater risk of suffering from failures than a job composed of a single task. Our theoretic analysis and simulation results demonstrate that transient failures can have a significant impact on the runtime performance of scientific workflows that use existing clustering policies that ignore failures. We aim to optimize the workflow makespan by adjusting the clustering granularity in the presence of failures. We propose a general task failure modeling framework and use a Maximum Likelihood Estimation based parameter estimation process to address these performance issues. We further propose three methods to improve the runtime performance of executing workflows in faulty environments. A trace based simulation is performed and it shows that our methods improve the workflow makespan significantly for five important applications.    
 \end{abstract}
 
 \begin{keyword}
-scientific workflows\sep fault tolerance\sep parameter estimation\sep failure\sep machine learning \sep clustering
+scientific workflows\sep fault tolerance\sep parameter estimation\sep failure\sep machine learning \sep task clustering\sep job grouping
 \end{keyword}
 \end{frontmatter}
 
@@ -206,7 +208,7 @@ We model the task runtime ($\bm t$) with a Gamma distribution as \cite{Sun2003, 
 Similarly, if we model the system overhead $\bm s$ with a Gamma distribution with a known shape parameter $\phi_{s}$ and an unknown scale parameter $\theta_s$, and the prior is $\Gamma(a_s, b_s)$, the MLE of $\theta_s$ is $\displaystyle\frac{b_s+\displaystyle\sum_{i=1}^n{s_i}}{a_s+n\phi_s-1}$.
 %Should not consider the resource
 We have already assumed the task runtime, system overhead and inter-arrival time between failures are a function of task types. Since in scientific workflows, tasks at the different level (the deepest depth from the entry task to this task) are usually of different type, we model the runtime level by level. Given $n$ independent tasks at the same level and the distribution of the task runtime, the system overhead, and the inter-arrival time of failures, we aim to reduce the cumulative runtime $\bm M$ of completing these tasks by adjusting the clustering size $k$ (the number of tasks in a job). 
-$\bm M$ is also a random variable and it includes the system overheads and the runtime of the clustered job and its subsequent retry jobs if the first try fails. 
+$\bm M$ is also a random variable and it includes the system overheads and the runtime of the clustered job and its subsequent retry jobs if the first try fails. We also assume the task failures are independent in each worker node (but with the same distribution) without considering the failures that brings the whole system down such as a failure in the shared file system. 
 %since that is not the concern of task clustering but the task scheduling. 
 
 The runtime of a job is a random variable indicated by $\bm d$. A clustered job succeeds only if all of its tasks succeed. The job runtime is the sum of the cumulative task runtime of $k$ tasks and a system overhead. We assume the task runtime of each task is independent of each other, therefore the cumulative task runtime of $k$ tasks is also a Gamma distribution since the sum of Gamma distributions with the same shape parameter is still a Gamma distribution. We also assume the system overhead is also independent of all the task runtimes and it has the same shape parameter ($\phi_{ts}=\phi_{t}=\phi_{s}$) with the task runtime. 
@@ -260,7 +262,7 @@ In both dimensions ($d_i$ and $\displaystyle\cfrac{1}{\theta_{\gamma}}$), $M_i$ 
 
 \begin{eqnarray} 
 \label{eq:MLE-M}
-\bm{M}&=&\displaystyle\sum_{i=1}^{\cfrac{n}{k}}M_i\sim\Gamma \nonumber\\
+\bm{M}&=&\displaystyle\cfrac{1}{r}\sum_{i=1}^{\cfrac{n}{k}}M_i\sim\Gamma \nonumber\\
 MLE(\bm{M})&=&\displaystyle\cfrac{n}{rk}MLE(M_i)\\
 &=&\displaystyle\cfrac{n}{rk} MLE(d_i)e^{(\displaystyle MLE(d_i)MLE(\cfrac{1}{\theta_{\gamma}}))^{\phi_{\gamma}}} 
 \end{eqnarray}
@@ -277,7 +279,7 @@ $r$ is the number of resources. In our paper, we consider a compute cluster as a
 %\end{cases}
 %\end{equation}
 
-Let $k^*$ be the optimal clustering size that minimizes Equation \ref{eq:MLE-M}.  
+Let $k^*$ be the optimal clustering size that minimizes Equation \ref{eq:MLE-M}.  $\arg min$ \footnote{Wiki: http://en.wikipedia.org/wiki/Arg\_max} stands for the argument ($k$) of the minimum, that is to say, the $k$ such that $MLE(\bm{M})$ attains its minimum value. 
 
 \begin{eqnarray} 
 \label{eq:k_optimal}
@@ -568,7 +570,7 @@ Table~\ref{tab:evaluation_workflows} shows the summary of the main \textbf{workf
 \label{sec:experiment_conditions}
 We adopt a trace-based simulation approach, where we extended our WorkflowSim~\cite{WorkflowSim} simulator with the fault tolerant clustering methods to simulate a controlled distributed environment. WorkflowSim is an open source workflow simulator that extends CloudSim~\cite{Calheiros2011} by providing support for task clustering, task scheduling, and resource provisioning at the workflow level. It has been recently used in multiple workflow study areas~\cite{WorkflowSim,Chen2012, jrad2013broker} and its correctness has been verified in~\cite{WorkflowSim}. 
 
-The simulated computing platform is composed by 20 single homogeneous core virtual machines (worker nodes), which is the quota per user of some typical distributed environments such as Amazon EC2~\cite{AmazonAWS} and FutureGrid~\cite{FutureGrid}. Amazon EC2 is a commercial, public cloud that has been widely used in distributed computing, in particular for scientific workflows~\cite{Berriman2010}. FutureGrid is a distributed, high-performance testbed that provides scientists with a set of computing resources to develop parallel, grid, and cloud applications. Each simulated virtual machine (VM) has 512MB of memory and the capacity to process 1,000 million instructions per second. The default network bandwidth is 15MB according to the real environment in FutureGrid from where our traces were collected. By default, we merge tasks at the same horizontal level into 20 clustered jobs initially, which is a simple selection of granularity control of the strength of task clustering. The study of granularity size has been done in~\cite{Chen2013b}, which shows such selection is acceptable. 
+The simulated computing platform is composed by 20 single homogeneous core virtual machines (worker nodes), which is the quota per user of some typical distributed environments such as Amazon EC2~\cite{AmazonAWS} and FutureGrid~\cite{FutureGrid}. Amazon EC2 is a commercial, public cloud that has been widely used in distributed computing, in particular for scientific workflows~\cite{Berriman2010}. FutureGrid is a distributed, high-performance testbed that provides scientists with a set of computing resources to develop parallel, grid, and cloud applications. Each simulated virtual machine (VM) has 512MB of memory and the capacity to process 1,000 million instructions per second. The default network bandwidth is 15MB according to the real environment in FutureGrid from where our traces were collected. By default, we merge tasks at the same horizontal level into 20 clustered jobs initially, which is a simple selection of granularity control of the strength of task clustering. The study of granularity size has been done in~\cite{Chen2013b}, which shows such selection is acceptable.
 
 We collected workflow execution traces~\cite{Juve2013, Chen2011} (including overhead and task runtime information) from real runs (executed on FutureGrid and Amazon EC2) of the scientific workflow applications described in Section~\ref{sec:applications}. The traces are used to feed the Workflow Generator toolkit~\cite{WorkflowGenerator} to generate synthetic workflows. This allows us to perform simulations with several different configurations under controlled conditions. The toolkit uses the information gathered from actual scientific workflow executions to generate synthetic workflows resembling those used by real world scientific applications. The number of inputs to be processed, the number of tasks in the workflow, and their composition determine the structure of the generated workflow. Such an approach of traced based simulation allows us to utilize real traces and vary the system setting (i.e., the inter-arrival time of failures) and workflow (i.e., avg. task runtime) to fully explore the performance of our fault tolerant clustering algorithms. 
 
@@ -577,10 +579,46 @@ Three sets of experiments are conducted. Experiment 1 evaluates the performance 
 
 Experiment 2 evaluates the performance impact of the variation of the average task runtime per level (defined as the average of all the tasks per level) and the average system overheads per level for one scientific workflow application (CyberShake). In particular, we are interested in the performance of DR based on the results of Experiment 1 and we use $\theta_{\gamma}=100$ since it has the maximum difference between the four methods. The original average task runtime of all the tasks of the CyberShake workflow is about 23 seconds as shown in Table~\ref{tab:evaluation_workflows}. In this experiment, we multiply the average task runtime by a multiplier from 0.5 to 1.3. The scale parameter of the system overheads ($\theta_{s}$) is 50 seconds originally based on our traces and we multiply the system overheads by a multiplier from 0.2 to 1.8.  
 
-Experiment 3 evaluates the performance of dynamic estimation and static estimation. In the static estimation process, we only use the prior knowledge to estimate the MLEs of $\theta_t$, $\theta_s$ and $\theta_{\gamma}$. In the dynamic estimation process, we also leverage the runtime data collected during the execution and update the MLEs respectively. In this experiment, we decrease $\theta_{\gamma}$ from 500 seconds to 50 seconds at time $T$ to simulate the scenario where there are more failures coming than expected. Theoretically speaking, the later we change $\theta_{\gamma}$, the less the reclustering is influenced by the estimation error and thus the less the makespan is. There is one special case when $T\to 0$, which means the prior knowledge is wrong at the very beginning. 
+Experiment 3 evaluates the performance of dynamic estimation and static estimation. In the static estimation process, we only use the prior knowledge to estimate the MLEs of $\theta_t$, $\theta_s$ and $\theta_{\gamma}$. In the dynamic estimation process, we also leverage the runtime data collected during the execution and update the MLEs respectively. 
 
-Table~\ref{tab:evaluation_methods} summarizes the clustering methods to be evaluated in our experiments. . 
-\begin{table}[!htb]
+\begin{figure*}[htb]
+	\centering
+	\includegraphics[width=0.8\linewidth]{step_signal.pdf} \\
+	\caption{A Step Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_d$ is the moment $\theta_{\gamma}$ changes from 500 to 50 seconds}
+	\label{fig:evaluation_step_signal}
+\end{figure*}
+
+\begin{equation}
+\label{eq:step_function}
+ \theta_{\gamma}(t_c) =
+  \begin{cases}
+   500 & \text{if } t_c \geq T_d \\
+   50       & \text{if } 0< t_c < T_d
+  \end{cases}
+\end{equation}
+
+In this experiment, we use two sets of $\theta_{\gamma}$ function. The first one is a step function, in which we decrease $\theta_{\gamma}$ from 500 seconds to 50 seconds at time $T_d$ to simulate the scenario where there are more failures coming than expected. We evaluate the performance difference of dynamic estimation and static estimation while $1000\leq T_d\leq 5000$ based on the estimation of the workflow makespan. The function is shown  in Figure \ref{fig:evaluation_step_signal} and Equation \ref{eq:step_function} and $t_c$ is the current time. Theoretically speaking, the later we change $\theta_{\gamma}$, the less the reclustering is influenced by the estimation error and thus the less the makespan is. There is one special case when $T_d\to 0$, which means the prior knowledge is wrong at the very beginning. The second one is a pulse wave function, which the amplitude alternates at a steady frequency between fixed minimum (50 seconds) to maximum (500 seconds) values. The function is shown in Figure \ref{fig:evaluation_pulse_signal} and Equation \ref{eq:pulse_function}. $T_c$ is the period and $\tau$ is the duty cycle of the oscillator. It simulates a scenario where the failures follow a periodic pattern \cite{yigitbasi2010analysis} that has been found in many failure traces obtained from production distributed systems. In our paper, we vary $T_c$ from 1000 seconds to 10000 seconds based on the estimation of workflow makespan and $\tau$ from $0.1T_c$ to $0.5T_c$. 
+
+
+\begin{figure*}[htb]
+	\centering
+	\includegraphics[width=0.8\linewidth]{pulse_signal.pdf} \\
+	\caption{A Pulse Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_c$ is the period of the wave. $\tau$ is the width of the pulse. }
+	\label{fig:evaluation_pulse_signal}
+\end{figure*}
+
+
+\begin{equation}
+\label{eq:pulse_function}
+ \theta_{\gamma}(t_c) =
+  \begin{cases}
+   500 & \text{if } 0< t_c \leq \tau \\
+   50       & \text{if } \tau< t_c < T_c
+  \end{cases}
+\end{equation}
+
+Table~\ref{tab:evaluation_methods} summarizes the clustering methods to be evaluated in our experiments. In our experiments, our algorithms take less than 10ms to do the reclustering for each job. 
+\begin{table*}[!htb]
 	%\setlength{\tabcolsep}{11pt}
 	\centering
 	\small
@@ -596,7 +634,7 @@ Table~\ref{tab:evaluation_methods} summarizes the clustering methods to be evalu
 	\end{tabular}
 	\caption{Methods to Evaluate in Experiements}
 	\label{tab:evaluation_methods}
-\end{table} 
+\end{table*} 
 
 
 \subsection{Results and discussion}
@@ -684,13 +722,36 @@ Figure~\ref{fig:expr_d} shows the results with different multiplier of $\theta_{
 \begin{figure}[!htb]
 \centering
   \includegraphics[width=1\linewidth]{versus.eps}
-  \caption{Experiment 3: Static Estimation vs. Dynamic Estimation (CyberShake)}
+  \caption{Experiment 3: Static Estimation vs. Dynamic Estimation (CyberShake, Step Function)}
   \label{fig:expr_static_dynamic}
 \end{figure}
 
-Figure~\ref{fig:expr_static_dynamic} further evaluates the performance of the dynamic estimation and static estimation for the CyberShake workflow. The reclustering method used in this experiment is DR since it performs best in the last two experiments. In the experiment, we change the inter-arrival time of failures ($\theta_{\gamma}$) from 500 seconds to 50 seconds at $T$. We can see that: 1). with the increase of $T$, both makespan decrease since the change of  $\theta_{\gamma}$ has less influence on the makespan and there is a lower failure rate on average; 2). Dynamic estimation improves the makespan by up to 34\% compared to the static estimation. The reason is the dynamic estimation is able to update the MLEs of the $\theta_{\gamma}$ and decrease the clustering size while the static estimation is not. \section{Conclusion and Future Work}
+Figure~\ref{fig:expr_static_dynamic} further evaluates the performance of the dynamic estimation and static estimation for the CyberShake workflow. The reclustering method used in this experiment is DR since it performs best in the last two experiments. In the experiment, we use a step signal and change the inter-arrival time of failures ($\theta_{\gamma}$) from 500 seconds to 50 seconds at $T_d$. We can see that: 1). with the increase of $T_d$, both makespan decrease since the change of  $\theta_{\gamma}$ has less influence on the makespan and there is a lower failure rate on average; 2). Dynamic estimation improves the makespan by up to 22.4\% compared to the static estimation. The reason is the dynamic estimation is able to update the MLEs of the $\theta_{\gamma}$ and decrease the clustering size while the static estimation is not. 
 
-In this paper, we model transient failures in a distributed environment and propose three dynamic clustering methods to improve the fault tolerance of task clustering. We apply our methods to five widely used scientific workflows. From our experiments, we conclude that the three proposed methods improve the makespan significantly compared to an existing algorithm widely used in workflow management systems. In particular, our Dynamic Reclustering method performs best among the three methods since it can adjust the clustering size based on the Maximum Likelihood Estimation of task runtime, system overheads and the inter-arrival time of failures. Our Vertical Reclustering method improves the performance significantly for  workflows that have a short task runtime. Our dynamic estimation using on-going data collected from the workflow execution can further improve the fault tolerance in a dynamic environment where the inter-arrival time of failures is fluctuant. In this paper, we only discuss the fault tolerant clustering and apply it to a homogeneous environment. In the future, we aim to combine our work with fault tolerant scheduling in heterogeneous environments, i.e, a scheduling algorithm that avoids mapping clustered jobs to failure-prone nodes. We are also interested to combine vertical clustering methods with horizontal clustering methods. For example, we can perform vertical clustering either before or after horizontal clustering, which we believe would bring different performance improvement. \section{ACKNOWLEDGMENT}This work is supported by NFS under grant number IIS-0905032. We thank Gideon Juve, Karan Vahi, Mats Rynge and Rajiv Mayani for their help. 
+For the pulse signal, we use $\tau=0.1T_c, 0.3T_c, 0.5T_c$. Figure \ref{fig:expr_pulse_10}, \ref{fig:expr_pulse_30} and \ref{fig:expr_pulse_50} show the performance difference of dynamic estimation and static estimation respectively. When $\tau=0.1T_c$, DR with dynamic estimation improves the makespan by up to 25.7\% compared to case with static estimation. When $\tau=0.3T_c$, the performance difference between dynamic estimation and static estimation is up to 27.3\%. We can also see when $T_c$ is small (i.e., $T_c=1000$), the performance difference is not significant since the inter-arrival time of failures changes frequently and the dynamic estimation process is not able to update swiftly. While when $T_c$ is 10000, the performance difference is not significant either since the period is too long and the workflow has completed successfully. When $\tau=0.5T_c$, the performance different between dynamic estimation and static estimation is up to 9.1\%, since the high $\theta_{\gamma}$ and the low $\theta_{\gamma}$ have equal influence on the failure occurrence. 
+
+\begin{figure}[!htb]
+\centering
+  \includegraphics[width=1\linewidth]{pulse_t10.eps}
+  \caption{Experiment 3: Static Estimation vs. Dynamic Estimation (CyberShake, Pulse Function ($\tau=0.1T_c$))}
+  \label{fig:expr_pulse_10}
+\end{figure}\begin{figure}[!htb]
+\centering
+  \includegraphics[width=1\linewidth]{pulse_t30.eps}
+  \caption{Experiment 3: Static Estimation vs. Dynamic Estimation (CyberShake, Pulse Function ($\tau=0.3T_c$))}
+  \label{fig:expr_pulse_30}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+  \includegraphics[width=1\linewidth]{pulse_t50.eps}
+  \caption{Experiment 3: Static Estimation vs. Dynamic Estimation (CyberShake, Pulse Function ($\tau=0.5T_c$))}
+  \label{fig:expr_pulse_50}
+\end{figure}\section{Conclusion and Future Work}
+
+In this paper, we model transient failures in a distributed environment and propose three dynamic clustering methods to improve the fault tolerance of task clustering. We apply our methods to five widely used scientific workflows. From our experiments, we conclude that the three proposed methods improve the makespan significantly compared to an existing algorithm widely used in workflow management systems. In particular, our Dynamic Reclustering method performs best among the three methods since it can adjust the clustering size based on the Maximum Likelihood Estimation of task runtime, system overheads and the inter-arrival time of failures. Our Vertical Reclustering method improves the performance significantly for  workflows that have a short task runtime. Our dynamic estimation using on-going data collected from the workflow execution can further improve the fault tolerance in a dynamic environment where the inter-arrival time of failures is fluctuant. In this paper, we only discuss the fault tolerant clustering and apply it to a homogeneous environment. In the future, we aim to combine our work with fault tolerant scheduling in heterogeneous environments, i.e, a scheduling algorithm that avoids mapping clustered jobs to failure-prone nodes. We are also interested to combine vertical clustering methods with horizontal clustering methods. For example, we can perform vertical clustering either before or after horizontal clustering, which we believe would bring different performance improvement. 
+As shown in our experiments, our dynamic estimation works well under some constraints, which encourages us to improve its performance further. For example, we may weight data based on the time it was collected, the closer the more weight on it. 
+\section{ACKNOWLEDGMENT}This work is supported by NFS under grant number IIS-0905032. We thank Gideon Juve, Karan Vahi, Mats Rynge and Rajiv Mayani for their help. 
 \bibliographystyle{elsarticle-num}
 \bibliography{biblio}
 
