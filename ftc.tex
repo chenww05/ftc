@@ -798,6 +798,8 @@ In this paper, we model transient failures in a distributed environment and asse
 
 In this paper, we only discuss the fault tolerant clustering and apply it to a homogeneous environment. In the future, we aim to combine our work with fault tolerant scheduling in heterogeneous environments, i.e, a scheduling algorithm that avoids mapping clustered jobs to failure-prone nodes. We are also interested to combine vertical clustering methods with horizontal clustering methods. For example, we can perform vertical clustering either before or after horizontal clustering, which we believe would bring different performance improvement. 
 As shown in our experiments, our dynamic estimation works well under some constraints, which encourages us to improve its performance further. For example, we may weight data based on the time it was collected, the closer the more weight on it. 
+
+Furthermore, we assume that the inter-arrival time of transient failures is a function of task type, which is one of the major impact factors. In the future, we aim to consider other major factors such as the execution site, which will improve the accuracy of the model. 
 \section{ACKNOWLEDGMENT}This work is supported by NFS under grant number IIS-0905032. We thank Gideon Juve, Karan Vahi, Mats Rynge and Rajiv Mayani for their help. Traces are collected from experiments that were run on FutureGrid that is supported by NSF FutureGrid 0910812. 
 
 \bibliographystyle{elsarticle-num}
