@@ -1,6 +1,6 @@
 
-\documentclass{IOS-Book-Article}
-
+%\documentclass{IOS-Book-Article}
+\documentclass[10pt,journal,cspaper,compsoc]{IEEEtran}
 \usepackage{mathptmx}
 \usepackage{rotating,todonotes, xspace}
 \usepackage{amssymb}
@@ -26,29 +26,82 @@
 %\usepackage[mtplusscr,mtbold]{mathtime}
 %
 \begin{document}
-\begin{frontmatter}              % The preamble begins here.
+%\begin{frontmatter}              % The preamble begins here.
 
 %\pretitle{Pretitle}
 \title{Dynamic and Fault Tolerant Clustering\\
   in Scientific Workflows}
-\runningtitle{Fault Tolerant Clustering}
-%\subtitle{Subtitle}
 
-\author[A]{{Weiwei} {Chen}%
-\thanks{Corresponding Author: Weiwei Chen, University of Southern California, Information Sciences Institute, Marina del Rey, CA, USA; E-mail:
-weiweichen@acm.org.}},
-\author[A]{Rafael Ferreira da Silva}, 
-\author[A]{{Ewa Deelman}},
-\author[B]{{Thomas Fahringer}}
-and
-\author[C]{Rizos Sakellariou}
 
-\runningauthor{W. Chen et al.}
-\address[A]{\small University of Southern California, Information Sciences Institute, Marina del Rey, CA, USA}
-\address[B]{\small University of Innsbruck, Institute for Computer Science, Innsbruck, Austria}
-\address[C]{\small University of Manchester, School of Computer Science, Manchester, U.K.}
+\author{Weiwei~Chen,~\IEEEmembership{Student Member,~IEEE,}
+        Rafael~Ferreira~da~Silva,~\IEEEmembership{Member,~IEEE,}
+	Ewa~Deelman, ~\IEEEmembership{Member, ~IEEE,}
+        and~Thomas~Fahringer,~\IEEEmembership{Member,~IEEE}% <-this % stops a space
+\IEEEcompsocitemizethanks{\IEEEcompsocthanksitem W. Chen, R. Silva and E. Deelman are with the Information Sciences Institute, University of Southern California, Marina del Rey, CA, USA.\protect\\
+% note need leading \protect in front of \\ to get a newline within \thanks as
+% \\ is fragile and will error, could use \hfil\break instead.
 
+\IEEEcompsocthanksitem T. Fahringer is with the Institute for Computer Science, University of Innsbruck, Innsbruck, Austria.\protect\\
+\IEEEcompsocthanksitem Corresponding author: Weiwei Chen weiweichen@acm.org
+}% <-this % stops a space
+\thanks{}}
+
+% note the % following the last \IEEEmembership and also \thanks - 
+% these prevent an unwanted space from occurring between the last author name
+% and the end of the author line. i.e., if you had this:
+% 
+% \author{....lastname \thanks{...} \thanks{...} }
+%                     ^------------^------------^----Do not want these spaces!
+%
+% a space would be appended to the last name and could cause every name on that
+% line to be shifted left slightly. This is one of those "LaTeX things". For
+% instance, "\textbf{A} \textbf{B}" will typeset as "A B" not "AB". To get
+% "AB" then you have to do: "\textbf{A}\textbf{B}"
+% \thanks is no different in this regard, so shield the last } of each \thanks
+% that ends a line with a % and do not let a space in before the next \thanks.
+% Spaces after \IEEEmembership other than the last one are OK (and needed) as
+% you are supposed to have spaces between the names. For what it is worth,
+% this is a minor point as most people would not even notice if the said evil
+% space somehow managed to creep in.
+
+
+
+% The paper headers
+\markboth{IEEE Transactions on Cloud Computing, July~2014}%
+{Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for Computer Society Journals}
+% The only time the second header will appear is for the odd numbered pages
+% after the title page when using the twoside option.
+% 
+% *** Note that you probably will NOT want to include the author's ***
+% *** name in the headers of peer review papers.                   ***
+% You can use \ifCLASSOPTIONpeerreview for conditional compilation here if
+% you desire.
+
+
+
+% The publisher's ID mark at the bottom of the page is less important with
+% Computer Society journal papers as those publications place the marks
+% outside of the main text columns and, therefore, unlike regular IEEE
+% journals, the available text space is not reduced by their presence.
+% If you want to put a publisher's ID mark on the page you can do it like
+% this:
+%\IEEEpubid{0000--0000/00\$00.00~\copyright~2007 IEEE}
+% or like this to get the Computer Society new two part style.
+%\IEEEpubid{\makebox[\columnwidth]{\hfill 0000--0000/00/\$00.00~\copyright~2007 IEEE}%
+%\hspace{\columnsep}\makebox[\columnwidth]{Published by the IEEE Computer Society\hfill}}
+% Remember, if you use this you must call \IEEEpubidadjcol in the second
+% column for its text to clear the IEEEpubid mark (Computer Society jorunal
+% papers don't need this extra clearance.)
+
+
+
+
+% for Computer Society papers, we must declare the abstract and index terms
+% PRIOR to the title within the \IEEEcompsoctitleabstractindextext IEEEtran
+% command as these need to go into the title area created by \maketitle.
+\IEEEcompsoctitleabstractindextext{%
 \begin{abstract}
+%\boldmath
 Large-scale scientific workflows can be composed of many fine computational granularity tasks. Task clustering has 
 been proven to be an effective method to reduce execution overhead and improve the computational granularity of 
 workflow tasks executing on distributed resources. However, a job composed of multiple tasks may have a higher 
@@ -62,20 +115,55 @@ improvements in such scenario. In addition, we propose a dynamic task clustering
 workflow makespan by dynamically adjusting the clustering granularity when failures arise. A trace-based simulation 
 of 5 real scientific workflows shows that our dynamic method is able to adapt from unexpected behaviors out of the model,
 and yields better makespan when compared to the static methods.
+
 \end{abstract}
+% IEEEtran.cls defaults to using nonbold math in the Abstract.
+% This preserves the distinction between vectors and scalars. However,
+% if the journal you are submitting to favors bold math in the abstract,
+% then you can use LaTeX's standard command \boldmath at the very start
+% of the abstract to achieve this. Many IEEE journals frown on math
+% in the abstract anyway. In particular, the Computer Society does
+% not want either math or citations to appear in the abstract.
 
-\begin{keyword}
-scientific workflows\sep fault tolerance\sep parameter estimation\sep failure\sep machine learning \sep task clustering\sep job grouping
-\end{keyword}
-\end{frontmatter}
+% Note that keywords are not normally used for peer review papers.
+\begin{keywords}
+scientific workflows, fault tolerance, parameter estimation, failure, machine learning, task clustering, job grouping
+\end{keywords}}
 
-\thispagestyle{empty}
-\pagestyle{empty}
+
+% make the title area
+\maketitle
+
+
+% To allow for easy dual compilation without having to reenter the
+% abstract/keywords data, the \IEEEcompsoctitleabstractindextext text will
+% not be used in maketitle, but will appear (i.e., to be "transported")
+% here as \IEEEdisplaynotcompsoctitleabstractindextext when compsoc mode
+% is not selected <OR> if conference mode is selected - because compsoc
+% conference papers position the abstract like regular (non-compsoc)
+% papers do!
+\IEEEdisplaynotcompsoctitleabstractindextext
+% \IEEEdisplaynotcompsoctitleabstractindextext has no effect when using
+% compsoc under a non-conference mode.
+
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+
+
+
+
 
 \section*{Introduction}
-
-
-Scientific workflows can be composed of many fine computational granularity tasks and the runtime of these tasks may be even shorter than the system overhead. System overhead is the period time during which miscellaneous work other than the user’s computation is performed. Task clustering \cite{Chen2013a, Singh2008, Chen2012, Maheshwari2012, Ferreira-granularity-2013, Integration2012} is a technique that merges several short tasks into a single job such that the job runtime is increased and the overall system overhead is decreased. 
+\IEEEPARstart{S}{cientific} workflows can be composed of many fine computational granularity tasks and the runtime of these tasks may be even shorter than the system overhead. System overhead is the period time during which miscellaneous work other than the user’s computation is performed. Task clustering \cite{Chen2013a, Singh2008, Chen2012, Maheshwari2012, Ferreira-granularity-2013, Integration2012} is a technique that merges several short tasks into a single job such that the job runtime is increased and the overall system overhead is decreased. 
 Task clustering has been proven to be an effective method to reduce execution overhead and increase the computational granularity of workflow tasks executing on distributed resources \cite{Ying2009, Singh2008, Chen2013a, Chen2012, Ferreira-granularity-2013}.
 However, existing clustering strategies ignore or underestimate the impact of the occurrence of failures on system behavior, despite the current and increasing importance of failures in large-scale distributed systems, such as Grids \cite{Bresnahan2011, Deelman2004, Rubing2005}, Clouds \cite{Deelman2008, Berriman2010, Bresnahan2011} and dedicated clusters. Many researchers \cite{Zhang2004, Tang1990, Schroeder2006, Sahoo2004} have emphasized the importance of fault tolerant design and indicated that the failure rates in modern distributed systems are significant. Among all possible failures, we focus on transient failures because they are expected to be more prevalent than permanent failures \cite{Zhang2004}. For example, denser integration of semiconductor circuits and lower operating voltage levels may increase the likelihood of bit-flips when circuits are bombarded by cosmic rays and other particles \cite{Zhang2004}. 
 
@@ -322,19 +410,19 @@ Figure \ref{fig:model_size} shows the relationship between the optimal clusterin
 
 
 
-\begin{figure*}[!htb]
+\begin{figure}[!htb]
 \centering
-  \includegraphics[width=0.75\linewidth]{model_makespan2.eps}
+  \includegraphics[width=0.95\linewidth]{model_makespan2.eps}
   \caption{Makespan with different clustering size and $\theta_{\gamma}$. ($n=1000$, $r=20$, $\phi_t=5$ sec, $\phi_s=50$ sec). The red dots are the minimums. }
   \label{fig:model_makespan}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[!htb]
+\begin{figure}[!htb]
 \centering
-  \includegraphics[width=0.75\linewidth]{model_size2.eps}
+  \includegraphics[width=0.95\linewidth]{model_size2.eps}
   \caption{Optimal clustering size (k*) with different  $\theta_{\gamma}$ ($n=1000$, $r=20$, $\phi_t=5$ sec, $\phi_s=50$ sec)}
   \label{fig:model_size}
-\end{figure*}
+\end{figure}
 
 
 From this theoretic analysis, we conclude that (\emph{i}) the longer the inter-arrival time of failures is, the better runtime performance the task clustering has; (\emph{ii}), adjusting the clustering size according to the detected inter-arrival time can improve the runtime performance. 
@@ -377,12 +465,12 @@ Horizontal Clustering (HC) merges multiple tasks that are at the same horizontal
 \end{algorithm}
 
 
-\begin{figure*}[!htb]
+\begin{figure}[!htb]
 \centering
-  \includegraphics[width=0.45\linewidth]{hcr.pdf}
+  \includegraphics[width=0.65\linewidth]{hcr.pdf}
   \caption{Horizontal Clustering (red boxes are failed tasks)}
   \label{fig:clustering_hc}
-\end{figure*}
+\end{figure}
 
 %The type of tasks is used to detect the task specific failures and the resource id is used to detect location specific failures. 
 Figure \ref{fig:clustering_hc} shows an example where the initial clustering size is 4 and as a result there are four tasks in a clustered job. During execution, three out of these tasks ($t_1, t_2, t_3$) fail. HC will keep retrying all of the four tasks in the following try until all of them succeed. Such a retry mechanism has been implemented and is used in Pegasus~\cite{Singh2008}.
@@ -390,12 +478,12 @@ Figure \ref{fig:clustering_hc} shows an example where the initial clustering siz
 
 
 
-\begin{figure*}[!htb]
+\begin{figure}[!htb]
 \centering
-  \includegraphics[width=0.40\linewidth]{sr.pdf}
+  \includegraphics[width=0.58\linewidth]{sr.pdf}
   \caption{Selective Reclustering (red boxes are failed tasks)}
   \label{fig:clustering_sr}
-\end{figure*}
+\end{figure}
 
 \textbf{Selective Reclustering} (\emph{SR}). HC does not adjust the clustering size even when it continuously sees many failures. We further improve the performance of the workflow execution with Selective Reclustering that selects the failed tasks in a clustered job and merges them into a new clustered job. SR is different from HC in that HC retries all tasks of a failed job even though some of the tasks have succeeded. 
 %SR requires task level monitoring in workflow management systems. 
@@ -423,12 +511,12 @@ Figure \ref{fig:clustering_sr} shows an example of SR. In the first try, there a
 
  
 
-\begin{figure*}[!htb]
+\begin{figure}[!htb]
 \centering
-  \includegraphics[width=0.45\linewidth]{dr.pdf}
+  \includegraphics[width=0.60\linewidth]{dr.pdf}
   \caption{Dynamic Reclustering (red boxes are failed tasks)}
   \label{fig:clustering_dr}
-\end{figure*}
+\end{figure}
 
 \textbf{Dynamic Reclustering} (\emph{DR}). 
 Selective Reclustering does not analyze the clustering size, rather it uses a self-adjusted approach to reduce the clustering size if the failure rate is too high. However, it is blind about the optimal clustering size and the actual clustering size may be larger or smaller than the optimal clustering size. We then propose the second method, Dynamic Reclustering. In DR, only failed tasks are merged into new clustered jobs and the clustering size is set to be $k^*$ according to Equation \ref{eq:k_optimal}.
@@ -461,12 +549,12 @@ Figure \ref{fig:clustering_dr} shows an example where the initial clustering siz
 	\end{algorithmic}
 \end{algorithm}
 
-\begin{figure*}[!htb]
+\begin{figure}[!htb]
 \centering
-  \includegraphics[width=0.75\linewidth]{vr.pdf}
+  \includegraphics[width=0.95\linewidth]{vr.pdf}
   \caption{Vertical Reclustering (red boxes are failed tasks)}
   \label{fig:clustering_vr}
-\end{figure*}
+\end{figure}
 
 \textbf{Vertical Reclustering} (\emph{VR}). VR is an extension of Vertical Clustering. Similar to Selective Reclustering, Vertical Reclustering only retries tasks that are failed or not completed.
 If there is a failure detected, we decrease $k$ by half and recluster these tasks. In Figure \ref{fig:clustering_vr}, if there is no assumption of failures initially, we put all the tasks ($t_1, t_2, t_3, t_4$) from the same  pipeline into a clustered job. $t_3$ fails at the first try assuming it is a failure-prone task (its $\theta_{\gamma}$ is short). VR retries only the failed tasks ($t_3$) and tasks that are not completed ($t_4$) and merges them again into a new job $j_2$. In the second try, $j_2$ fails and we divide it into two tasks ($t_3$ and $t_4$). Since the clustering size is already 1, VR performs no vertical clustering anymore and would continue retrying $t_3$ and $t_4$ (but still following their data dependency) until they succeed. Algorithm \ref{alg:evaluation_vr} shows the pseudocode of VR. 
@@ -530,41 +618,41 @@ In this section, we evaluate our methods with five workflows, whose runtime info
 The five widely used scientific workflow applications are: LIGO Inspiral analysis~\cite{LIGO}, Montage~\cite{Berriman2004}, CyberShake~\cite{Graves2010}, Epigenomics~\cite{Epigenome}, and SIPHT~\cite{SIPHT}. In this subsection, we describe each workflow application and present their main characteristics and structures.
 
 \paragraph{\textbf{LIGO}}
-\begin{figure*}[!htb]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.5\linewidth]{ligo_shape.pdf} \\
 	\caption{A simplified visualization of the LIGO Inspiral workflow.}
 	\label{fig:evaluation_shape_ligo}
-\end{figure*}
+\end{figure}
 Laser Interferometer Gravitational Wave Observatory (LIGO)~\cite{LIGO} workflows are used to search for gravitational wave signatures in data collected by large-scale interferometers. The observatories' mission is to detect and measure gravitational waves predicted by general relativity (Einstein's theory of gravity), in which gravity is described as due to the curvature of the fabric of time and space. The LIGO Inspiral workflow is a data-intensive workflow. Figure~\ref{fig:evaluation_shape_ligo} shows a simplified version of this workflow. The LIGO Inspiral workflow is separated into multiple groups of interconnected tasks, which we call branches in the rest of our paper. However, each branch may have a different number of pipelines as shown in Figure~\ref{fig:evaluation_shape_ligo}. 
 
-\begin{figure*}[htb]
+\begin{figure}[htb]
 	\centering
 	\includegraphics[width=0.45\linewidth]{montage_shape.pdf} \\
 	\caption{A simplified visualization of the Montage workflow.}
 	\label{fig:evaluation_shape_montage}
-\end{figure*}
+\end{figure}
 
 \paragraph{\textbf{Montage}}
 Montage~\cite{Berriman2004} is an astronomy application that is used to construct large image mosaics of the sky. Input images are reprojected onto a sphere and overlap is calculated for each input image. The application re-projects input images to the correct orientation while keeping background emission level constant in all images. The images are added by rectifying them to a common flux scale and background level. Finally the reprojected images are co-added into a final mosaic. The resulting mosaic image can provide a much deeper and detailed understanding of the portion of the sky in question. Figure~\ref{fig:evaluation_shape_montage} illustrates a small Montage workflow. The size of the workflow depends on the number of images used in constructing the desired mosaic of the sky. 
 %The structure of the workflow changes to accommodate increases in the number of inputs, which corresponds to an increase in the number of computational tasks.
 
-\begin{figure*}[htb]
+\begin{figure}[htb]
 	\centering
 	\includegraphics[width=0.55\linewidth]{cybershake_shape.pdf} \\
 	\caption{A simplified visualization of the CyberShake workflow.}
 	\label{fig:evaluation_shape_cybershake}
-\end{figure*}
+\end{figure}
 
 \paragraph{\textbf{Cybershake}}
 CyberShake~\cite{Graves2010} is a seismology application that calculates Probabilistic Seismic Hazard curves for geographic sites in the Southern California region. It identifies all ruptures within 200km of the site of interest and converts rupture definition into multiple rupture variations with differing hypocenter locations and slip distributions. It then calculates synthetic seismograms for each rupture variance, and peak intensity measures are then extracted from these synthetics and combined with the original rupture probabilities to produce probabilistic seismic hazard curves for the site. Figure~\ref{fig:evaluation_shape_cybershake} shows an illustration of the Cybershake workflow.
 
-\begin{figure*}[htb]
+\begin{figure}[htb]
 	\centering
 	\includegraphics[width=0.8\linewidth]{genome_shape.pdf} \\
 	\caption{A simplified visualization of the Epigenomics workflow with multiple branches.}
 	\label{fig:evaluation_shape_genome}
-\end{figure*}
+\end{figure}
 
 \paragraph{\textbf{Epigenomics}}
 The Epigenomics workflow~\cite{Epigenome} is a CPU-intensive application. Initial data are acquired from the Illumina-Solexa Genetic Analyzer in the form of DNA sequence lanes. Each Solexa machine can generate multiple lanes of DNA sequences. These data are converted into a format that can be used by sequence mapping software.
@@ -572,12 +660,12 @@ The Epigenomics workflow~\cite{Epigenome} is a CPU-intensive application. Initia
 It then maps DNA sequences to the correct locations in a reference Genome. This generates a map that displays the sequence density showing how many times a certain sequence expresses itself on a particular location on the reference genome. The simplified structure of Epigenomics is shown in Figure~\ref{fig:evaluation_shape_genome}. 
 %Different to the LIGO Inspiral workflow, each branch in Epigenomics has exactly the same number of pipelines, which makes it more symmetric. 
 
-\begin{figure*}[htb]
+\begin{figure}[htb]
 	\centering
 	\includegraphics[width=0.6\linewidth]{sipht_shape.pdf} \\
 	\caption{A simplified visualization of the SIPHT workflow.}
 	\label{fig:evaluation_shape_sipht}
-\end{figure*}
+\end{figure}
 
 \paragraph{\textbf{SIPHT}}
 The SIPHT workflow~\cite{SIPHT} conducts a wide search for small untranslated RNAs (sRNAs) that regulates several processes such as secretion or virulence in bacteria. The kingdom-wide prediction and annotation of sRNA encoding genes involves a variety of individual programs that are executed in the proper order using Pegasus~\cite{Deelman2004}. These involve the prediction of $\rho$-independent transcriptional terminators, BLAST (Basic Local Alignment Search Tools~\cite{BLAST}) comparisons of the inter genetic regions of different replicons and the annotations of any sRNAs that are found. A simplified structure of the SIPHT workflow is shown in Figure~\ref{fig:evaluation_shape_sipht}. 
@@ -615,7 +703,7 @@ We adopt a trace-based simulation approach, where we extend our WorkflowSim~\cit
 
 The simulated computing platform is composed by 20 single homogeneous core virtual machines (worker nodes), which is the quota per user of some typical distributed environments such as Amazon EC2~\cite{AmazonAWS} and FutureGrid~\cite{FutureGrid}. Amazon EC2 is a commercial, public cloud that has been widely used in distributed computing, in particular for scientific workflows~\cite{Berriman2010}. FutureGrid is a distributed, high-performance testbed that provides scientists with a set of computing resources to develop parallel, grid, and cloud applications. Each simulated virtual machine (VM) has 512MB of memory and the capacity to process 1,000 million instructions per second. The default network bandwidth is 15MB according to the real environment in FutureGrid from where our traces were collected. By default, we merge tasks at the same horizontal level into 20 clustered jobs initially, which is a simple selection of granularity control of the strength of task clustering. The study of granularity size has been done in~\cite{Chen2013b}, which shows such selection is acceptable.
 
-We collected workflow execution traces~\cite{Juve2013, Chen2011} (including overhead and task runtime information) from real runs (executed on FutureGrid and Amazon EC2) of the scientific workflow applications described in Section~\ref{sec:applications}. The traces are used to feed the Workflow Generator toolkit~\cite{WorkflowGenerator} to generate synthetic workflows. This allows us to perform simulations with several different configurations under controlled conditions. The toolkit uses the information gathered from actual scientific workflow executions to generate synthetic workflows resembling those used by real world scientific applications. The number of inputs to be processed, the number of tasks in the workflow, and their composition determine the structure of the generated workflow. Such an approach of traced based simulation allows us to utilize real traces and vary the system setting (i.e., the inter-arrival time of failures) and workflow (i.e., avg. task runtime) to fully explore the performance of our fault tolerant clustering algorithms. 
+We collected workflow execution traces~\cite{Juve2013, Chen2011} (including overhead and task runtime information) from real runs (executed on FutureGrid and Amazon EC2) of the scientific workflow applications described in Section~\ref{sec:applications}. The traces are used to feed the Workflow Generator toolkit~\cite{rafael2014community} to generate synthetic workflows. This allows us to perform simulations with several different configurations under controlled conditions. The toolkit uses the information gathered from actual scientific workflow executions to generate synthetic workflows resembling those used by real world scientific applications. The number of inputs to be processed, the number of tasks in the workflow, and their composition determine the structure of the generated workflow. Such an approach of traced based simulation allows us to utilize real traces and vary the system setting (i.e., the inter-arrival time of failures) and workflow (i.e., avg. task runtime) to fully explore the performance of our fault tolerant clustering algorithms. 
 
 Three sets of experiments are conducted. Experiment 1 evaluates the performance of our fault tolerant clustering methods (DR, VR, and SR) over an existing task clustering method (HC) that is not fault tolerant for the five workflows. The goal of the experiment is to identify conditions where each method works best and worst. In addition, we also evaluate the performance improvement with different $\theta_{\gamma}$ (the inter-arrival time of task failures). The range of $\theta_{\gamma}$ is chosen from 10x to 1x of the average task runtime such that the workflows do not run forever and we can visualize the performance difference better. 
 
@@ -624,12 +712,12 @@ Experiment 2 evaluates the performance impact of the variation of the average ta
 
 Experiment 3 evaluates the performance of dynamic estimation and static estimation. In the static estimation process, we only use the prior knowledge to estimate the MLEs of the unknown parameters. In the dynamic estimation process, we also leverage the runtime data collected during the execution and update the MLEs respectively. 
 
-\begin{figure*}[htb]
+\begin{figure}[htb]
 	\centering
 	\includegraphics[width=0.8\linewidth]{step_signal.pdf} \\
 	\caption{A Step Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_d$ is the moment $\theta_{\gamma}$ changes from 500 to 50 seconds}
 	\label{fig:evaluation_step_signal}
-\end{figure*}
+\end{figure}
 
 \begin{equation}
 \label{eq:step_function}
@@ -643,12 +731,12 @@ Experiment 3 evaluates the performance of dynamic estimation and static estimati
 In this experiment, we use two sets of $\theta_{\gamma}$ function. The first one is a step function, in which we decrease $\theta_{\gamma}$ from 500 seconds to 50 seconds at time $T_d$ to simulate the scenario where there are more failures coming than expected. We evaluate the performance difference of dynamic estimation and static estimation while $1000\leq T_d\leq 5000$ based on the estimation of the workflow makespan. The function is shown  in Figure \ref{fig:evaluation_step_signal} and Equation \ref{eq:step_function}, while $t_c$ is the current time. Theoretically speaking, the later we change $\theta_{\gamma}$, the less the reclustering is influenced by the estimation error and thus the smaller the workflow makespan is. There is one special case when $T_d\to 0$, which means the prior knowledge is wrong at the very beginning. The second one is a pulse wave function, which the amplitude alternates at a steady frequency between fixed minimum (50 seconds) to maximum (500 seconds) values. The function is shown in Figure \ref{fig:evaluation_pulse_signal} and Equation \ref{eq:pulse_function}. $T_c$ is the period and $\tau$ is the duty cycle of the oscillator. It simulates a scenario where the failures follow a periodic pattern \cite{yigitbasi2010analysis} that has been found in many failure traces obtained from production distributed systems. In our paper, we vary $T_c$ from 1000 seconds to 10000 seconds based on the estimation of workflow makespan and $\tau$ from $0.1T_c$ to $0.5T_c$. 
 
 
-\begin{figure*}[htb]
+\begin{figure}[htb]
 	\centering
 	\includegraphics[width=0.8\linewidth]{pulse_signal.pdf} \\
 	\caption{A Pulse Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_c$ is the period of the wave. $\tau$ is the width of the pulse. }
 	\label{fig:evaluation_pulse_signal}
-\end{figure*}
+\end{figure}
 
 
 \begin{equation}
@@ -661,7 +749,7 @@ In this experiment, we use two sets of $\theta_{\gamma}$ function. The first one
 \end{equation}
 
 Table~\ref{tab:evaluation_methods} summarizes the task clustering methods to be evaluated in our experiments. In our experiments, our algorithms take less than 10ms to do the reclustering for each job and thereby they are highly efficient even for large-scale workflows. 
-\begin{table*}[!htb]
+\begin{table}[!htb]
 	%\setlength{\tabcolsep}{11pt}
 	\centering
 	\small
@@ -677,7 +765,7 @@ Table~\ref{tab:evaluation_methods} summarizes the task clustering methods to be 
 	\end{tabular}
 	\caption{Methods to Evaluate in Experiements}
 	\label{tab:evaluation_methods}
-\end{table*} 
+\end{table} 
 
 
 \subsection{Results and discussion}
@@ -803,9 +891,45 @@ In this paper, we only discuss the fault tolerant clustering and apply it to a h
 %Our dynamic estimation using on-going data collected from the workflow execution can further improve the fault tolerance in a dynamic environment where the inter-arrival time of failures is fluctuant. 
 
 Furthermore, we assume that the inter-arrival time of transient failures is a function of task type, which is one of the major impact factors. In the future, we aim to consider other major factors such as the execution site, which will improve the accuracy of the model. 
-\section{ACKNOWLEDGMENT}This work is supported by NFS under grant number IIS-0905032. We thank Gideon Juve, Karan Vahi, Mats Rynge and Rajiv Mayani for their help. Traces are collected from experiments that were run on FutureGrid that is supported by NSF FutureGrid 0910812. 
+
+
+
+% use section* for acknowledgement
+\ifCLASSOPTIONcompsoc
+  % The Computer Society usually uses the plural form
+  \section*{Acknowledgments}
+\else
+  % regular IEEE prefers the singular form
+  \section*{Acknowledgment}
+\fi
+
+
+This work is supported by NFS under grant number IIS-0905032. We thank Gideon Juve, Karan Vahi, Mats Rynge and Rajiv Mayani for their help. Traces are collected from experiments that were run on FutureGrid that is supported by NSF FutureGrid 0910812. 
+
+
 
 \bibliographystyle{elsarticle-num}
 \bibliography{biblio}
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{weiwei.eps}}]{Weiwei Chen} is a Ph.D. candidate in the Dept. of Computer Science, University of Southern California, USA. In 2009, he completed his bachelor on adaptive query processing in the Dept. of Automation, Tsinghua University, China and he received his Master's degree in Computer Science from University of Southern California in 2012. He is currently working on task clustering in scientific workflows. His research interests include distributed computing, services computing and data analysis. 
+\end{IEEEbiography}
+% insert where needed to balance the two columns on the last page with
+% biographies
+%\newpage
+
+
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{rafael.eps}}]{Rafael Ferreira da Silva} is a Computer Scientist in the Collaborative Computing Group at the USC Information Sciences Institute. He received his PhD in Computer Science from INSA-Lyon, France, in 2013. In 2010, he received his Master's degree in Computer Science from Universidade Federal de Campina Grande, Brazil, and his BS degree in Computer Science  from Universidade Federal da Paraiba, in 2007. His research focuses on  the execution of scientific workflows on heterogeneous distributed systems such as clouds and grids. See http://www.rafaelsilva.com for further information.
+\end{IEEEbiography}
+
+%\newpage
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{deelman.eps}}]{Ewa Deelman} is a Research Associate Professor at the USC Computer Science Department and a Assistant Division Director at the USC Information Sciences Institute. Dr. Deelman's research interests include the design and exploration of collaborative, distributed scientific environments, with particular emphasis on workflow management as well as the management of large amounts of data and metadata. At ISI, Dr. Deelman is leading the Pegasus project, which designs and implements workflow mapping techniques for large-scale applications running in distributed environments. Pegasus is being used today in a number of scientific disciplines, enabling researches to formulate complex computations in a declarative way. Dr. Deelman received her PhD in Computer Science from the Rensselaer Polytechnic Institute in 1997. Her thesis topic was in the area of parallel discrete event simulation, where she applied parallel programming techniques to the simulation of the spread of Lyme disease in nature.
+\end{IEEEbiography}
+
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{thomas.eps}}]{Thomas Fahringer} received the Ph.D. degree in 1993 from the Vienna University of Technology. Between 1990 and 1998, he worked as an assistant professor at the University of Vienna, where he was promoted as an associate professor in 1998. Since 2003, he has been a full professor of computer science in the Institute of Computer Science, University of Innsbruck, Austria. His main research interests include software architectures, programming paradigms, compiler technology, performance analysis, and prediction for parallel and distributed systems. He coordinated the IST-034601 edutain@grid project and was involved in numerous other Austrian and international European projects. He is the author of more than 100 papers, including three books. Prof. Fahringer was the recipient of two best paper awards from the ACM and the IEEE.
+\end{IEEEbiography}
+
 
 \end{document}
