@@ -29,7 +29,7 @@
 %\begin{frontmatter}              % The preamble begins here.
 
 %\pretitle{Pretitle}
-\title{Dynamic and Fault Tolerant Clustering\\
+\title{Dynamic and Fault-Tolerant Clustering\\
   in Scientific Workflows}
 
 
@@ -255,7 +255,7 @@ analysis of techniques to prevent and mitigate service failures~\cite{Oppenheime
 
 %Tang et al.~\cite{Tang1990} presents common system failures characteristics such as errors, failure distributions and hazard rates. Schroeder et al. \cite{Schroeder2006} have studied the statistics of the data, including the root cause of failures, the mean time between failures, and the mean time to repair. Sahoo et al. \cite{Sahoo2004} analyzed the empirical and statistical properties of system errors and failures from a network of heterogeneous servers running a diverse workload. Oppenheimer et al. \cite{Oppenheimer2002} analyzed the causes of failures from three large-scale Internet services and the effectiveness of various techniques for preventing and mitigating service failure. 
 
-In scientific workflow management systems (WMS), fault-tolerance issues have also 
+In scientific workflow management systems (WMS), fault tolerance issues have also 
 been addressed. For instance, the Pegasus WMS~\cite{Deelman2004} has incorporated 
 a task-level monitoring system, which retries a job if a failure is detected. Provenance data
 is also tracked and used to analyze the cause of failures~\cite{Samak2011}. A survey of
@@ -289,7 +289,7 @@ together. Recently, Ferreira da Silva et al.~\cite{Ferreira-granularity-2013, Fe
 proposed task grouping and ungrouping algorithms to control workflow task granularity in a non-clairvoyant 
 and online context, where none or few characteristics about the application or resources are known 
 in advance. Although these techniques significantly reduce the impact of the scheduling and queuing 
-overheads, they do not address the fault-tolerance problem.
+overheads, they do not address the fault tolerance problem.
 
 %Overhead analysis~\cite{Ostberg2011, Prodan2008} is a topic of great interest in the Grid community. Stratan et al.~\cite{Stratan2008} evaluate in a real-world environment Grid workflow engines including DAGMan/Condor and Karajan/Globus. Their methodology focuses on five system characteristics: overhead, raw performance, stability, scalability, and reliability. They pointed out that head node consumption should not be negligible and the main bottleneck in a busy system is often the head node. Prodan et al.~\cite{Prodan2008} offered a complete Grid workflow overhead classification and a systematic measurement of overheads. In Chen et al.~\cite{Chen2011}, we extended~\cite{Prodan2008} by providing a measurement of major overheads imposed by workflow management systems and execution environments and analyzed how existing optimization techniques improve runtime by reducing or overlapping overheads. The prevalent existence of system overheads is an important reason why task clustering provides significant performance improvement for workflow-based applications. In this work, we aim to further improve the performance of task clustering in a faulty execution environment. 
 
@@ -435,52 +435,97 @@ runtime $\bm t$, the system overhead $\bm s$, and the inter-arrival time of task
 \subsection{Task Failure Model}
 \label{sec:task-failure-model}
 
-%For system overhead $p(X|\theta)$, we assume it follows an Weibull distribution with known shape $\phi=0.78$. When $x>0$, the PDF of $p(x|\theta, \phi)$ is
+In our prior work~\cite{Chen2011}, we have verified that system overheads $s$ better fits a Gamma or 
+a Weibull distribution rather than an Exponential or Normal distribution. Schroeder et al.~\cite{Schroeder2006} 
+have verified that the inter-arrival time of task failures fits a Weibull distribution with a shape parameter 
+of 0.78, which fits better than the Lognormal and Exponential distributions. In~\cite{McConnel}, transient 
+errors also follow a Weibull distribution. In~\cite{Sun2003, Iosup2008}, Weibull, Gamma and Lognormal 
+distributions are among the best fit to estimate task runtimes for a set of workflow traces. Without loss of 
+generality, we choose the Gamma distribution to model the task runtime~($\bm t$) and the system 
+overhead ($\bm s$), and the Weibull distribution to model the inter-arrival time of failures ($\bm\gamma$). 
+$\bm s$, $\bm t$ and $\bm \gamma$ are random variables of all tasks instead of one specific task. 
 
-%\begin{equation}
-%f(x|\theta, \phi)=\frac{\phi}{\theta} (\frac{x}{\theta})^{\phi-1}e^{-(x/\theta)^{\phi}}  \nonumber
-%\end{equation}
+\todo[inline]{Add a table that explains all variables used in the paper.}
 
-%Transient errors in computer systems have been analyzed in~\cite{McConnel} and showed that transient errors follow a Weibull distribution. In \cite{Sun2003, Iosup2008}, Weibull distribution is one of the best fit for the workflow traces they used.  Based on these studies, we measure the inter-arrival time of failures in a workflow and then provide methods to improve task clustering. 
+% We will reuse this shape parameter of 0.78 in our failure model. 
 
-In our prior work \cite{Chen2011}, we have verified that system overheads $s$ fits a Gamma or a Weibull distribution better than two other potential distributions (Exponential and Normal). Schroeder et. al. \cite{Schroeder2006} have verified the inter-arrival time of task failures fits a Weibull distribution with a shape parameter of 0.78 better than lognormal and exponential distribution. We will reuse this shape parameter of 0.78 in our failure model. 
-In \cite{Sun2003, Iosup2008} Weibull, Gamma and Lognormal distribution are among the best fit to estimate task runtimes for the workflow traces they used.  Without loss of generality, we choose the Gamma distribution to model the task runtime ($\bm t$) and the system overhead ($\bm s$) and use the Weibull distribution to model the inter-arrival times of failures ($\bm\gamma$).  $\bm s$, $\bm t$ and $\bm \gamma$ are all random variables of all tasks instead of one specific task. 
+Probability distributions such as Weibull and Gamma are usually described with two parameters: the 
+\emph{shape parameter}~($\phi$) and the \emph{scale parameter}~($\theta$). The shape parameter 
+affects the shape of a distribution, while the scale parameter affects the stretching or shrinking of a 
+distribution. Both parameters control the characteristics of a distribution. For example, the mean of a 
+Gamma distribution is $\phi\theta$ and the Maximum Likelihood Estimation (MLE) is $(\phi-1)\theta$. 
 
-Probability distributions such as Weibull and Gamma are usually described with two parameters: the \emph{shape parameter} ($\phi$) and the \emph{scale parameter} ($\theta$). The shape parameter affects the shape of a distribution and the scale parameter affects the stretching or shrinking of a distribution. Both of them control the characteristics of a distribution. For example, the mean of a Gamma distribution is $\phi\theta$ and the Maximum Likelihood Estimation or MLE is $(\phi-1)\theta$. 
+Let $a$, $b$ be the parameters of the prior knowledge, $D$ the observed dataset, and $\theta$ the 
+parameter we aim to estimate. In Bayesian probability theory, if the posterior distribution $p(\theta|D, a, b)$ 
+is in the same family as the prior distribution $p(\theta|a, b)$, the prior and the posterior distributions 
+are then called conjugate distributions, and the prior is called a conjugate prior for the likelihood 
+function~\cite{diaconis1979conjugate}. For example, the Inverse-Gamma family is conjugate to itself 
+(or self-conjugate) with respect to a Weibull likelihood function: if the likelihood function is Weibull, 
+choosing an Inverse-Gamma prior over the mean will ensure that the posterior distribution is also 
+Inverse-Gamma. Based on this definition, the parameters estimation of our task failure model has 
+its foundations on prior works on failure and performance analyzes~\cite{Schroeder2006, Iosup2008, 
+Sun2003, Chen2011}.
 
-Assume $a,b$ are the parameters of the prior knowledge, $D$ is the observed dataset and $\theta$ is the parameter we aim to estimate. In Bayesian probability theory, if the posterior distribution $p(\theta|D, a, b)$ is in the same family as the prior distribution $p(\theta|a, b)$, the prior and the posterior distributions are then called conjugate distributions, and the prior is called a conjugate prior for the likelihood function~\cite{diaconis1979conjugate}. For example, the Inverse-Gamma family is conjugate to itself (or self-conjugate) with respect to a Weibull likelihood function: if the likelihood function is Weibull, choosing an Inverse-Gamma prior over the mean will ensure that the posterior distribution is also Inverse-Gamma. This simplifies the estimation of parameters since we can reuse the prior work from other researchers \cite{Schroeder2006, Iosup2008, Sun2003, Chen2011} on the failure analysis and performance analysis. 
-
-After we observe data $D$, we compute the posterior distribution of $\theta$:
+Therefore, once observed data $D$, the posterior distribution of $\theta$ is determined as follows:
 
 \begin{eqnarray}
 	\displaystyle  
 	p(\theta|D, a, b)&=&\frac{p(\theta|a, b)\times p(D|\theta)}{p(D|a, b)}\nonumber  \\
-	&\propto&p(\theta|a, b)\times p(D|\theta)\nonumber 
+	&\propto&p(\theta|a, b)\times p(D|\theta)
 \end{eqnarray}
+where $D$ is the observed inter-arrival time of failures~$X$, the observed task runtime~$RT$, 
+or the observed system overheads~$S$; $p(\theta|D,a, b)$ is the posterior we aim to compute; 
+$p(\theta|a, b)$ is the prior, which we already known from previous works; and $p(D|\theta)$ is 
+the likelihood. We define $X=\{x_1, x_2, \dots, x_n\}$ as the observed data of the inter-arrival time 
+of failures~$\bm\gamma$ during the execution. Similarly, we define $RT=\{t_1, t_2, \dots, t_n\}$ 
+and  $S=\{s_1, s_2, \dots, s_n\}$ as the observed data of task runtime~$\bm t$ and system 
+overheads~$\bm s$ respectively.  
 
-In our paper, $D$ can be the observed inter-arrival time of failures $X$, the observed task runtime $RT$ or the observed system overheads $S$. 
-$X=\{x_1, x_2, ..., x_n\}$ is the observed data of $\bm\gamma$ during the runtime. Similarly, we define $RT=\{t_1, t_2, ..., t_n\}$ and $S=\{s_1, s_2, ..., s_n\}$ as the observed data of $\bm t$ and $\bm s$ respectively. $p(\theta|D,a, b)$ is the posterior that we aim to compute. $p(\theta|a, b)$ is the prior, which we have already known from previous work. $p(D|\theta)$ is the likelihood. 
-%We only need to know its shape parameter instead of its scale parameter, which reduces the work to estimate its scale parameter. 
+More specifically, we model the inter-arrival time of failures ($\bm\gamma$) with a Weibull distribution 
+as in~\cite{Schroeder2006}, which has a known shape parameter of~$\phi_{\gamma}$ and an 
+unknown scale parameter~$\theta_{\gamma}$: $\bm\gamma\sim W(\theta_{\gamma}, \phi_{\gamma})$. 
 
+The conjugate pair of a Weibull distribution with a known shape parameter~$\phi_{\gamma}$ is an 
+Inverse-Gamma distribution, which means if the prior distribution follows an Inverse-Gamma 
+distribution $\Gamma^{-1}(a_{\gamma}, b_{\gamma})$ with the shape parameter as~$a_{\gamma}$ 
+and the scale parameter as $b_{\gamma}$, then the posterior follows an Inverse-Gamma distribution
+as follows:
 
-
-More specifically, we model the inter-arrival time of failures ($\bm\gamma$) with a Weibull distribution as \cite{Schroeder2006} that has a known shape parameter of $\phi_{\gamma}$ and an unknown scale parameter $\theta_{\gamma}$: $\bm\gamma\sim W(\theta_{\gamma}, \phi_{\gamma})$. 
-
-The conjugate pair of a Weibull distribution with a known shape parameter $\phi_{\gamma}$ is an Inverse-Gamma distribution, which means if the prior distribution follows an Inverse-Gamma distribution $\Gamma^{-1}(a_{\gamma}, b_{\gamma})$ with the shape parameter as $a_{\gamma}$ and the scale parameter as $b_{\gamma}$, then the posterior follows an Inverse-Gamma distribution:
 \begin{equation}
-\theta_{\gamma}\sim\Gamma^{-1}(a_{\gamma}+n,\displaystyle b_{\gamma}+\sum_{i=1}^n{x_i^{\phi_{\gamma}}})
-\label{eq:theta-1}
+	\theta_{\gamma}\sim\Gamma^{-1}(a_{\gamma}+n,\displaystyle b_{\gamma}+\sum_{i=1}^n{x_i^{\phi_{\gamma}}})
+	\label{eq:theta-1}
  \end{equation}
-The MLE (Maximum Likelihood Estimation) of the scale parameter $\theta_{\gamma}$ is:
+
+The MLE (Maximum Likelihood Estimation) of the scale parameter $\theta_{\gamma}$ is defined as:
+
 \begin{equation}
-MLE(\theta_{\gamma})=\displaystyle\frac{b_{\gamma}+\displaystyle\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}{a_{\gamma}+n+1}
+	MLE(\theta_{\gamma})=\displaystyle\frac{b_{\gamma}+\displaystyle\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}{a_{\gamma}+n+1}
 \end{equation}
-The understanding of the MLE has two folds: initially we do not have any data and thus the MLE is $\displaystyle\frac{b_{\gamma}}{a_{\gamma}+1}$, which means it is determined by the prior knowledge; when $n\to\infty$, the MLE $\displaystyle\frac{\displaystyle\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}{n+1}\to\overline{x^{\phi_{\gamma}}}$, which means it is determined by the observed data and it is close to the regularized average of the observed data. The static estimation process only utilizes the prior knowledge and the dynamic estimation process uses both the prior and the posterior knowledge. 
+The understanding of the MLE is two fold: in the initial case there is no data, thus the MLE is determined
+by the prior knowledge, i.e. $\displaystyle\frac{b_{\gamma}}{a_{\gamma}+1}$; when $n~\to~\infty$, the 
+MLE $\displaystyle\frac{\displaystyle\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}{n+1}\to\overline{x^{\phi_{\gamma}}}$, 
+which means it is determined by the observed data, and is close to the regularized average of the observed 
+data. 
 
-We model the task runtime ($\bm t$) with a Gamma distribution as \cite{Sun2003, Iosup2008} with a known shape parameter $\phi_{t}$ and an unknown scale parameter $\theta_t$. The conjugate pair of Gamma distribution with a known shape parameter is also a Gamma distribution. If the prior  knowledge follows $\Gamma(a_t, b_t)$, while $a_t$ is the shape parameter and $b_t$ is the rate parameter (or $\displaystyle \frac{1}{b_t}$ is the scale parameter), the posterior follows $\Gamma(a_t+n\phi_t, b_t+\displaystyle\sum_{i=1}^n{t_i})$ with $a_t+n\phi_t$ as the shape parameter and $b_t+\displaystyle\sum_{i=1}^n{t_i}$ as the rate parameter. The MLE of $\theta_t$ is $\displaystyle\frac{b_t+\displaystyle\sum_{i=1}^n{t_i}}{a_t+n\phi_t-1}$. 
+%The static estimation process only utilizes the prior knowledge and the dynamic estimation process uses both the prior and the posterior knowledge. 
 
-Similarly, if we model the system overhead $\bm s$ with a Gamma distribution with a known shape parameter $\phi_{s}$ and an unknown scale parameter $\theta_s$, and the prior knowledge is $\Gamma(a_s, b_s)$, the MLE of $\theta_s$ is thus $\displaystyle\frac{b_s+\displaystyle\sum_{i=1}^n{s_i}}{a_s+n\phi_s-1}$.
-%Should not consider the resource
+We model the task runtime ($\bm t$) with a Gamma distribution as in~\cite{Sun2003, Iosup2008}, 
+with a known shape parameter~$\phi_{t}$ and an unknown scale parameter~$\theta_t$. The 
+conjugate pair of Gamma distribution with a known shape parameter is also a Gamma distribution. 
+If the prior knowledge follows $\Gamma(a_t, b_t)$, where $a_t$ is the shape parameter and 
+$b_t$ the rate parameter (or $\displaystyle \frac{1}{b_t}$ is the scale parameter), the posterior 
+follows $\Gamma(a_t+n\phi_t, b_t+\displaystyle\sum_{i=1}^n{t_i})$ with $a_t+n\phi_t$ as the 
+shape parameter and $b_t+\displaystyle\sum_{i=1}^n{t_i}$ as the rate parameter. The MLE of 
+$\theta_t$ is then defined as $\displaystyle\frac{b_t+\displaystyle\sum_{i=1}^n{t_i}}{a_t+n\phi_t-1}$. 
+
+\vspace{5pt}
+Similarly, if we model the system overhead~$\bm s$ with a Gamma distribution with a known 
+shape parameter $\phi_{s}$ and an unknown scale parameter $\theta_s$, and the prior knowledge 
+as $\Gamma(a_s, b_s)$, the MLE of $\theta_s$ is thus 
+$\displaystyle\frac{b_s+\displaystyle\sum_{i=1}^n{s_i}}{a_s+n\phi_s-1}$.
+
+
+
 
 We have already assumed the task runtime, system overhead, and inter-arrival time between failures are a function of task types. The reason is that tasks at different levels (the deepest depth from the entry task to this task) are usually of different types in scientific workflows. Given $n$ independent tasks at the same workflow level and the distribution of the task runtime, the system overhead, and the inter-arrival time of failures, we aim to reduce the overall runtime $\bm M$ of completing these tasks by adjusting the clustering size $k$ (the number of tasks in a job). 
 $\bm M$ is also a random variable and it includes the system overheads and the runtime of the clustered job and its subsequent retry jobs if the first try fails. We also assume that task failures are independent for each worker node (but with the same distribution) without considering the failures that bring the whole system down such as a failure in the shared file system. 
@@ -588,10 +633,10 @@ Figure \ref{fig:model_size} shows the relationship between the optimal clusterin
 
 From this theoretic analysis, we conclude that (\emph{i}) the longer the inter-arrival time of failures is, the better runtime performance the task clustering has; (\emph{ii}), adjusting the clustering size according to the detected inter-arrival time can improve the runtime performance. 
 
-\section{Fault Tolerant Clustering}
+\section{Fault-Tolerant Clustering}
 \label{sec:clustering}
 
-As indicated in Section \ref{sec:model}, inappropriate clustering may increase the workflow makespan. To improve the fault tolerance from the point of view of task clustering, we propose three methods: Dynamic Reclustering (\emph{DR}), Selective Reclustering (\emph{SR}) and Vertical Reclustering (\emph{VR}). In the experiments, we compare the performance of our fault tolerant clustering methods to an existing version of Horizontal Clustering (HC)~\cite{Singh2008} technique. In this subsection, we first briefly describe these algorithms.
+As indicated in Section \ref{sec:model}, inappropriate clustering may increase the workflow makespan. To improve the fault tolerance from the point of view of task clustering, we propose three methods: Dynamic Reclustering (\emph{DR}), Selective Reclustering (\emph{SR}) and Vertical Reclustering (\emph{VR}). In the experiments, we compare the performance of our fault-tolerant clustering methods to an existing version of Horizontal Clustering (HC)~\cite{Singh2008} technique. In this subsection, we first briefly describe these algorithms.
 
 \textbf{Horizontal Clustering} (\emph{HC}). 
 Horizontal Clustering (HC) merges multiple tasks that are at the same horizontal level of the workflow. The clustering granularity (number of tasks within a cluster) of a clustered job is controlled by the user, who defines either the number of tasks per clustered job (\emph{clusters.size}), or the number of clustered jobs per horizontal level of the workflow (\emph{clusters.num}). This algorithm has been implemented and used in Pegasus~\cite{Singh2008}. For simplicity, we set \emph{clusters.num} to be the same as the number of available resources. In our prior work~\cite{Chen2013a,Chen2013b}, we have compared the runtime performance with different clustering granularity. The pseudocode of the HC technique is shown in Algorithm~\ref{alg:evaluation_hc}. The Clustering and Merge Procedures are called in the initial task clustering process while the Reclustering Procedure is called when there is a failed job detected by the monitoring system. 
@@ -860,13 +905,13 @@ Table~\ref{tab:evaluation_workflows} shows the summary of the main \textbf{workf
 % Experiment conditions
 \subsection{Experiment conditions}
 \label{sec:experiment_conditions}
-We adopt a trace-based simulation approach, where we extend our WorkflowSim~\cite{WorkflowSim} simulator with the fault tolerant clustering methods to simulate a controlled distributed environment. WorkflowSim is an open source workflow simulator that extends CloudSim~\cite{Calheiros2011} by providing support for task clustering, task scheduling, and resource provisioning at the workflow level. It has been recently used in multiple workflow study areas~\cite{WorkflowSim,Chen2012, jrad2013broker} and its correctness has been verified in~\cite{WorkflowSim}. 
+We adopt a trace-based simulation approach, where we extend our WorkflowSim~\cite{WorkflowSim} simulator with the fault-tolerant clustering methods to simulate a controlled distributed environment. WorkflowSim is an open source workflow simulator that extends CloudSim~\cite{Calheiros2011} by providing support for task clustering, task scheduling, and resource provisioning at the workflow level. It has been recently used in multiple workflow study areas~\cite{WorkflowSim,Chen2012, jrad2013broker} and its correctness has been verified in~\cite{WorkflowSim}. 
 
 The simulated computing platform is composed by 20 single homogeneous core virtual machines (worker nodes), which is the quota per user of some typical distributed environments such as Amazon EC2~\cite{AmazonAWS} and FutureGrid~\cite{FutureGrid}. Amazon EC2 is a commercial, public cloud that has been widely used in distributed computing, in particular for scientific workflows~\cite{Berriman2010}. FutureGrid is a distributed, high-performance testbed that provides scientists with a set of computing resources to develop parallel, grid, and cloud applications. Each simulated virtual machine (VM) has 512MB of memory and the capacity to process 1,000 million instructions per second. The default network bandwidth is 15MB according to the real environment in FutureGrid from where our traces were collected. By default, we merge tasks at the same horizontal level into 20 clustered jobs initially, which is a simple selection of granularity control of the strength of task clustering. The study of granularity size has been done in~\cite{Chen2013b}, which shows such selection is acceptable.
 
-We collected workflow execution traces~\cite{Juve2013, Chen2011} (including overhead and task runtime information) from real runs (executed on FutureGrid and Amazon EC2) of the scientific workflow applications described in Section~\ref{sec:applications}. The traces are used to feed the Workflow Generator toolkit~\cite{rafael2014community} to generate synthetic workflows. This allows us to perform simulations with several different configurations under controlled conditions. The toolkit uses the information gathered from actual scientific workflow executions to generate synthetic workflows resembling those used by real world scientific applications. The number of inputs to be processed, the number of tasks in the workflow, and their composition determine the structure of the generated workflow. Such an approach of traced based simulation allows us to utilize real traces and vary the system setting (i.e., the inter-arrival time of failures) and workflow (i.e., avg. task runtime) to fully explore the performance of our fault tolerant clustering algorithms. 
+We collected workflow execution traces~\cite{Juve2013, Chen2011} (including overhead and task runtime information) from real runs (executed on FutureGrid and Amazon EC2) of the scientific workflow applications described in Section~\ref{sec:applications}. The traces are used to feed the Workflow Generator toolkit~\cite{rafael2014community} to generate synthetic workflows. This allows us to perform simulations with several different configurations under controlled conditions. The toolkit uses the information gathered from actual scientific workflow executions to generate synthetic workflows resembling those used by real world scientific applications. The number of inputs to be processed, the number of tasks in the workflow, and their composition determine the structure of the generated workflow. Such an approach of traced based simulation allows us to utilize real traces and vary the system setting (i.e., the inter-arrival time of failures) and workflow (i.e., avg. task runtime) to fully explore the performance of our fault-tolerant clustering algorithms. 
 
-Three sets of experiments are conducted. Experiment 1 evaluates the performance of our fault tolerant clustering methods (DR, VR, and SR) over an existing task clustering method (HC) that is not fault tolerant for the five workflows. The goal of the experiment is to identify conditions where each method works best and worst. In addition, we also evaluate the performance improvement with different $\theta_{\gamma}$ (the inter-arrival time of task failures). The range of $\theta_{\gamma}$ is chosen from 10x to 1x of the average task runtime such that the workflows do not run forever and we can visualize the performance difference better. 
+Three sets of experiments are conducted. Experiment 1 evaluates the performance of our fault-tolerant clustering methods (DR, VR, and SR) over an existing task clustering method (HC) that is not fault-tolerant for the five workflows. The goal of the experiment is to identify conditions where each method works best and worst. In addition, we also evaluate the performance improvement with different $\theta_{\gamma}$ (the inter-arrival time of task failures). The range of $\theta_{\gamma}$ is chosen from 10x to 1x of the average task runtime such that the workflows do not run forever and we can visualize the performance difference better. 
 
 
 Experiment 2 evaluates the performance impact of the variation of the average task runtime per level (defined as the average of all the tasks per level) and the average system overheads per level for one scientific workflow application (CyberShake). In particular, we are interested in the performance of DR based on the results of Experiment 1 and we use $\theta_{\gamma}=100$ since it illustrates well the difference between the four methods. The original average task runtime of all the tasks of the CyberShake workflow is about 23 seconds as shown in Table~\ref{tab:evaluation_workflows}. In this experiment, we multiply the average task runtime by a multiplier from 0.5 to 1.3. The average of the system overheads is 50 seconds originally based on our traces and we multiply the system overheads by a multiplier from 0.2 to 1.8.  
@@ -989,7 +1034,7 @@ Figure~\ref{fig:expr_sipht}, \ref{fig:expr_genome}, \ref{fig:expr_cybershake}, \
 \end{figure}
 
 \textbf{Experiment 2}
-Figure~\ref{fig:expr_t} shows the performance of our methods with different multiplier of $\theta_{t}$ for the CyberShake workflow. We can see that with the increase of the multiplier, the makespan of the workflow increases significantly (increase from a scale of $10^4$ to $\sim 10^6$), particularly for HC. The reason is HC is not fault tolerant and it is highly sensitive to the increase of task runtime. While for DR, the reclustering process dynamically adjusts the clustering size based on the estimation of task runtime and thus the performance of DR is more stable. 
+Figure~\ref{fig:expr_t} shows the performance of our methods with different multiplier of $\theta_{t}$ for the CyberShake workflow. We can see that with the increase of the multiplier, the makespan of the workflow increases significantly (increase from a scale of $10^4$ to $\sim 10^6$), particularly for HC. The reason is HC is not fault-tolerant and it is highly sensitive to the increase of task runtime. While for DR, the reclustering process dynamically adjusts the clustering size based on the estimation of task runtime and thus the performance of DR is more stable. 
 %VR?
 \begin{figure}[!htb]
 \centering
@@ -1045,7 +1090,7 @@ For the pulse function of $\theta_{\gamma}$, we use $\tau=0.1T_c, 0.3T_c, 0.5T_c
 
 In this paper, we model transient failures in a distributed environment and assess their influence on task clustering. We propose three dynamic clustering methods to improve the fault tolerance of task clustering and apply them to five widely used scientific workflows. From our experiments, we conclude that the three proposed methods significantly improve the makespan compared to an existing algorithm widely used in workflow management systems. In particular, our Dynamic Reclustering method performs best among the three methods since it can adjust the clustering size based on the Maximum Likelihood Estimation of task runtime, system overheads, and the inter-arrival time of failures. Our Vertical Reclustering method significantly improves the performance for  workflows that have a short task runtime. Our dynamic estimation using on-going data collected from the workflow execution can further improve the overall runtime in a dynamic environment where the inter-arrival time of failures is fluctuant. 
 
-In this paper, we only discuss the fault tolerant clustering and apply it to a homogeneous environment. In the future, we aim to combine our work with fault tolerant scheduling in heterogeneous environments, i.e, a scheduling algorithm that avoids mapping clustered jobs to failure-prone nodes. We are also interested to combine vertical clustering methods with horizontal clustering methods. For example, we can perform vertical clustering either before or after horizontal clustering, which we believe would bring different performance improvement. 
+In this paper, we only discuss the fault-tolerant clustering and apply it to a homogeneous environment. In the future, we aim to combine our work with fault-tolerant scheduling in heterogeneous environments, i.e, a scheduling algorithm that avoids mapping clustered jobs to failure-prone nodes. We are also interested to combine vertical clustering methods with horizontal clustering methods. For example, we can perform vertical clustering either before or after horizontal clustering, which we believe would bring different performance improvement. 
 %Our dynamic estimation using on-going data collected from the workflow execution can further improve the fault tolerance in a dynamic environment where the inter-arrival time of failures is fluctuant. 
 
 Furthermore, we assume that the inter-arrival time of transient failures is a function of task type, which is one of the major impact factors. In the future, we aim to consider other major factors such as the execution site, which will improve the accuracy of the model. 
