@@ -184,13 +184,13 @@ In this work, we particularly focus on transient failures since they are expecte
 than permanent failures~\cite{Zhang2004}. 
 %For instance, denser integration of semiconductor circuits and lower operating voltage levels may increase the likelihood of bit-flips when circuits are bombarded by cosmic rays and other particles~\cite{Zhang2004}. 
 
-A clustered job consists of multiple tasks. If a task within a clustered job fails (i.e. terminated 
+A clustered job consists of multiple tasks. If a task within a clustered job fails (i.e., terminated 
 by unexpected events during its computation), the job is marked as failed, even though tasks 
 within the same job have successfully completed their execution. Several techniques have
 been developed to cope with the negative impact of job failures on the execution of scientific
 workflows. The most common technique is to resubmit the failed job~\cite{5071878, 5671856, 4534303}. 
 However, retrying a clustered job can be expensive since completed tasks within the job should
-be recomputed, i.e. resource cycles are wasted. In addition, there is no guarantee that the 
+be recomputed, i.e., resource cycles are wasted. In addition, there is no guarantee that the 
 task will recompute successfully.  As an alternative, jobs can be replicated to avoid failures 
 that are related to one specific worker node~\cite{Plankensteiner2009}. However, task replication
 may also waste resources, in particular for long-running jobs. To reduce resource waste, job
@@ -206,7 +206,7 @@ task clustering techniques in a faulty distributed execution environment. The fi
 retries failed tasks within a job by extracting them into a new job. The second method 
 dynamically adjusts the \emph{granularity} or \emph{clustering size} (number of tasks in 
 a job) according to the estimated inter-arrival time of task failures. The third method partitions 
-the clustered jobs into finer jobs (i.e. reduces the job \emph{granularity}) and retries them.
+the clustered jobs into finer jobs (i.e., reduces the job \emph{granularity}) and retries them.
 
 %In this paper, we assume a task-level monitoring service is available. A task-level monitor tells which tasks in a clustered job fail or succeed, while a job-level monitor only tells whether this job failed or not. The job-level fault tolerant clustering has been discussed in our prior work \cite{Chen2012}. To the best of our knowledge, this is the first work that joins the failure modeling and the task reclustering technique to achieve better runtime performance for task clustering methods in a faulty execution environment. 
 
@@ -312,67 +312,128 @@ to adjust the parameter estimation accordingly.
 \section{Design and Models}
 \label{sec:models}
 
-\subsection{Workflow Model}
+\subsection{Workflow Management System Model}
 \label{sec:model}
 
+A workflow is modeled as a directed acyclic graph (DAG), where each node in the DAG often represents 
+a workflow task, and the edges represent dependencies between the tasks that constrain the order 
+in which tasks are executed. \emph{Dependencies} typically represent data-flow dependencies in the 
+application, where the output files produced by one task are used as inputs of another task. Each 
+\emph{task} is a computational program and a set of parameters that need to be executed. This model 
+fits several WMS such as Pegasus~\cite{Deelman2004}, Askalon~\cite{fahringer2007askalon}, and 
+Taverna~\cite{Oinn2004}. 
 
-A workflow is modeled as a directed acyclic graph (DAG), where each node in the DAG often represents a workflow task ($t$), and the edges represent dependencies between the tasks that constrain the order in which tasks are executed. \emph{Dependencies} typically represent data-flow dependencies in the application, where the output files produced by one task are used as inputs of another task. Each \emph{task} is a computational program and a set of parameters that need to be executed. 
-%Figure~\ref{fig:model_odag} (left) shows an illustration of a DAG composed of four tasks. 
-This model fits several workflow management systems such as Pegasus~\cite{Deelman2004}, Askalon~\cite{fahringer2007askalon}, and Taverna~\cite{Oinn2004}. 
+In this work, we assume a single execution site with multiple compute resources, such as virtual machines 
+on cloud platforms. Fig.~\ref{fig:model-system} shows a typical workflow execution environment that 
+targets a homogeneous computer cluster, for example, a dedicated cluster or a virtual cluster on Clouds. 
+The submit host prepares a workflow for execution (e.g. clustering, mapping, etc.), and worker nodes, 
+within an execution site, execute jobs individually. The main components are introduced below:
 
-In this paper, we assume there is only one execution site with multiple compute resources, such as virtual machines on the clouds. 
-Figure~\ref{fig:model_system} shows a typical workflow execution environment that targets a homogeneous computer cluster, for example, a dedicated cluster or a virtual cluster on Clouds. The submit host prepares a workflow for execution (clustering, mapping, etc.), and worker nodes, at an execution site, execute jobs individually. The main components are introduced below:
-
-\begin{figure}[!htb]
-\centering
-  \includegraphics[width=0.95\linewidth]{model.pdf}
-  \caption{A workflow system model.}
-  \label{fig:model_system}
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=\linewidth]{model}
+	\caption{Overview of the workflow management system.}
+	\label{fig:model-system}
 \end{figure}
 
-\paragraph{Workflow Mapper} Generates an executable workflow based on an abstract workflow~\cite{Deelman2004} provided by the user or a workflow composition system. It also restructures the workflow to optimize performance and adds tasks for data management and provenance information generation. In this work, the workflow mapper is used to merge small tasks together into a job such that system overheads are reduced (\textbf{task clustering}). A job is a single execution unit in the workflow execution systems and is composed of one or more tasks. 
+\vspace{4pt}
+\noindent \textbf{Workflow Mapper.} Generates an executable workflow from an abstract 
+workflow~\cite{Deelman2004} provided by the user or a workflow composition system. It restructures 
+the workflow for performance optimization, and adds tasks for data management and provenance 
+information generation. In this work, the workflow mapper is also used to merge fine-grained tasks into
+a single clustered job (i.e., \emph{task clustering}). A job then is a single execution unit in the workflow 
+execution systems and is composed of one or more tasks. 
 
-\paragraph{Workflow Engine} Executes jobs defined by the workflow in order of their dependencies. Only jobs that have all their parent jobs completed are submitted to the Job Scheduler. The Workflow Engine relies on the resources (compute, storage, and network) defined in the executable workflow to perform computations. The elapsed time from when a job is released (all of its parents have completed successfully) to when it is submitted to the job scheduler is denoted as the workflow engine delay. %The workflow engine delay is usually configured by users to assure that the entire workflow scheduling and execution system is not overloaded. 
+\vspace{4pt}
+\noindent \textbf{Workflow Engine.} Executes jobs defined by the workflow in order of their 
+dependencies. Only jobs that have all their parent jobs completed are submitted to the Job 
+Scheduler. The workflow engine relies on the resources (compute, storage, and network) 
+defined in the executable workflow to perform computations. The elapsed time from when a 
+job is released (all of its parents have completed successfully) to when it is submitted to the 
+job scheduler is denoted as the workflow engine delay.
 
-\paragraph{Job Scheduler and Local Queue} Manage individual workflow jobs and supervise their execution on local and remote resources. The elapsed time from when a task is submitted to the job scheduler to when it starts its execution in a worker node is denoted as the queue delay. It reflects both the efficiency of the job scheduler and the resource availability. 
+\vspace{4pt}
+\noindent \textbf{Job Scheduler and Local Queue.} Manage individual workflow jobs and 
+supervise their execution on local and remote resources. The elapsed time from when a 
+task is submitted to the job scheduler to when it starts its execution in a worker node is 
+denoted as the queue delay. It reflects both the efficiency of the job scheduler and the 
+resource availability. 
 
-\paragraph{Job Wrapper} Extracts tasks from clustered jobs and executes them at the worker nodes. The clustering delay is the  elapsed time of the extraction process.
+\vspace{4pt}
+\noindent \textbf{Job Wrapper.} Extracts tasks from clustered jobs and executes them at 
+the worker nodes. The clustering delay is the elapsed time of the extraction process.
 
-\begin{figure}[!htb]
+We extend the DAG model to be overhead aware (o-DAG). System overheads play an 
+important role in workflow execution and constitute a major part of the overall runtime when 
+tasks are poorly clustered~\cite{Chen2011}. Fig.~\ref{fig:model-odag} shows how we augment 
+a DAG to be an o-DAG with the capability to represent system overheads ($s$) such as the 
+workflow engine and queue delays. In addition, system overheads also include data transfer 
+delay caused by staging-in and staging-out data. This classification of system overheads is 
+based on our prior study on workflow analysis~\cite{Chen2011}. 
+
+\begin{figure}[!t]
 	\centering
 	\includegraphics[width=0.6\linewidth]{odag.pdf}
-	\captionof{figure}{Extending DAG to o-DAG. `s' denotes a system overhead. }
-	\label{fig:model_odag}
+	\captionof{figure}{Extending DAG to o-DAG ($s$ denotes a system overhead).}
+	\label{fig:model-odag}
 \end{figure}
 
-We extend the DAG model to be overhead aware (o-DAG). System overheads play an important role in workflow execution and constitute a major part of the overall runtime when tasks are poorly clustered~\cite{Chen2011}. Figure~\ref{fig:model_odag} shows how we augment a DAG to be an o-DAG with the capability to represent system overheads ($s$) such as workflow engine and queue delays. In addition, system overheads also include data transfer delay caused by staging-in and staging-out data. This classification of system overheads is based on our prior study on workflow analysis~\cite{Chen2011}. 
+With an o-DAG model, we can explicitly express the process of task clustering. In this work, we 
+address task clustering horizontally and vertically. \textbf{Horizontal Clustering} (HC) merges 
+multiple tasks within the same horizontal level of the workflow---the horizontal level of a 
+task is defined as the longest distance from the DAG's entry task to this task. \textbf{Vertical 
+Clustering} (VC) merges tasks within a pipeline of the workflow. Tasks at the same pipeline share 
+a \emph{single-parent-single-child} relationship, i.e. a task $t_b$ has a unique parent $t_a$, which 
+has a unique child $t_b$.
 
-With an o-DAG model, we can explicitly express the process of task clustering. In this paper, we address task clustering horizontally and vertically. \textbf{Horizontal Clustering} (HC) merges multiple tasks that are at the same horizontal level of the workflow, in which the horizontal level of a task is defined as the longest distance from the entry task of the DAG to this task. \textbf{Vertical Clustering} (VC) merges tasks within a pipeline of the workflow. Tasks at the same pipeline share a single-parent-single-child relationship, which means a task $t_a$ is the unique parent of a task $t_b$, which is the unique child of $t_a$. 
-
-Figure~\ref{fig:model_hc} shows a simple example of how to perform HC, in which two tasks $t_2$ and $t_3$, without a data dependency between them, are merged into a clustered job $j_1$. A job is a single execution unit composed by one or multiple task(s). Job wrappers are commonly used to execute clustered jobs, but they add an overhead denoted by the clustering delay $c$. The clustering delay measures the difference between the sum of the actual task runtimes and the job runtime seen by the job scheduler. 
-After horizontal clustering, $t_2$ and $t_3$ in $j_1$ can be executed in sequence or in parallel, if parallelism in one worker node is supported. In this work, we consider sequential executions only. Given a single resource, the overall runtime for the workflow in Figure~\ref{fig:model_hc} (left) is $runtime_l= \sum_{i=1}^{4}(s_i+t_i)$, and the overall runtime for the clustered workflow in Figure~\ref{fig:model_hc} (right) is $runtime_r=s_1+t_1+s_2+c_1+t_2+t_3+s_4+t_4$.  $runtime_l > runtime_r$ as long as $c_1 < s_3$, which is often the case in many distributed systems since the clustering delay within a single execution node is usually shorter than the scheduling overhead across different execution nodes. 
+Fig.~\ref{fig:model-hc} shows a simple example on how to perform HC, in which two tasks $t_2$ 
+and $t_3$, without data dependency between them, are merged into a clustered job $j_1$. Job 
+wrappers are commonly used to execute clustered jobs, but they add an overhead denoted by the 
+clustering delay $c$. The clustering delay measures the difference between the sum of the actual 
+task runtimes and the job runtime seen by the job scheduler. After horizontal clustering, $t_2$ and 
+$t_3$ in $j_1$ can be executed in sequence or in parallel, if parallelism is supported. In this work, 
+we consider sequential executions only. Given a single resource, the overall runtime for the workflow 
+in Fig.~\ref{fig:model-hc} (left) is $runtime_l= \sum_{i=1}^{4}(s_i+t_i)$, and the overall runtime for the 
+clustered workflow in Fig.~\ref{fig:model-hc} (right) is $runtime_r=s_1+t_1+s_2+c_1+t_2+t_3+s_4+t_4$.  
+$runtime_l > runtime_r$ as long as $c_1 < s_3$, which is often the case in many distributed systems 
+since the clustering delay within a single execution node is usually shorter than the scheduling overhead 
+across different execution nodes. 
 
 \begin{figure}[!htb]
 \centering
  \includegraphics[width=0.45\linewidth]{hc.pdf}
-  \captionof{figure}{An example of horizontal clustering (color indicates the horizontal level of a task).}
-  \label{fig:model_hc}
+  \captionof{figure}{A simple example of horizontal clustering (color indicates the horizontal level of a task).}
+  \label{fig:model-hc}
 \end{figure}
 
 \begin{figure}[!htb]
 \centering
  \includegraphics[width=0.5\linewidth]{vc.pdf}
-  \captionof{figure}{An example of vertical clustering.}
-  \label{fig:model_vc}
+  \captionof{figure}{A simple example of vertical clustering.}
+  \label{fig:model-vc}
 \end{figure}
 
-Figure~\ref{fig:model_vc} illustrates an example of vertical clustering, in which tasks $t_2$, $t_4$, and $t_6$ are merged into $j_1$, while tasks $t_3$, $t_5$, and $t_7$ are merged into $j_2$. Similarly, clustering delays $c_2$ and $c_3$ are added to $j_1$ and $j_2$ respectively, but system overheads $s_4$, $s_5$, $s_6$, and $s_7$ are removed. 
+Fig.~\ref{fig:model-vc} illustrates an example of vertical clustering, in which tasks $t_2$, $t_4$, 
+and $t_6$ are merged into $j_1$, while tasks $t_3$, $t_5$, and $t_7$ are merged into $j_2$. 
+Similarly, clustering delays $c_2$ and $c_3$ are added to $j_1$ and $j_2$ respectively, but 
+system overheads $s_4$, $s_5$, $s_6$, and $s_7$ are removed. 
 
-In this paper, the \emph{goal} is to reduce the workflow makespan in a faulty execution environment by adjusting the clustering size ($k$). In task clustering, the clustering size ($k$) is an important parameter to influence the performance. We define it as the number of tasks in a clustered job. For example, the $k$ in Figure~\ref{fig:model_hc} is 2. The reason why task clustering can help improve the performance is that it can reduce the scheduling cycles that workflow tasks go through since the number of jobs has decreased. The result is a reduction in the scheduling overhead and possibly other overheads as well \cite{Chen2011}. Additionally, in the ideal case without any failures, the clustering size is usually equal to the number of all the parallel tasks divided by the number of available resources. Such a na\"{i}ve setting assures that the number of jobs is equal to the number of resources and the workflow can utilize the resources as much as possible. However, when transient failures exist, we claim that the clustering size should be set based on the failure rates especially the task failure rate. Intuitively speaking, if the task failure rate is high, the clustered jobs may need to be re-executed more often compared to the case without clustering. Such performance degradation will counteract the benefits of reducing scheduling overheads. In the rest of this paper, we will show how to adjust $k$ based on the estimated parameters of the task runtime $\bm t$, the system overhead $\bm s$ and the inter-arrival time of task failures $\bm\gamma$. 
+On situations where the scheduling and queue overheads are important, the use of task clustering 
+techniques can significantly improve the workflow execution performance. In an ideal scenario, where
+failures are absent, the number of tasks in a clustered job (clustering size, $k$) would be defined
+as the number of all tasks in the queue divided by the number of available resources. Such a na\"{i}ve 
+setting assures that the number of jobs is equal to the number of resources and the workflow can 
+fully utilize the resources. However, in a faulty environment the clustering size should be defined
+according to the failure rates, in particular, the task failure rate. Intuitively speaking, if the task failure 
+rate is high, the clustered jobs may need to be re-executed more often compared to the case without 
+clustering. Such performance degradation will counteract the benefits of reducing scheduling overheads. 
+In the rest of this work, we will show how to adjust $k$ based on the estimated parameters of the task 
+runtime $\bm t$, the system overhead $\bm s$, and the inter-arrival time of task failures $\bm\gamma$. 
 
 
 
 \subsection{Task Failure Model}
+\label{sec:task-failure-model}
 
 %For system overhead $p(X|\theta)$, we assume it follows an Weibull distribution with known shape $\phi=0.78$. When $x>0$, the PDF of $p(x|\theta, \phi)$ is
 
