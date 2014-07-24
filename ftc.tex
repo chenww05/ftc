@@ -169,7 +169,8 @@ scientific workflows, fault tolerance, parameter estimation, failure, machine le
 \IEEEPARstart{S}{cientific} workflows can be composed of many fine computational granularity 
 tasks in which the runtime may be shorter than the system overhead. System overhead is the 
 period of time during which miscellaneous work other than the user'€™s computation is performed. 
-Task clustering~\cite{Chen2013a, Singh2008, Chen2012, Maheshwari2012, Ferreira-granularity-2013, Integration2012} 
+Task clustering~\cite{Chen2013a, Singh2008, Chen2012, Maheshwari2012, Ferreira-granularity-2013, 
+FerreiradaSilva-CCPE-2014, Integration2012} 
 is a technique that merges several short tasks into a single job such that the job runtime is increased 
 and the overall system overhead is decreased. Task clustering has been proven to be an effective 
 method to address execution overheads and increase the computational granularity of workflow tasks 
@@ -245,30 +246,73 @@ manuscript closes with a discussion and conclusions.
 \section{Related Work}
 \label{sec:related}
 
-Failure analysis and modeling \cite{Tang1990} presents system characteristics such as error and failure distribution and hazard rates. Schroeder et al. \cite{Schroeder2006} has studied the statistics of the data, including the root cause of failures, the mean time between failures, and the mean time to repair. Sahoo et al. \cite{Sahoo2004} analyzed the empirical and statistical properties of system errors and failures from a network of heterogeneous servers running a diverse workload. Oppenheimer et al. \cite{Oppenheimer2002} analyzed the causes of failures from three large-scale Internet services and the effectiveness of various techniques for preventing and mitigating service failure. McConnel \cite{McConnel} analyzed the transient errors in computer systems and showed that transient errors follow a Weibull distribution. In \cite{Sun2003, Iosup2008}, Weibull distribution is one of the best fit for the workflow traces they used.  Based on these work, we measure the inter-arrival time of failures in a workflow and then provide methods to improve task clustering.  
+Failure analysis and modeling on computer systems have been widely studied in 
+the past two decades. These studies include, for instance, the classification of 
+common system failure characteristics and distributions~\cite{Tang1990}, root 
+cause analysis of failures~\cite{Schroeder2006}, empirical and statistical analysis 
+of network system errors and failures~\cite{Sahoo2004}, and the development and 
+analysis of techniques to prevent and mitigate service failures~\cite{Oppenheimer2002}.
 
-More and more workflow management systems are taking fault tolerance into consideration. The Pegasus workflow management system \cite{Deelman2004} has incorporated a task-level monitoring system and used job retry to address the issue of task failures. They also used provenance data to track the failure records and analyzed the causes of failures \cite{Samak2011}. Plankensteiner et. al. \cite{plankensteiner2009fault} have surveyed the fault detection, prevention and recovery techniques in current grid workflow management systems such as Askalon \cite{fahringer2007askalon}, Chemomentum \cite{schuller2008chemomentum}, Escogitare \cite{laforenza2007biological} and Triana \cite{taylor2007triana}. Recovery techniques such as replication, checkpointing, task resubmission  and task migration etc. have been provided. In our paper, we are specifically joining the work of failure analysis and the optimization in task clustering. To be best of our knowledge, none of existing workflow management systems have provided such features. 
+%Tang et al.~\cite{Tang1990} presents common system failures characteristics such as errors, failure distributions and hazard rates. Schroeder et al. \cite{Schroeder2006} have studied the statistics of the data, including the root cause of failures, the mean time between failures, and the mean time to repair. Sahoo et al. \cite{Sahoo2004} analyzed the empirical and statistical properties of system errors and failures from a network of heterogeneous servers running a diverse workload. Oppenheimer et al. \cite{Oppenheimer2002} analyzed the causes of failures from three large-scale Internet services and the effectiveness of various techniques for preventing and mitigating service failure. 
 
-Overhead analysis~\cite{Ostberg2011, Prodan2008} is a topic of great interest in the Grid community. Stratan et al.~\cite{Stratan2008} evaluate in a real-world environment Grid workflow engines including DAGMan/Condor and Karajan/Globus. Their methodology focuses on five system characteristics: overhead, raw performance, stability, scalability, and reliability. They pointed out that head node consumption should not be negligible and the main bottleneck in a busy system is often the head node. Prodan et al.~\cite{Prodan2008} offered a complete Grid workflow overhead classification and a systematic measurement of overheads. In Chen et al.~\cite{Chen2011}, we extended~\cite{Prodan2008} by providing a measurement of major overheads imposed by workflow management systems and execution environments and analyzed how existing optimization techniques improve runtime by reducing or overlapping overheads. The prevalent existence of system overheads is an important reason why task clustering provides significant performance improvement for workflow-based applications. In this work, we aim to further improve the performance of task clustering in a faulty execution environment. 
+In scientific workflow management systems (WMS), fault-tolerance issues have also 
+been addressed. For instance, the Pegasus WMS~\cite{Deelman2004} has incorporated 
+a task-level monitoring system, which retries a job if a failure is detected. Provenance data
+is also tracked and used to analyze the cause of failures~\cite{Samak2011}. A survey of
+fault detection, prevention, and recovery techniques in current grid WMS such as 
+Askalon~\cite{fahringer2007askalon}, Chemomentum~\cite{schuller2008chemomentum}, 
+Escogitare~\cite{laforenza2007biological}, and Triana~\cite{taylor2007triana} is available
+in~\cite{plankensteiner2009fault}. The survey provides a compilation of recovery techniques
+such as task replication, checkpointing, resubmission, and migration. In this work, we combine
+some of these techniques with task clustering methods to improve the performance and 
+reliability of \emph{fine-grained} tasks. To the be best of our knowledge, none of the existing 
+scientific workflow management systems have provided such feature.
 
-Machine learning has been used to predict execution time \cite{Rubing2009, 1015660, 1542747, da2013toward} and system overheads~\cite{Chen2011}, and develop probability distributions for transient failure characteristics. Duan et.al. \cite{Rubing2009} used Bayesian network to model and predict workflow task runtimes. The important attributes (such as the external load, arguments etc. ) are dynamically selected by the Bayesian network and fed into a radial basis function neural network to make further predictions. Ferreira da Silva et. al. \cite{da2013toward} used regression trees to dynamically estimate task behavior including process I/O, runtime, memory peak, and disk usage. In our paper, we reuse the knowledge gained from prior work on failure analysis, overhead analysis, and task runtime analysis. We then use prior knowledge based Maximum Likelihood Estimation to integrate both the knowledge and runtime feedbacks and adjust the parameter estimation accordingly. 
+The low performance of fine-grained tasks is a common problem in widely distributed platforms 
+where the scheduling overhead and queuing times at resources are high. Several works have 
+addressed the control of task granularity of loosely coupled tasks. For instance, Muthuvelu et 
+al.~\cite{Muthuvelu2005} proposed a clustering algorithm that groups bag of tasks based on 
+the runtime, and later based on task file size, CPU time, and resource constraints~\cite{4493929}. 
+Recently, they proposed an online scheduling algorithm~\cite{Muthuvelu2010} that merges tasks 
+based on resource network utilization, user's budget, and application deadline. In addition, Ng et 
+al.~\cite{Keat2006} and Ang et al.~\cite{Ang2009} also considered network bandwidth to improve 
+the performance of the task scheduling algorithm. Longer tasks are assigned to resources with better 
+network bandwidth. Liu and Liao~\cite{Liu2009} proposed an adaptive scheduling algorithm to 
+group fine-grained tasks according to the processing capacity and the network bandwidth of the 
+current available resources.
 
-The low performance of \emph{fine-grained} tasks is a common problem in widely distributed platforms where the scheduling overhead and queuing times at resources are high, such as Grid and Cloud systems. Several works have addressed the control of task granularity of bag of tasks. For instance, Muthuvelu et al.~\cite{Muthuvelu2005} proposed a clustering algorithm that groups bag of tasks based on their runtime---tasks are grouped up to the resource capacity. Later, they extended their work~\cite{4493929} to determine task granularity based on task file size, CPU time, and resource constraints. Recently, they proposed an online scheduling algorithm~\cite{Muthuvelu2010} that groups tasks based on resource network utilization, user's budget, and application deadline. Ng et al.~\cite{Keat2006} and Ang et al.~\cite{Ang2009} introduced network bandwidth in the scheduling framework to enhance the performance of task scheduling. Longer tasks are assigned to resources with better network bandwidth. Liu and Liao~\cite{Liu2009} proposed an adaptive fine-grained job scheduling algorithm to group fine-grained tasks according to processing capacity and network bandwidth of the current available resources. Although these techniques significantly reduce the impact of scheduling and queuing overhead, they did not consider the fault tolerance problem.
+The task granularity control has also been addressed in scientific workflows. For instance, Singh et 
+al.~\cite{Singh2008} proposed a level- and label-based clustering. In level-based clustering, tasks 
+at the same workflow level are clustered together. The number of clusters or tasks per cluster are 
+specified by the user. In the label-based clustering, the user labels tasks that should be clustered 
+together. Recently, Ferreira da Silva et al.~\cite{Ferreira-granularity-2013, FerreiradaSilva-CCPE-2014} 
+proposed task grouping and ungrouping algorithms to control workflow task granularity in a non-clairvoyant 
+and online context, where none or few characteristics about the application or resources are known 
+in advance. Although these techniques significantly reduce the impact of the scheduling and queuing 
+overheads, they do not address the fault-tolerance problem.
 
-Task granularity control has also been addressed in scientific workflows. For instance, Singh et al.~\cite{Singh2008} proposed a level- and label-based clustering. In level-based clustering, tasks at the same workflow level can be clustered together. The number of clusters or tasks per cluster are specified by the user. In the label-based clustering, the user labels tasks that should be clustered together. Although their work considers data dependencies between workflow levels, it is done manually by the users, which is prone to errors. Recently, Ferreira da Silva et al.~\cite{Ferreira-granularity-2013} proposed task grouping and ungrouping algorithms to control workflow task granularity in a non-clairvoyant and online context, where none or few characteristics about the application or resources are known in advance. Their work significantly reduced scheduling and queuing overheads. However, they did not consider the fault tolerance problem while executing scientific workflows.
+%Overhead analysis~\cite{Ostberg2011, Prodan2008} is a topic of great interest in the Grid community. Stratan et al.~\cite{Stratan2008} evaluate in a real-world environment Grid workflow engines including DAGMan/Condor and Karajan/Globus. Their methodology focuses on five system characteristics: overhead, raw performance, stability, scalability, and reliability. They pointed out that head node consumption should not be negligible and the main bottleneck in a busy system is often the head node. Prodan et al.~\cite{Prodan2008} offered a complete Grid workflow overhead classification and a systematic measurement of overheads. In Chen et al.~\cite{Chen2011}, we extended~\cite{Prodan2008} by providing a measurement of major overheads imposed by workflow management systems and execution environments and analyzed how existing optimization techniques improve runtime by reducing or overlapping overheads. The prevalent existence of system overheads is an important reason why task clustering provides significant performance improvement for workflow-based applications. In this work, we aim to further improve the performance of task clustering in a faulty execution environment. 
+
+Machine learning techniques have been used to predict execution time~\cite{Rubing2009, 1015660, 
+1542747, da2013toward} and system overheads~\cite{Chen2011}, and to develop probability distributions 
+for transient failure characteristics. Duan et.al.~\cite{Rubing2009} used Bayesian network to model and 
+predict workflow task runtimes. The important attributes (e.g. external load, arguments, etc.) are dynamically 
+selected by the Bayesian network and fed into a radial basis function neural network to perform further 
+predictions. Ferreira da Silva et al.~\cite{da2013toward} used regression trees to dynamically estimate 
+task needs including process I/O, runtime, memory peak, and disk usage. In this work, we use the 
+knowledge obtained in prior works on failure~\cite{Samak2011}, overhead~\cite{Chen2011}, and task 
+runtime analyses~\cite{da2013toward} as the foundations to build the \emph{prior knowledge} based 
+on the Maximum Likelihood Estimation (MLE) that integrates both the knowledge and runtime feedbacks 
+to adjust the parameter estimation accordingly. 
 
 
-
-
-
+%
+% Section: Design and Models
+%
 \section{Design and Models}
 \label{sec:models}
 
-
-
 \subsection{Workflow Model}
-
-
 \label{sec:model}
 
 
@@ -326,6 +370,8 @@ Figure~\ref{fig:model_vc} illustrates an example of vertical clustering, in whic
 
 In this paper, the \emph{goal} is to reduce the workflow makespan in a faulty execution environment by adjusting the clustering size ($k$). In task clustering, the clustering size ($k$) is an important parameter to influence the performance. We define it as the number of tasks in a clustered job. For example, the $k$ in Figure~\ref{fig:model_hc} is 2. The reason why task clustering can help improve the performance is that it can reduce the scheduling cycles that workflow tasks go through since the number of jobs has decreased. The result is a reduction in the scheduling overhead and possibly other overheads as well \cite{Chen2011}. Additionally, in the ideal case without any failures, the clustering size is usually equal to the number of all the parallel tasks divided by the number of available resources. Such a na\"{i}ve setting assures that the number of jobs is equal to the number of resources and the workflow can utilize the resources as much as possible. However, when transient failures exist, we claim that the clustering size should be set based on the failure rates especially the task failure rate. Intuitively speaking, if the task failure rate is high, the clustered jobs may need to be re-executed more often compared to the case without clustering. Such performance degradation will counteract the benefits of reducing scheduling overheads. In the rest of this paper, we will show how to adjust $k$ based on the estimated parameters of the task runtime $\bm t$, the system overhead $\bm s$ and the inter-arrival time of task failures $\bm\gamma$. 
 
+
+
 \subsection{Task Failure Model}
 
 %For system overhead $p(X|\theta)$, we assume it follows an Weibull distribution with known shape $\phi=0.78$. When $x>0$, the PDF of $p(x|\theta, \phi)$ is
@@ -334,6 +380,7 @@ In this paper, the \emph{goal} is to reduce the workflow makespan in a faulty ex
 %f(x|\theta, \phi)=\frac{\phi}{\theta} (\frac{x}{\theta})^{\phi-1}e^{-(x/\theta)^{\phi}}  \nonumber
 %\end{equation}
 
+%Transient errors in computer systems have been analyzed in~\cite{McConnel} and showed that transient errors follow a Weibull distribution. In \cite{Sun2003, Iosup2008}, Weibull distribution is one of the best fit for the workflow traces they used.  Based on these studies, we measure the inter-arrival time of failures in a workflow and then provide methods to improve task clustering. 
 
 In our prior work \cite{Chen2011}, we have verified that system overheads $s$ fits a Gamma or a Weibull distribution better than two other potential distributions (Exponential and Normal). Schroeder et. al. \cite{Schroeder2006} have verified the inter-arrival time of task failures fits a Weibull distribution with a shape parameter of 0.78 better than lognormal and exponential distribution. We will reuse this shape parameter of 0.78 in our failure model. 
 In \cite{Sun2003, Iosup2008} Weibull, Gamma and Lognormal distribution are among the best fit to estimate task runtimes for the workflow traces they used.  Without loss of generality, we choose the Gamma distribution to model the task runtime ($\bm t$) and the system overhead ($\bm s$) and use the Weibull distribution to model the inter-arrival times of failures ($\bm\gamma$).  $\bm s$, $\bm t$ and $\bm \gamma$ are all random variables of all tasks instead of one specific task. 
