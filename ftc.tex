@@ -505,9 +505,8 @@ The understanding of the MLE is two fold: in the initial case there is no data, 
 by the prior knowledge, i.e. $\displaystyle\frac{b_{\gamma}}{a_{\gamma}+1}$; when $n~\to~\infty$, the 
 MLE $\displaystyle\frac{\displaystyle\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}{n+1}\to\overline{x^{\phi_{\gamma}}}$, 
 which means it is determined by the observed data, and is close to the regularized average of the observed 
-data. 
-
-%The static estimation process only utilizes the prior knowledge and the dynamic estimation process uses both the prior and the posterior knowledge. 
+data. If the estimation process only utilizes the prior knowledge, it is named \textbf{Static Estimation}. If the
+process utilizes both the prior and posterior knowledge, it is named \textbf{Dynamic Estimation}.
 
 We model the task runtime ($\bm t$) with a Gamma distribution as in~\cite{Sun2003, Iosup2008}, 
 with a known shape parameter~$\phi_{t}$ and an unknown scale parameter~$\theta_t$. The 
@@ -998,7 +997,7 @@ Table~\ref{tab:evaluation-workflows} shows the summary of the main \emph{workflo
 number of tasks, average data size, and average task runtimes for the five workflows. 
 
 \begin{table}[!htb]
-	\setlength{\tabcolsep}{11pt}
+	\setlength{\tabcolsep}{9pt}
 	\centering
 	\small
 	\begin{tabular}{lrrrr}
@@ -1021,77 +1020,134 @@ number of tasks, average data size, and average task runtimes for the five workf
 % Experiment conditions
 \subsection{Experiment conditions}
 \label{sec:experiment_conditions}
-We adopt a trace-based simulation approach, where we extend our WorkflowSim~\cite{WorkflowSim} simulator with the fault-tolerant clustering methods to simulate a controlled distributed environment. WorkflowSim is an open source workflow simulator that extends CloudSim~\cite{Calheiros2011} by providing support for task clustering, task scheduling, and resource provisioning at the workflow level. It has been recently used in multiple workflow study areas~\cite{WorkflowSim,Chen2012, jrad2013broker} and its correctness has been verified in~\cite{WorkflowSim}. 
 
-The simulated computing platform is composed by 20 single homogeneous core virtual machines (worker nodes), which is the quota per user of some typical distributed environments such as Amazon EC2~\cite{AmazonAWS} and FutureGrid~\cite{FutureGrid}. Amazon EC2 is a commercial, public cloud that has been widely used in distributed computing, in particular for scientific workflows~\cite{Berriman2010}. FutureGrid is a distributed, high-performance testbed that provides scientists with a set of computing resources to develop parallel, grid, and cloud applications. Each simulated virtual machine (VM) has 512MB of memory and the capacity to process 1,000 million instructions per second. The default network bandwidth is 15MB according to the real environment in FutureGrid from where our traces were collected. By default, we merge tasks at the same horizontal level into 20 clustered jobs initially, which is a simple selection of granularity control of the strength of task clustering. The study of granularity size has been done in~\cite{Chen2013b}, which shows such selection is acceptable.
+We adopt a trace-based simulation approach, where we extend our WorkflowSim~\cite{WorkflowSim} 
+simulator with the fault-tolerant clustering methods to simulate a controlled distributed environment,
+where system (i.e., the inter-arrival time of failures) and workflow (i.e., avg. task runtime) settings can
+be varied to fully explore the performance of our fault-tolerant clustering algorithms.
+WorkflowSim is an open source workflow simulator that extends CloudSim~\cite{Calheiros2011} by 
+providing support for task clustering, task scheduling, and resource provisioning at the workflow level. 
+It has been recently used in multiple workflow study areas~\cite{WorkflowSim,Chen2012, jrad2013broker} 
+and its correctness has been verified in~\cite{WorkflowSim}.
 
-We collected workflow execution traces~\cite{Juve2013, Chen2011} (including overhead and task runtime information) from real runs (executed on FutureGrid and Amazon EC2) of the scientific workflow applications described in Section~\ref{sec:applications}. The traces are used to feed the Workflow Generator toolkit~\cite{rafael2014community} to generate synthetic workflows. This allows us to perform simulations with several different configurations under controlled conditions. The toolkit uses the information gathered from actual scientific workflow executions to generate synthetic workflows resembling those used by real world scientific applications. The number of inputs to be processed, the number of tasks in the workflow, and their composition determine the structure of the generated workflow. Such an approach of traced based simulation allows us to utilize real traces and vary the system setting (i.e., the inter-arrival time of failures) and workflow (i.e., avg. task runtime) to fully explore the performance of our fault-tolerant clustering algorithms. 
+The simulated computing platform is composed of 20 single homogeneous core virtual machines 
+(worker nodes), which is the quota per user of some typical distributed environments such as Amazon 
+EC2~\cite{AmazonAWS} and FutureGrid~\cite{FutureGrid}. 
+%Amazon EC2 is a commercial, public cloud that has been widely used in distributed computing, in particular for scientific workflows~\cite{Berriman2010}. FutureGrid is a distributed, high-performance testbed that provides scientists with a set of computing resources to develop parallel, grid, and cloud applications. 
+Each simulated virtual machine (VM) has 512MB of memory and the capacity to process 1,000 million 
+instructions per second. The default network bandwidth is 15MB according to the execution environment 
+in FutureGrid from where our traces were collected. By default, tasks at the same horizontal level 
+are merged into 20 clustered jobs, which is a simple granularity control selection based on the strength 
+of task clustering (as shown in~\cite{Chen2013b}).
 
-Three sets of experiments are conducted. Experiment 1 evaluates the performance of our fault-tolerant clustering methods (DR, VR, and SR) over an existing task clustering method (HC) that is not fault-tolerant for the five workflows. The goal of the experiment is to identify conditions where each method works best and worst. In addition, we also evaluate the performance improvement with different $\theta_{\gamma}$ (the inter-arrival time of task failures). The range of $\theta_{\gamma}$ is chosen from 10x to 1x of the average task runtime such that the workflows do not run forever and we can visualize the performance difference better. 
+We collected workflow execution traces~\cite{Juve2013, Chen2011} (including overhead and task 
+runtime information) from real runs of the scientific workflow applications described in Section~\ref{sec:applications}. 
+The traces are used to feed the Workflow Generator~\cite{rafael2014community} toolkit to generate 
+synthetic workflows. The toolkit uses the information gathered from actual scientific workflow executions 
+to generate synthetic workflows resembling those used by real world scientific applications. The number 
+of inputs to be processed, the number of tasks in the workflow, and their composition determine the 
+structure of the generated workflow. 
 
+Three sets of experiments are conducted. Experiment 1 evaluates the performance of our fault-tolerant 
+clustering methods (DR, VR, and SR) over an existing task clustering method (HC), which has no devoided 
+of fault-tolerant mechanisms. The goal of the experiment is to identify conditions where each method works 
+best and worst. We also evaluate the performance improvement for different $\theta_{\gamma}$ values 
+(the inter-arrival time of task failures). $\theta_{\gamma}$ ranges from 1 to 10 times of the average task 
+runtime such that the workflows do not run continuously and the performance difference is visually explicit. 
 
-Experiment 2 evaluates the performance impact of the variation of the average task runtime per level (defined as the average of all the tasks per level) and the average system overheads per level for one scientific workflow application (CyberShake). In particular, we are interested in the performance of DR based on the results of Experiment 1 and we use $\theta_{\gamma}=100$ since it illustrates well the difference between the four methods. The original average task runtime of all the tasks of the CyberShake workflow is about 23 seconds as shown in Table~\ref{tab:evaluation-workflows}. In this experiment, we multiply the average task runtime by a multiplier from 0.5 to 1.3. The average of the system overheads is 50 seconds originally based on our traces and we multiply the system overheads by a multiplier from 0.2 to 1.8.  
+Experiment 2 evaluates the performance impact of the variation of the average task runtime per level 
+(defined as the average of all the tasks per level) and the average system overheads per level for one 
+scientific workflow application (CyberShake). In particular, we are interested in the performance of DR 
+based on the results of Experiment 1. For this experiment, we use $\theta_{\gamma}=100$ since it 
+better highlights the difference between the four methods. We vary the average task runtime of the 
+CyberShake workflow (originally of about 23 seconds, Table~\ref{tab:evaluation-workflows}) by using 
+a multiplier factor $f_r \in [0.5, 1.3]$. We also vary the average system overheads (originally of about 50 
+seconds) by using a multiplier factor $f_o \in [0.2, 1.8]$.  
 
-Experiment 3 evaluates the performance of dynamic estimation and static estimation. In the static estimation process, we only use the prior knowledge to estimate the MLEs of the unknown parameters. In the dynamic estimation process, we also leverage the runtime data collected during the execution and update the MLEs respectively. 
+Experiment 3 evaluates the performance of the static and dynamic estimation. In the static estimation 
+process, only the prior knowledge is used to estimate the MLEs of the unknown parameters. In contrast,
+the dynamic estimation process leverages the runtime data collected during the execution and update 
+the MLEs respectively. 
 
-\begin{figure}[htb]
+The experiments use two sets of the $\theta_{\gamma}$ function. The first is a step function 
+(Fig.~\ref{fig:evaluation_step_signal}), in which $\theta_{\gamma}$ is decreased from 500 seconds 
+to 50 seconds at time $T_d$. The step function of $\theta_{\gamma}$ at time $t_c$ is defined as follows:
+
+\begin{equation}
+	\label{eq:step_function}
+	\theta_{\gamma}(t_c) =
+	\begin{cases}
+		50 & \text{if } t_c \geq T_d \\
+		500       & \text{if } 0< t_c < T_d
+	\end{cases}
+\end{equation}
+This function simulates a scenario where failures happen more frequently than expected. We evaluate 
+the performance difference of dynamic and static estimations for $1000 \leq T_d \leq 5000$ based on 
+the estimation of the workflow makespan. Theoretically speaking, the later we change $\theta_{\gamma}$, 
+the less the re-clustering is influenced by the estimation error, and thus the smaller the workflow makespan 
+is. There is one special case when $T_d\to 0$, which means the prior knowledge is wrong at the very 
+beginning.
+
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.8\linewidth]{step_signal.pdf} \\
-	\caption{A Step Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_d$ is the moment $\theta_{\gamma}$ changes from 500 to 50 seconds}
+	\caption{A Step Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_d$ is the moment $\theta_{\gamma}$ changes from 500 to 50 seconds.}
 	\label{fig:evaluation_step_signal}
 \end{figure}
 
+The second function is a pulse wave function (Fig. \ref{fig:evaluation_pulse_signal}) in which the 
+amplitude alternates at a steady frequency between a fixed minimum (50 seconds) to a maximum 
+(500 seconds) value. The function is defined as follows:
+
 \begin{equation}
-\label{eq:step_function}
- \theta_{\gamma}(t_c) =
-  \begin{cases}
-   50 & \text{if } t_c \geq T_d \\
-   500       & \text{if } 0< t_c < T_d
-  \end{cases}
+	\label{eq:pulse_function}
+	\theta_{\gamma}(t_c) =
+	\begin{cases}
+		500 & \text{if } 0< t_c \leq \tau \\
+		50       & \text{if } \tau< t_c < T_c
+	\end{cases}
 \end{equation}
+where $T_c$ is the period, and $\tau$ is the duty cycle of the oscillator. This function simulates a 
+scenario where the failures follow a periodic pattern~\cite{yigitbasi2010analysis} extracted from 
+failure traces obtained from production distributed systems. In this work, we vary $T_c$ from 
+1000 seconds to 10000 seconds based on the estimation of the workflow's makespan, and 
+$\tau$ from $0.1T_c$ to $0.5T_c$. 
 
-In this experiment, we use two sets of $\theta_{\gamma}$ function. The first one is a step function, in which we decrease $\theta_{\gamma}$ from 500 seconds to 50 seconds at time $T_d$ to simulate the scenario where there are more failures coming than expected. We evaluate the performance difference of dynamic estimation and static estimation while $1000\leq T_d\leq 5000$ based on the estimation of the workflow makespan. The function is shown  in Figure \ref{fig:evaluation_step_signal} and Equation \ref{eq:step_function}, while $t_c$ is the current time. Theoretically speaking, the later we change $\theta_{\gamma}$, the less the reclustering is influenced by the estimation error and thus the smaller the workflow makespan is. There is one special case when $T_d\to 0$, which means the prior knowledge is wrong at the very beginning. The second one is a pulse wave function, which the amplitude alternates at a steady frequency between fixed minimum (50 seconds) to maximum (500 seconds) values. The function is shown in Figure \ref{fig:evaluation_pulse_signal} and Equation \ref{eq:pulse_function}. $T_c$ is the period and $\tau$ is the duty cycle of the oscillator. It simulates a scenario where the failures follow a periodic pattern \cite{yigitbasi2010analysis} that has been found in many failure traces obtained from production distributed systems. In our paper, we vary $T_c$ from 1000 seconds to 10000 seconds based on the estimation of workflow makespan and $\tau$ from $0.1T_c$ to $0.5T_c$. 
-
-
-\begin{figure}[htb]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.8\linewidth]{pulse_signal.pdf} \\
-	\caption{A Pulse Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_c$ is the period of the wave. $\tau$ is the width of the pulse. }
+	\caption{A Pulse Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_c$ is the period of the wave. $\tau$ is the width of the pulse.}
 	\label{fig:evaluation_pulse_signal}
 \end{figure}
 
-
-\begin{equation}
-\label{eq:pulse_function}
- \theta_{\gamma}(t_c) =
-  \begin{cases}
-   500 & \text{if } 0< t_c \leq \tau \\
-   50       & \text{if } \tau< t_c < T_c
-  \end{cases}
-\end{equation}
-
-Table~\ref{tab:evaluation_methods} summarizes the task clustering methods to be evaluated in our experiments. In our experiments, our algorithms take less than 10ms to do the reclustering for each job and thereby they are highly efficient even for large-scale workflows. 
-\begin{table}[!htb]
-	%\setlength{\tabcolsep}{11pt}
-	\centering
-	\small
-	\begin{tabular}{l|rrrr}
-		\hline
-		Abbreviation	& Method	  \\
-		\hline
-		DR 		& Dynamic Reclustering		\\
-		SR 		&Selective Reclustering\\
-		VR 	&Vertical Reclustering\\
-		HC 	&Horizontal Clustering \\
-		\hline
-	\end{tabular}
-	\caption{Methods to Evaluate in Experiements}
-	\label{tab:evaluation_methods}
-\end{table} 
+%Table~\ref{tab:evaluation_methods} summarizes the task clustering methods to be evaluated in 
+%our experiments. 
+%
+%\begin{table}[!htb]
+%	\setlength{\tabcolsep}{10pt}
+%	\centering
+%	\small
+%	\begin{tabular}{c l}
+%		\hline
+%		Abbreviation	& Method	  \\ \hline
+%		DR 			& Dynamic Reclustering \\
+%		SR 			&Selective Reclustering \\
+%		VR 			&Vertical Reclustering \\
+%		HC 			&Horizontal Clustering \\
+%		\hline
+%	\end{tabular}
+%	\caption{Task clustering methods used in the experiements.}
+%	\label{tab:evaluation_methods}
+%\end{table} 
 
 
-\subsection{Results and discussion}
+% Results and Discussion
+\subsection{Results and Discussion}
 \label{sec:results}
+
+\textbf{Experiment 1.}
+Figure~\ref{fig:expr_sipht}, \ref{fig:expr_genome}, \ref{fig:expr_cybershake}, \ref{fig:expr_ligo} and \ref{fig:expr_montage} show the performance of the four reclustering methods (DR, SR, VR and HC) with five workflows respectively. We draw conclusions: 
+
 
 \begin{figure}[!htb]
 \centering
@@ -1100,8 +1156,6 @@ Table~\ref{tab:evaluation_methods} summarizes the task clustering methods to be 
   \label{fig:expr_sipht}
 \end{figure}
 
-\textbf{Experiment 1}
-Figure~\ref{fig:expr_sipht}, \ref{fig:expr_genome}, \ref{fig:expr_cybershake}, \ref{fig:expr_ligo} and \ref{fig:expr_montage} show the performance of the four reclustering methods (DR, SR, VR and HC) with five workflows respectively. We draw conclusions: 
 
 \begin{figure}[!htb]
 \centering
@@ -1222,8 +1276,9 @@ Furthermore, we assume that the inter-arrival time of transient failures is a fu
   \section*{Acknowledgment}
 \fi
 
-
-This work is supported by NFS under grant number IIS-0905032. We thank Gideon Juve, Karan Vahi, Mats Rynge and Rajiv Mayani for their help. Traces are collected from experiments that were run on FutureGrid that is supported by NSF FutureGrid 0910812. 
+This work is supported by NFS under grant number IIS-0905032. We thank Gideon Juve, 
+Karan Vahi, Mats Rynge, and Rajiv Mayani for their valuable help. Traces are collected from 
+experiments conducted on FutureGrid, which is supported by NSF under grant FutureGrid 0910812. 
 
 
 
