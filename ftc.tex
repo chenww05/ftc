@@ -636,14 +636,14 @@ i.e., the value of $k$ such that $MLE(\bm{M})$ attains its minimum value:
 \begin{figure}[b]
 	\centering
 	\includegraphics[width=0.95\linewidth]{model_makespan2.eps}
-	\caption{Makespan with different clustering size and $\theta_{\gamma}$. ($n=1000$, $r=20$, $\phi_t=5$ sec, $\phi_s=50$ sec). The red dots are the minimums. }
+	\caption{Makespan with different clustering size and $\theta_{\gamma}$. ($n=1000$, $r=20$, $\phi_t=5$s, $\phi_s=50$s). Red dots are the minimums.}
 	\label{fig:model-makespan}
 \end{figure}
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=0.95\linewidth]{model_size2.eps}
-	\caption{Optimal clustering size (k*) with different  $\theta_{\gamma}$ ($n=1000$, $r=20$, $\phi_t=5$ sec, $\phi_s=50$ sec)}
+	\caption{Optimal clustering size ($k^*$) with different  $\theta_{\gamma}$ ($n=1000$, $r=20$, $\phi_t=5$s, $\phi_s=50$s).}
 	\label{fig:model-size}
 \end{figure}
 
@@ -658,8 +658,7 @@ defined as 2 for simplicity. These parameters are close to the parameters of tas
 the \texttt{mProjectPP} transformation of the Montage workflow (Section \ref{sec:experiments}).
 Fig.~\ref{fig:model-size} shows the relationship between the optimal clustering size ($k^*$) and 
 $\theta_{\gamma}$, which is a non-decreasing function. The optimal clustering size (red dots in 
-Fig.~\ref{fig:model-size}) when $\theta_{\gamma} \in \{20,30,40\}$ is 2, 3, and 5 respectively. 
-\todo[inline]{there are no red dots in Fig~\ref{fig:model-size}.}
+Fig.~\ref{fig:model-makespan}) when $\theta_{\gamma} \in \{20,30,40\}$ is 2, 3, and 5 respectively. 
 As expected, the longer the inter-arrival time of failures is, the lower the task failure rate is. With 
 a lower task failure rate, a larger $k$ value assures that system overheads are reduced without 
 retrying the tasks too many times.
