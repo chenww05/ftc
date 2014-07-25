@@ -513,82 +513,104 @@ We model the task runtime ($\bm t$) with a Gamma distribution as in~\cite{Sun200
 with a known shape parameter~$\phi_{t}$ and an unknown scale parameter~$\theta_t$. The 
 conjugate pair of Gamma distribution with a known shape parameter is also a Gamma distribution. 
 If the prior knowledge follows $\Gamma(a_t, b_t)$, where $a_t$ is the shape parameter and 
-$b_t$ the rate parameter (or $\displaystyle \frac{1}{b_t}$ is the scale parameter), the posterior 
+$b_t$ the rate parameter (or $\displaystyle \tfrac{1}{b_t}$ is the scale parameter), the posterior 
 follows $\Gamma(a_t+n\phi_t, b_t+\displaystyle\sum_{i=1}^n{t_i})$ with $a_t+n\phi_t$ as the 
 shape parameter and $b_t+\displaystyle\sum_{i=1}^n{t_i}$ as the rate parameter. The MLE of 
-$\theta_t$ is then defined as $\displaystyle\frac{b_t+\displaystyle\sum_{i=1}^n{t_i}}{a_t+n\phi_t-1}$. 
+$\theta_t$ is then defined as follows: 
 
-\vspace{5pt}
+\begin{equation}
+	MLE(\theta_t) = \displaystyle\frac{b_t+\displaystyle\sum_{i=1}^n{t_i}}{a_t+n\phi_t-1}
+\end{equation}
+	
 Similarly, if we model the system overhead~$\bm s$ with a Gamma distribution with a known 
 shape parameter $\phi_{s}$ and an unknown scale parameter $\theta_s$, and the prior knowledge 
-as $\Gamma(a_s, b_s)$, the MLE of $\theta_s$ is thus 
-$\displaystyle\frac{b_s+\displaystyle\sum_{i=1}^n{s_i}}{a_s+n\phi_s-1}$.
+as $\Gamma(a_s, b_s)$, the MLE of $\theta_s$ is thus defined as follows:
 
+\begin{equation}
+	MLE(\theta_s) = \displaystyle\frac{b_s+\displaystyle\sum_{i=1}^n{s_i}}{a_s+n\phi_s-1}
+\end{equation}
 
+We have assumed the task runtime, system overheads, and inter-arrival time between failures 
+are a function of task types. The reason is that tasks at different levels (the deepest depth from 
+the entry task to this task) are often of different types (a.k.a. transformations) in scientific 
+workflows. Given $n$ independent tasks at the same workflow level and the distribution of the 
+task runtime, the system overheads, and the inter-arrival time of failures, we aim at reducing the 
+overall runtime $\bm M$ for completing these tasks by adjusting the clustering size $k$ (the 
+number of tasks in a job). $\bm M$ is also a random variable, which includes the system overheads 
+and the runtime of the clustered job and its subsequent retried jobs if the first attempt fails. We also 
+assume that task failures are independent for each worker node (but with the same distribution) 
+without considering the failures that bring the whole system down (e.g. a failure in the shared file 
+system). 
 
+The runtime of a job is a random variable indicated by $\bm d$. A clustered job succeeds only if 
+all of its tasks succeed. The job runtime is the sum of the cumulative task runtime of $k$ tasks 
+and the system overhead. We assume that the task runtime of each task is independent of each 
+other, therefore the cumulative task runtime of $k$ tasks is also a Gamma distribution since the 
+sum of Gamma distributions with the same scale parameter is still a Gamma distribution. We also 
+assume the system overhead is independent of all the task runtimes. A general solution to express 
+the sum of independent Gamma distributions with different scale and shape parameters is provided 
+in~\cite{nadarajah2008review}. For the sake of simplicity, we limit this work to show a typical case 
+where the system overhead and the task runtime have the same scale parameter 
+($\theta_{ts}=\theta_{t}=\theta_{s}$). 
 
-We have already assumed the task runtime, system overhead, and inter-arrival time between failures are a function of task types. The reason is that tasks at different levels (the deepest depth from the entry task to this task) are usually of different types in scientific workflows. Given $n$ independent tasks at the same workflow level and the distribution of the task runtime, the system overhead, and the inter-arrival time of failures, we aim to reduce the overall runtime $\bm M$ of completing these tasks by adjusting the clustering size $k$ (the number of tasks in a job). 
-$\bm M$ is also a random variable and it includes the system overheads and the runtime of the clustered job and its subsequent retry jobs if the first try fails. We also assume that task failures are independent for each worker node (but with the same distribution) without considering the failures that bring the whole system down such as a failure in the shared file system. 
-%since that is not the concern of task clustering but the task scheduling. 
-
-The runtime of a job is a random variable indicated by $\bm d$. A clustered job succeeds only if all of its tasks succeed. The job runtime is the sum of the cumulative task runtime of $k$ tasks and the system overhead. We assume that the task runtime of each task is independent of each other, therefore the cumulative task runtime of $k$ tasks is also a Gamma distribution since the sum of Gamma distributions with the same scale parameter is still a Gamma distribution. We also assume the system overhead is independent of all the task runtimes. A general solution to express the sum of independent Gamma distributions with different scale and shape parameters is provided in~\cite{nadarajah2008review}. Since that is not our major concern, without overcomplicating the task clustering model, we only show a typical case where the system overhead and the task runtime have the same scale parameter ($\theta_{ts}=\theta_{t}=\theta_{s}$). 
-%Don't know how to explain
-%In practice, this assumption means the cumulative task runtime and the system overhead are generated at the same rate (or scale). 
-%which is consistent with our o-DAG model that has one system overhead associated to one job. 
-
-The job runtime (irrespective of whether it succeeds of fails) is:
+Therefore, the job runtime (regardless of whether it succeeds of fails) is defined as follows:
 \begin{eqnarray}
-\displaystyle
-\bm{d}\sim\Gamma(k\phi_{t}+\phi_{s}, \theta_{ts})\\
-MLE(\bm{d})=\displaystyle{(k\phi_t+\phi_s - 1) }{\theta_{ts}}
-\label{eq:N}
+	\displaystyle
+	\bm{d}\sim\Gamma(k\phi_{t}+\phi_{s}, \theta_{ts})\\
+	MLE(\bm{d})=\displaystyle{(k\phi_t+\phi_s - 1) }{\theta_{ts}}
+	\label{eq:N}
 \end{eqnarray}
+
 %We assume that $n \gg r$, but $n/k$ is not necessarily much larger than $r$ since $k$ could be very large. Normally at the beginning of workflow execution, $n/k > r$, which means there are more clustered jobs than available resources. To try all $n$ tasks once, irrespective of whether they succeed or fail, one needs approximately $\displaystyle \frac{n}{rk}$ execution cycle(s) since at each execution cycle we can execute at most $r$ jobs. Therefore, 
 
 %We have assumed the task runtime $t\sim\Gamma^{-1}(a_t, b_t)$. $(a_t, b_t)$ are estimated from prior knowledge and/or posterior knowledge. The system overhead $s\sim\Gamma^{-1}(a_s, b_s)$ similarly. By merging the $k$ tasks together, their computational runtime still follows a Inverse-Gamma distribution with parameter $(a_t, kb_t)$. We use $\mathcal{L}(f)$ to indicate the Laplace transform of the distribution $f$ (time-series signal in Laplace transform). $d$ is a random variable that represents the job runtime, which includes the computational runtime of $k$ tasks and the system overhead $s$. The PDF of $d$ is: $M$ is a random variable represents the cumulative job runtime of $\displaystyle\frac{n}{k}$ jobs. For a given $M$, we have:
 
-Let the retry time of clustered jobs to be $N$. The process to run and retry a job is a Bernoulli trial with only two results: success or failure. Once a job fails, it will be re-executed until it is eventually completed successfully (since we assume the failures are transient). For a given job runtime $d_i$, by definition:
+Let $N$ be the retry time of clustered jobs. The process to run and retry a job is a Bernoulli trial 
+with exactly two possible outcomes: \emph{success} or \emph{failure}. Once a job fails, it will be 
+re-executed until it is eventually successfully executed (since failures are assumed transient). 
+For a given job runtime $d_i$, the retry time $N_i$ of a clustered job $i$ is defined as follows:
 \begin{eqnarray}
-\displaystyle
-N_i=\frac{1}{1-F(d_i)}=\frac{1}{e^{-(\displaystyle\frac{d_i}{\theta_{\gamma}})^{\phi_{\gamma}}}}=e^{(\displaystyle\frac{d_i}{\theta_{\gamma}})^{\phi_{\gamma}}} 
-\label{eq:N}
+	\displaystyle
+	N_i=\frac{1}{1-F(d_i)}=\frac{1}{e^{-\left(\displaystyle\frac{d_i}{\theta_{\gamma}}\right)^{\phi_{\gamma}}}}=e^{\left(\displaystyle\frac{d_i}	{\theta_{\gamma}}\right)^{\phi_{\gamma}}} 
+	\label{eq:N}
+\end{eqnarray}
+where $F(d_i)$ is the CDF (Cumulative Distribution Function) of $\bm\gamma$. The time to 
+complete $d_i$ successfully in a faulty execution environment is determined as follows:
+\begin{eqnarray}
+	\displaystyle
+	M_i=d_i \times N_i=d_i \times e^{\left(\displaystyle\frac{d_i}{\theta_{\gamma}}\right)^{\phi_{\gamma}}} 
+	\label{eq:M}
 \end{eqnarray}
 
-$F(x)$ is the CDF (Cumulative Distribution Function) of $\bm\gamma$. The time to complete $d_i$ successfully in a faulty execution environment is
-
+\noindent Equation \ref{eq:M} has involved two distributions $\bm d$ and $\theta_{\gamma}$ 
+($\phi_{\gamma}$ is known). From Equation \ref{eq:theta-1}, we have:
 \begin{eqnarray}
-\displaystyle
-M_i=d_iN_i=d_ie^{(\displaystyle\frac{d_i}{\theta_{\gamma}})^{\phi_{\gamma}}} 
-\label{eq:M}
-\end{eqnarray}
-
-Equation \ref{eq:M} has involved two distributions $\bm d$ and $\theta_{\gamma}$ ($\phi_{\gamma}$ is known). From Equation \ref{eq:theta-1}, we have:
-
-\begin{eqnarray}
-\displaystyle\cfrac{1}{\theta_{\gamma}}\sim\Gamma(a_{\gamma}+n,\frac{1}{\displaystyle b_{\gamma}+\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}) \\
-MLE(\displaystyle\cfrac{1}{\theta_{\gamma}})=\displaystyle\cfrac{a_{\gamma}+n-1}{\displaystyle b_{\gamma}+\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}
-\label{eq:theta}
+	\displaystyle\cfrac{1}{\theta_{\gamma}}\sim\Gamma\left(a_{\gamma}+n,\frac{1}{\displaystyle b_{\gamma}+\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}\right) \\
+	MLE\left(\displaystyle\cfrac{1}{\theta_{\gamma}}\right)=\displaystyle\cfrac{a_{\gamma}+n-1}{\displaystyle b_{\gamma}+\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}
+	\label{eq:theta}
  \end{eqnarray}
 
-$M_i$ is a monotonic increasing function of both $d_i$ and $\displaystyle\cfrac{1}{\theta_{\gamma}}$, and the two random variables are independent of each other, therefore:
-
-
+\noindent $M_i$ is a monotonic increasing function of both $d_i$ and $\displaystyle\cfrac{1}{\theta_{\gamma}}$, 
+and the two random variables are independent of each other, therefore:
 \begin{equation} 
-\label{eq:MLE-M-i}
-MLE(M_i)=MLE(d_i)e^{(\displaystyle MLE(d_i)MLE(\cfrac{1}{\theta_{\gamma}}))^{\phi_{\gamma}}} 
+	MLE(M_i)=MLE(d_i)e^{\left(\displaystyle MLE(d_i)MLE\left(\cfrac{1}{\theta_{\gamma}}\right)\right)^{\phi_{\gamma}}} 
+	\label{eq:MLE-M-i}
 \end{equation}
 
-Equation \ref{eq:MLE-M-i} means to attain $MLE(M_i)$, we just need to attain $MLE(d_i)$ and $MLE(\cfrac{1}{\theta_{\gamma}})$ at the same time. 
-In both dimensions ($d_i$ and $\displaystyle\cfrac{1}{\theta_{\gamma}}$), $M_i$ is a Gamma distribution and each $M_i$ has the same distribution parameters, therefore:
-
+From Equation \ref{eq:MLE-M-i}, to attain $MLE(M_i)$ we just need to attain $MLE(d_i)$ and 
+$MLE\left(\tfrac{1}{\theta_{\gamma}}\right)$ at the same time. In both dimensions ($d_i$ and 
+$\displaystyle\tfrac{1}{\theta_{\gamma}}$), $M_i$ is a Gamma distribution, and each $M_i$ 
+has the same distribution parameters, therefore:
 \begin{eqnarray} 
-\label{eq:MLE-M}
-\bm{M}&=&\displaystyle\cfrac{1}{r}\sum_{i=1}^{\cfrac{n}{k}}M_i\sim\Gamma \nonumber\\
-MLE(\bm{M})&=&\displaystyle\cfrac{n}{rk}MLE(M_i)\\
-&=&\displaystyle\cfrac{n}{rk} MLE(d_i)e^{(\displaystyle MLE(d_i)MLE(\cfrac{1}{\theta_{\gamma}}))^{\phi_{\gamma}}} 
+	\label{eq:MLE-M}
+	\bm{M}&=&\displaystyle\cfrac{1}{r} \times \sum_{i=1}^{\cfrac{n}{k}}M_i\sim\Gamma \nonumber\\
+	MLE(\bm{M})&=&\displaystyle\cfrac{n}{rk} \times MLE(M_i)\\
+	&=&\displaystyle\frac{n}{rk} \times MLE(d_i)e^{\left(\displaystyle MLE(d_i)MLE\left(\tfrac{1}{\theta_{\gamma}}\right)\right)^{\phi_{\gamma}}} 
 \end{eqnarray}
+where $r$ is the number of resources. 
 
-$r$ is the number of resources. In our paper, we consider a compute cluster as a homogeneous cluster, which is usually true in dedicated clusters and Clouds. 
+In this work, we consider a compute cluster as a homogeneous cluster, which is often the case 
+in dedicated clusters and cloud platforms. 
 
 %On the other side, at the end of the workflow execution, since n is decreasing with the process of workflow, it is possible that $\displaystyle \frac{n}{k} < r$, which means there are fewer jobs than the available resources. One needs just one execution cycle to execute these tasks once. The time to complete all $n$ tasks successfully is $N(kt+s)$. 
 
@@ -603,36 +625,53 @@ $r$ is the number of resources. In our paper, we consider a compute cluster as a
 %\end{cases}
 %\end{equation}
 
-Let $k^*$ be the optimal clustering size that minimizes Equation \ref{eq:MLE-M}.  $\arg min$  stands for the argument ($k$) of the minimum\footnote{Wiki: http://en.wikipedia.org/wiki/Arg\_max}, that is to say, the $k$ such that $MLE(\bm{M})$ attains its minimum value. 
-
+Let $k^*$ be the optimal clustering size that minimizes Equation~\ref{eq:MLE-M}. $\arg min$  
+stands for the argument ($k$) of the minimum\footnote{http://en.wikipedia.org/wiki/Arg\_max}, 
+i.e., the value of $k$ such that $MLE(\bm{M})$ attains its minimum value:
 \begin{eqnarray} 
-\label{eq:k_optimal}
-k^*=\arg min\{MLE(\bm{M})\} 
+	\label{eq:k_optimal}
+	k^*=\arg min\{MLE(\bm{M})\} 
 \end{eqnarray}
 
-It is difficult to find a analytical solution of $k^*$. However, there are a few constraints that can simplify the estimation of $k^*$: (\emph{i}) $k$ can only be an integer in practice; (\emph{ii}) $MLE(\bm{M})$ is continuous and has one minimum. Methods such as Newton's method can be used to find the minimal $MLE(\bm{M})$ and the corresponding $k$. Figure~\ref{fig:model_makespan} shows an example of $MLE(\bm{M})$ using static estimation with a low task failure rate ($\theta_{\gamma}=40$s), a medium task failure rate ($\theta_{\gamma}=30$s) and a high task failure rate ($\theta_{\gamma}=20$s). Other parameters are $n=50$, $\phi_{t}=5$ sec, and $\phi_{s}=50$ sec and the scale parameter $\theta_{ts}$ is 2 for simplicity. These parameters are close to the parameters of tasks at the level of mProjectPP in the Montage workflow (Section \ref{sec:experiments}). 
-Figure \ref{fig:model_size} shows the relationship between the optimal clustering size ($k^*$) and $\theta_{\gamma}$, which is a non-decreasing function. The optimal clustering size (marked with red dots in Figure~\ref{fig:model_size}) when $\theta_{\gamma}=20,30,40$ is 2,3 and 5 respectively. 
- It is consistent with our expectation since the longer the inter-arrival time of failures is, the lower the task failure rate is. With a lower task failure rate, a larger $k$ assures that we reduce system overheads without retrying the tasks too many times.  
-
-
-
-\begin{figure}[!htb]
-\centering
-  \includegraphics[width=0.95\linewidth]{model_makespan2.eps}
-  \caption{Makespan with different clustering size and $\theta_{\gamma}$. ($n=1000$, $r=20$, $\phi_t=5$ sec, $\phi_s=50$ sec). The red dots are the minimums. }
-  \label{fig:model_makespan}
+\begin{figure}[b]
+	\centering
+	\includegraphics[width=0.95\linewidth]{model_makespan2.eps}
+	\caption{Makespan with different clustering size and $\theta_{\gamma}$. ($n=1000$, $r=20$, $\phi_t=5$ sec, $\phi_s=50$ sec). The red dots are the minimums. }
+	\label{fig:model-makespan}
 \end{figure}
 
-\begin{figure}[!htb]
-\centering
-  \includegraphics[width=0.95\linewidth]{model_size2.eps}
-  \caption{Optimal clustering size (k*) with different  $\theta_{\gamma}$ ($n=1000$, $r=20$, $\phi_t=5$ sec, $\phi_s=50$ sec)}
-  \label{fig:model_size}
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.95\linewidth]{model_size2.eps}
+	\caption{Optimal clustering size (k*) with different  $\theta_{\gamma}$ ($n=1000$, $r=20$, $\phi_t=5$ sec, $\phi_s=50$ sec)}
+	\label{fig:model-size}
 \end{figure}
 
+It is difficult to find a analytical solution of $k^*$. However, there are a few constraints that can 
+simplify the estimation of $k^*$: (\emph{i}) $k$ can only be an integer in practice; (\emph{ii}) 
+$MLE(\bm{M})$ is continuous and has one minimum. Methods such as Newton's method can be 
+used to find the minimal $MLE(\bm{M})$ and the corresponding $k$. Fig.~\ref{fig:model-makespan} 
+shows an example of $MLE(\bm{M})$ using static estimation with a low task failure rate ($\theta_{\gamma}=40$s), 
+a medium task failure rate ($\theta_{\gamma}=30$s) and a high task failure rate ($\theta_{\gamma}=20$s). 
+Other parameters are $n=50$, $\phi_{t}=5$s and $\phi_{s}=50$s, and the scale parameter $\theta_{ts}$ is 
+defined as 2 for simplicity. These parameters are close to the parameters of tasks at the level of 
+the \texttt{mProjectPP} transformation of the Montage workflow (Section \ref{sec:experiments}).
+Fig.~\ref{fig:model-size} shows the relationship between the optimal clustering size ($k^*$) and 
+$\theta_{\gamma}$, which is a non-decreasing function. The optimal clustering size (red dots in 
+Fig.~\ref{fig:model-size}) when $\theta_{\gamma} \in \{20,30,40\}$ is 2, 3, and 5 respectively. 
+\todo[inline]{there are no red dots in Fig~\ref{fig:model-size}.}
+As expected, the longer the inter-arrival time of failures is, the lower the task failure rate is. With 
+a lower task failure rate, a larger $k$ value assures that system overheads are reduced without 
+retrying the tasks too many times.
 
-From this theoretic analysis, we conclude that (\emph{i}) the longer the inter-arrival time of failures is, the better runtime performance the task clustering has; (\emph{ii}), adjusting the clustering size according to the detected inter-arrival time can improve the runtime performance. 
+From this theoretic analysis, we conclude that (\emph{i}) the longer the inter-arrival time of failures is, 
+the better runtime performance the task clustering has; and (\emph{ii}) by adjusting the clustering 
+size according to the inter-arrival time, the overall runtime performance can be improved. 
 
+
+%
+% Section: Fault-Tolerant Clustering
+%
 \section{Fault-Tolerant Clustering}
 \label{sec:clustering}
 
