@@ -256,7 +256,7 @@ analysis of techniques to prevent and mitigate service failures~\cite{Oppenheime
 %Tang et al.~\cite{Tang1990} presents common system failures characteristics such as errors, failure distributions and hazard rates. Schroeder et al. \cite{Schroeder2006} have studied the statistics of the data, including the root cause of failures, the mean time between failures, and the mean time to repair. Sahoo et al. \cite{Sahoo2004} analyzed the empirical and statistical properties of system errors and failures from a network of heterogeneous servers running a diverse workload. Oppenheimer et al. \cite{Oppenheimer2002} analyzed the causes of failures from three large-scale Internet services and the effectiveness of various techniques for preventing and mitigating service failure. 
 
 In scientific workflow management systems (WMS), fault tolerance issues have also 
-been addressed. For instance, the Pegasus WMS~\cite{Deelman2004} has incorporated 
+been addressed. For instance, the Pegasus WMS~\cite{Deelman2005} has incorporated 
 a task-level monitoring system, which retries a job if a failure is detected. Provenance data
 is also tracked and used to analyze the cause of failures~\cite{Samak2011}. A survey of
 fault detection, prevention, and recovery techniques in current grid WMS such as 
@@ -320,7 +320,7 @@ a workflow task, and the edges represent dependencies between the tasks that con
 in which tasks are executed. \emph{Dependencies} typically represent data-flow dependencies in the 
 application, where the output files produced by one task are used as inputs of another task. Each 
 \emph{task} is a computational program and a set of parameters that need to be executed. This model 
-fits several WMS such as Pegasus~\cite{Deelman2004}, Askalon~\cite{fahringer2007askalon}, and 
+fits several WMS such as Pegasus~\cite{Deelman2005}, Askalon~\cite{fahringer2007askalon}, and 
 Taverna~\cite{Oinn2004}. 
 
 In this work, we assume a single execution site with multiple compute resources, such as virtual machines 
@@ -338,7 +338,7 @@ within an execution site, execute jobs individually. The main components are int
 
 \vspace{4pt}
 \noindent \textbf{Workflow Mapper.} Generates an executable workflow from an abstract 
-workflow~\cite{Deelman2004} provided by the user or a workflow composition system. It restructures 
+workflow~\cite{Deelman2005} provided by the user or a workflow composition system. It restructures 
 the workflow for performance optimization, and adds tasks for data management and provenance 
 information generation. In this work, the workflow mapper is also used to merge fine-grained tasks into
 a single clustered job (i.e., \emph{task clustering}). A job then is a single execution unit in the workflow 
@@ -549,9 +549,8 @@ other, therefore the cumulative task runtime of $k$ tasks is also a Gamma distri
 sum of Gamma distributions with the same scale parameter is still a Gamma distribution. We also 
 assume the system overhead is independent of all the task runtimes. A general solution to express 
 the sum of independent Gamma distributions with different scale and shape parameters is provided 
-in~\cite{nadarajah2008review}. For the sake of simplicity, we limit this work to show a typical case 
-where the system overhead and the task runtime have the same scale parameter 
-($\theta_{ts}=\theta_{t}=\theta_{s}$). 
+in~\cite{nadarajah2008review}. For simplicity, we limit this work to show a typical case where the 
+system overhead and the task runtime have the same scale parameter ($\theta_{ts}=\theta_{t}=\theta_{s}$). 
 
 Therefore, the job runtime (regardless of whether it succeeds of fails) is defined as follows:
 \begin{eqnarray}
@@ -674,15 +673,32 @@ size according to the inter-arrival time, the overall runtime performance can be
 \section{Fault-Tolerant Clustering}
 \label{sec:clustering}
 
-As indicated in Section \ref{sec:model}, inappropriate clustering may increase the workflow makespan. To improve the fault tolerance from the point of view of task clustering, we propose three methods: Dynamic Reclustering (\emph{DR}), Selective Reclustering (\emph{SR}) and Vertical Reclustering (\emph{VR}). In the experiments, we compare the performance of our fault-tolerant clustering methods to an existing version of Horizontal Clustering (HC)~\cite{Singh2008} technique. In this subsection, we first briefly describe these algorithms.
+Inappropriate task clustering may negatively impact the workflow makespan in faulty distributed
+environments. In this section, we propose three fault-tolerant task clustering methods---Selective 
+Reclustering (\emph{SR}), Dynamic Reclustering (\emph{DR}), and Vertical Reclustering 
+(\emph{VR})---that adjust the clustering size of the jobs to reduce the impact of task failures on the 
+workflow execution. These methods are based on the Horizontal Clustering (HC)~\cite{Singh2008} 
+technique that has been implemented and used in the Pegasus WMS~\cite{Deelman2005}.
 
-\textbf{Horizontal Clustering} (\emph{HC}). 
-Horizontal Clustering (HC) merges multiple tasks that are at the same horizontal level of the workflow. The clustering granularity (number of tasks within a cluster) of a clustered job is controlled by the user, who defines either the number of tasks per clustered job (\emph{clusters.size}), or the number of clustered jobs per horizontal level of the workflow (\emph{clusters.num}). This algorithm has been implemented and used in Pegasus~\cite{Singh2008}. For simplicity, we set \emph{clusters.num} to be the same as the number of available resources. In our prior work~\cite{Chen2013a,Chen2013b}, we have compared the runtime performance with different clustering granularity. The pseudocode of the HC technique is shown in Algorithm~\ref{alg:evaluation_hc}. The Clustering and Merge Procedures are called in the initial task clustering process while the Reclustering Procedure is called when there is a failed job detected by the monitoring system. 
+\vspace{5pt}
+\noindent \textbf{Horizontal Clustering} (\emph{HC}). 
+Horizontal clustering merges multiple tasks within the same horizontal level of the workflow. The 
+clustering granularity (number of tasks within a cluster) of a clustered job is controlled by the user, 
+who defines either the number of tasks per clustered job (\emph{clusters.size}), or the number of 
+clustered jobs per horizontal level of the workflow (\emph{clusters.num}). For simplicity, we set \emph{clusters.num} 
+to be the same as the number of available resources. In our prior work~\cite{Chen2013a,Chen2013b}, 
+we have evaluated the runtime performance with different clustering granularity. 
+Algorithm~\ref{alg:evaluation-hc} shows the pseudocode for HC. The \texttt{Clustering} and \texttt{Merge} 
+procedures are called in the initial task clustering process, while the \texttt{Reclustering} procedure is 
+invoked when a failed job is detected by the monitoring system. Fig.~\ref{fig:clustering-hc} shows an 
+example where the initial clustering size is 4. As a result,  there are four tasks in a clustered job. 
+During execution, three out of these tasks ($t_1$, $t_2$, $t_3$) fail. Due to the lack of an adaptive 
+mechanism, HC keeps retrying all of the four tasks in the following attempts until all of them succeed.
 
-\begin{algorithm}[!htb]
+\begin{algorithm}[t]
 	\footnotesize
 	\caption{Horizontal Clustering algorithm.}
-	\label{alg:evaluation_hc}
+	\label{alg:evaluation-hc}
 	\begin{algorithmic}[1]
 		\Require $W$: workflow; $C$: max number of tasks per job defined by \emph{clusters.size} or \emph{clusters.num}
 		\Procedure{Clustering}{$W,C$}
@@ -708,36 +724,35 @@ Horizontal Clustering (HC) merges multiple tasks that are at the same horizontal
 	\end{algorithmic}
 \end{algorithm}
 
-
-\begin{figure}[!htb]
-\centering
-  \includegraphics[width=0.65\linewidth]{hcr.pdf}
-  \caption{Horizontal Clustering (red boxes are failed tasks)}
-  \label{fig:clustering_hc}
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=0.6\linewidth]{hcr.pdf}
+	\caption{An example of Horizontal Clustering (red boxes are failed tasks).}
+	\label{fig:clustering-hc}
 \end{figure}
 
-%The type of tasks is used to detect the task specific failures and the resource id is used to detect location specific failures. 
-Figure \ref{fig:clustering_hc} shows an example where the initial clustering size is 4 and as a result there are four tasks in a clustered job. During execution, three out of these tasks ($t_1, t_2, t_3$) fail. HC will keep retrying all of the four tasks in the following try until all of them succeed. Such a retry mechanism has been implemented and is used in Pegasus~\cite{Singh2008}.
 
+\vspace{5pt}
+\noindent \textbf{Selective Reclustering} (\emph{SR}).
+The selective re-clustering technique, on the other hand, selects the failed tasks in a 
+clustered job and merges them into a new clustered job. Algorithm~\ref{alg:evaluation-sr}
+shows the pseudocode of the \texttt{Reclustering} procedure for the SR method. The 
+\texttt{Clustering} and \texttt{Merge} procedures are the same as those for HC.
+Fig.~\ref{fig:clustering-sr} shows an example of the SR method. In the first attempt, the 
+clustered job, composed of 4 tasks,  has 3 failed tasks ($t_1$, $t_2$, $t_3$). Three failed 
+tasks are merged into a new clustered job $j_2$ and retried. This approach does not intend 
+to adjust the clustering size, although the clustering size will become smaller after each attempt 
+since there are fewer tasks in subsequent clustered jobs. In the example, the clustering size 
+has decreased from 4 to 3. However, the optimal clustering size may not be 3, which limits 
+the workflow performance if the $\theta_{\gamma}$ is small and $k$ should be decreased 
+as much as possible. The advantage of SR is that it is simple to implement and can be 
+incorporated into existing workflow management systems with minimum impact on the 
+workflow execution efficiency as shown in Section~\ref{sec:experiments}.
 
-
-
-\begin{figure}[!htb]
-\centering
-  \includegraphics[width=0.58\linewidth]{sr.pdf}
-  \caption{Selective Reclustering (red boxes are failed tasks)}
-  \label{fig:clustering_sr}
-\end{figure}
-
-\textbf{Selective Reclustering} (\emph{SR}). HC does not adjust the clustering size even when it continuously sees many failures. We further improve the performance of the workflow execution with Selective Reclustering that selects the failed tasks in a clustered job and merges them into a new clustered job. SR is different from HC in that HC retries all tasks of a failed job even though some of the tasks have succeeded. 
-%SR requires task level monitoring in workflow management systems. 
-
-Figure \ref{fig:clustering_sr} shows an example of SR. In the first try, there are four tasks and three of them ($t_1, t_2, t_3$) have failed. One task ($t_4$) succeeds and exits. Only the three failed tasks are merged again into a new clustered job $j_2$ and the job is retried. This approach does not intend to adjust the clustering size, although the clustering size will become smaller and smaller after each retry since there are fewer and fewer tasks in a clustered job. In this case, the clustering size has decreased from 4 to 3. However, the optimal clustering size may not be 3, which limits the workflow performance if the $\theta_{\gamma}$ is small and $k$ should be decreased as much as possible. The advantage of SR is that it is simple to implement and can be incorporated into existing workflow management systems without much loss of efficiency as shown in Section~\ref{sec:experiments}. It also serves as a comparison with the Dynamic Reclustering approach that we propose below. Algorithm \ref{alg:evaluation_sr} shows the pseudocode of SR. The Clustering and Merge procedures are the same as those in HC. 
-
-\begin{algorithm}[!htb]
+\begin{algorithm}[t]
 	\footnotesize
-	\caption{Selective Reclustering algorithm. }
-	\label{alg:evaluation_sr}
+	\caption{Selective Reclustering algorithm.}
+	\label{alg:evaluation-sr}
 	\begin{algorithmic}[1]
 		\Require $W$: workflow; $C$: max number of tasks per job defined by \emph{clusters.size} or \emph{clusters.num}
 			\Procedure{Reclustering}{$J$}\Comment{$J$ is a failed job}
@@ -753,27 +768,35 @@ Figure \ref{fig:clustering_sr} shows an example of SR. In the first try, there a
 	\end{algorithmic}
 \end{algorithm}
 
- 
-
-\begin{figure}[!htb]
-\centering
-  \includegraphics[width=0.60\linewidth]{dr.pdf}
-  \caption{Dynamic Reclustering (red boxes are failed tasks)}
-  \label{fig:clustering_dr}
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=0.53\linewidth]{sr.pdf}
+	\caption{An example of Selective Reclustering (red boxes are failed tasks). Failed tasks are merged into a new job and retried.}
+	\label{fig:clustering-sr}
 \end{figure}
 
-\textbf{Dynamic Reclustering} (\emph{DR}). 
-Selective Reclustering does not analyze the clustering size, rather it uses a self-adjusted approach to reduce the clustering size if the failure rate is too high. However, it is blind about the optimal clustering size and the actual clustering size may be larger or smaller than the optimal clustering size. We then propose the second method, Dynamic Reclustering. In DR, only failed tasks are merged into new clustered jobs and the clustering size is set to be $k^*$ according to Equation \ref{eq:k_optimal}.
-% DR requires the ability to detect which tasks have failed in a job. 
 
+\vspace{5pt}
+\noindent \textbf{Dynamic Reclustering} (\emph{DR}).
+The Selective Reclustering method does not analyze the clustering size, rather it 
+uses a self-adjusted approach to reduce the clustering size to the number of failed tasks. 
+However, the actual optimal clustering size may be larger or smaller than the number of
+failed tasks. Therefore, we propose the Dynamic Reclustering method that merges failed
+tasks into new clustered jobs in which the clustering size is set to $k^*$ according to 
+Equation~\ref{eq:k_optimal}. Algorithm~\ref{alg:evaluation-dr} shows the pseudocode 
+for the \texttt{Reclustering} procedure for the DR method. Fig.~\ref{fig:clustering-dr} shows 
+an example where the initial clustering size is 4 and thereby there are 4 tasks in the 
+clustered job. In the first attempt, 3 tasks within the clustered job have failed. Therefore, 
+there are only 3 tasks to be retried, and thus the clustering size should be decreased to 2 
+accordingly. Two new clustered jobs $j_2$ (containing $t_1$ and $t_2$) and $j_3$ 
+(containing $t_3$) are created. Reducing the granularity of failed clustered jobs may
+decrease the probability of future failures, since at least one of the jobs will execute on
+a different worker node.
 
-
-Figure \ref{fig:clustering_dr} shows an example where the initial clustering size is 4 and thereby there are four tasks in a clustered job at the beginning. In the first try, three tasks within a clustered job have failed. Therefore we have only three tasks to retry and further we need to decrease the clustering size (in this case it is 2) accordingly. We end up with two new jobs $j_2$ (that has $t_1$ and $t_2$) and $j_3$ that has $t_3$. Algorithm \ref{alg:evaluation_dr} shows the pseudocode of DR. The Clustering and Merge procedures are the same as those in HC. 
-
-\begin{algorithm}[!htb]
+\begin{algorithm}[t]
 	\footnotesize
 	\caption{Dynamic Reclustering algorithm.}
-	\label{alg:evaluation_dr}
+	\label{alg:evaluation-dr}
 	\begin{algorithmic}[1]
 		\Require $W$: workflow; $C$: max number of tasks per job defined by \emph{clusters.size} or \emph{clusters.num}
 			\Procedure{Reclustering}{$J$}\Comment{$J$ is a failed job}
@@ -793,20 +816,17 @@ Figure \ref{fig:clustering_dr} shows an example where the initial clustering siz
 	\end{algorithmic}
 \end{algorithm}
 
-\begin{figure}[!htb]
-\centering
-  \includegraphics[width=0.95\linewidth]{vr.pdf}
-  \caption{Vertical Reclustering (red boxes are failed tasks)}
-  \label{fig:clustering_vr}
+ \begin{figure}[!t]
+	\centering
+	\includegraphics[width=0.55\linewidth]{dr.pdf}
+	\caption{An example of Dynamic Reclustering (red boxes are failed tasks). The clustering size is adjusted to 2 and thus failed tasks are merged into two new clustered jobs.}
+	\label{fig:clustering-dr}
 \end{figure}
 
-\textbf{Vertical Reclustering} (\emph{VR}). VR is an extension of Vertical Clustering. Similar to Selective Reclustering, Vertical Reclustering only retries tasks that are failed or not completed.
-If there is a failure detected, we decrease $k$ by half and recluster these tasks. In Figure \ref{fig:clustering_vr}, if there is no assumption of failures initially, we put all the tasks ($t_1, t_2, t_3, t_4$) from the same  pipeline into a clustered job. $t_3$ fails at the first try assuming it is a failure-prone task (its $\theta_{\gamma}$ is short). VR retries only the failed tasks ($t_3$) and tasks that are not completed ($t_4$) and merges them again into a new job $j_2$. In the second try, $j_2$ fails and we divide it into two tasks ($t_3$ and $t_4$). Since the clustering size is already 1, VR performs no vertical clustering anymore and would continue retrying $t_3$ and $t_4$ (but still following their data dependency) until they succeed. Algorithm \ref{alg:evaluation_vr} shows the pseudocode of VR. 
-
-\begin{algorithm}[!htb]
+\begin{algorithm}[t]
 	\footnotesize
 	\caption{Vertical Reclustering algorithm.}
-	\label{alg:evaluation_vr}
+	\label{alg:evaluation-vr}
 	\begin{algorithmic}[1]
 		\Require $W$: workflow; 
 		\Procedure{Clustering}{$W$}
@@ -848,8 +868,33 @@ If there is a failure detected, we decrease $k$ by half and recluster these task
 	\end{algorithmic}
 \end{algorithm}
 
+\begin{figure}[b]
+\centering
+  \includegraphics[width=0.9\linewidth]{vr.pdf}
+  \caption{An example of Vertical Reclustering (red boxes are failed tasks). The clustering size is decreased by half when a job execution fails.}
+  \label{fig:clustering-vr}
+\end{figure}
+
+\vspace{5pt}
+\noindent \textbf{Vertical Reclustering} (\emph{VR}). VR is an extension of the Vertical 
+Clustering (Section~\ref{sec:model}) method. Similar to Selective Reclustering, Vertical 
+Reclustering only retries failed or not completed tasks. If a failure is detected, $k$ is
+decreased by half and failed tasks are re-clustered accordingly. Fig.~\ref{fig:clustering-vr}
+shows an example of VR where tasks within a pipeline are initially merged into a single 
+clustered job ($t_1$, $t_2$, $t_3$, $t_4$). $t_3$ fails at the first attempt assuming it is 
+a failure-prone task (i.e., its $\theta_{\gamma}$ is short). VR then retries only the failed task 
+($t_3$) and tasks that have not been yet completed ($t_4$) by merging them into a new 
+job $j_2$. In the second attempt, $j_2$ fails and then it is divided into two jobs containing one
+task each ($t_3$ and $t_4$). Since the clustering size is already 1, VR performs no vertical 
+clustering anymore and will continue retrying $t_3$ and $t_4$ (but still following their data 
+dependency) until they succeed. Algorithm \ref{alg:evaluation-vr} shows the pseudocode 
+for the VR method. 
 
 
+
+%
+% Section: Experiments and Discussions
+%
 \section{Experiments and Discussions}
 \label{sec:experiments}
 
@@ -912,7 +957,7 @@ It then maps DNA sequences to the correct locations in a reference Genome. This 
 \end{figure}
 
 \paragraph{\textbf{SIPHT}}
-The SIPHT workflow~\cite{SIPHT} conducts a wide search for small untranslated RNAs (sRNAs) that regulates several processes such as secretion or virulence in bacteria. The kingdom-wide prediction and annotation of sRNA encoding genes involves a variety of individual programs that are executed in the proper order using Pegasus~\cite{Deelman2004}. These involve the prediction of $\rho$-independent transcriptional terminators, BLAST (Basic Local Alignment Search Tools~\cite{BLAST}) comparisons of the inter genetic regions of different replicons and the annotations of any sRNAs that are found. A simplified structure of the SIPHT workflow is shown in Figure~\ref{fig:evaluation_shape_sipht}. 
+The SIPHT workflow~\cite{SIPHT} conducts a wide search for small untranslated RNAs (sRNAs) that regulates several processes such as secretion or virulence in bacteria. The kingdom-wide prediction and annotation of sRNA encoding genes involves a variety of individual programs that are executed in the proper order using Pegasus~\cite{Deelman2005}. These involve the prediction of $\rho$-independent transcriptional terminators, BLAST (Basic Local Alignment Search Tools~\cite{BLAST}) comparisons of the inter genetic regions of different replicons and the annotations of any sRNAs that are found. A simplified structure of the SIPHT workflow is shown in Figure~\ref{fig:evaluation_shape_sipht}. 
 
 
 
