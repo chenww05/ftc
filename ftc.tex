@@ -1225,26 +1225,46 @@ system overhead per job.
 
 \vspace{5pt}
 \noindent \textbf{Experiment 3.}
-Fig.~\ref{fig:expr_static_dynamic} further evaluates the performance of the dynamic estimation and static estimation for the CyberShake workflow with a step function of $\theta_{\gamma}$. The reclustering method used in this experiment is DR since it performs best in the last two experiments. In this experiment, we use a step signal and change the inter-arrival time of failures ($\theta_{\gamma}$) from 500 seconds to 50 seconds at $T_d$. We can see that: 1). with the increase of $T_d$, both makespan decrease since the change of  $\theta_{\gamma}$ has less influence on the makespan and there is a lower failure rate on average; 2). Dynamic estimation improves the makespan by up to 22.4\% compared to the static estimation. The reason is the dynamic estimation process is able to update the MLEs of $\theta_{\gamma}$ and decrease the clustering size while the static estimation process does not. 
+Fig.~\ref{fig:expr_static_dynamic} shows the performance evaluation of the dynamic and static estimations 
+for the CyberShake workflow with a step function of $\theta_{\gamma}$. In this experiment, we use DR
+as the fault-tolerant task clustering method since it yielded the best performance in the past two 
+experiments. The step signal function changes the inter-arrival time of failures ($\theta_\gamma$)
+from 500 seconds to 50 seconds at time $T_d$. For high values of $T_d$, failures are scarce since
+the inter-arrival time is close to the workflow makespan. Therefore, the influence of $\theta_\gamma$ is
+negligible, and thus both the static and dynamic estimations have the same behavior. When failures are
+more frequent, i.e., low values for $T_d$, the dynamic estimation improves the workflow's makespan 
+by up to 22\%. This improvement is due to the ability of the dynamic estimation process to update the 
+MLEs of $\theta_{\gamma}$ and adapt the clustering size. 
 
 \begin{figure}[b]
-\centering
-  \includegraphics[width=1\linewidth]{versus.eps}
-  \caption{Experiment 3: Static Estimation vs. Dynamic Estimation (CyberShake, Step Function)}
-  \label{fig:expr_static_dynamic}
+	\centering
+	\includegraphics[width=\linewidth]{versus.eps}
+	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function.}
+	\label{fig:expr_static_dynamic}
 \end{figure}
 
-For the pulse function of $\theta_{\gamma}$, we use $\tau=0.1T_c, 0.3T_c, 0.5T_c$. Figure \ref{fig:expr_pulse_10}, \ref{fig:expr_pulse_30} and \ref{fig:expr_pulse_50} show the performance difference of dynamic estimation and static estimation respectively. When $\tau=0.1T_c$, DR with dynamic estimation improves the makespan by up to 25.7\% compared to case with static estimation. When $\tau=0.3T_c$, the performance difference between dynamic estimation and static estimation is up to 27.3\%. We can also see that when $T_c$ is small (i.e., $T_c=1000$), the performance difference is not significant since the inter-arrival time of failures changes frequently and the dynamic estimation process is not able to update swiftly. While when $T_c$ is 10000, the performance difference is not significant neither since the period is too long and the workflow has completed successfully. When $\tau=0.5T_c$, the performance different between dynamic estimation and static estimation is up to 9.1\%, since the high $\theta_{\gamma}$ and the low $\theta_{\gamma}$ have equal influence on the failure occurrence. 
+Fig.~\ref{fig:exp3} shows the performance evaluation of the dynamic and static estimations 
+for the CyberShake workflow with a pulse function of $\theta_{\gamma}$. For this experiment,
+we use $\tau = 0.1 \cdot T_c$, $0.3 \cdot T_c$, $0.5 \cdot T_c$ (see Equation~\ref{eq:pulse_function}).
+For $\tau = 0.1 \cdot T_c$ (Fig.~\ref{fig:exp3}.a), the dynamic estimation improves the makespan by up 
+to 25.7\% compared to case where static estimation is used. For $\tau=0.3 \cdot T_c$ (Fig.~\ref{fig:exp3}.b), 
+the performance difference between dynamic estimation and static estimation is up to 27.3\%. For $T_c = 1000$, 
+the performance difference is not significant since the inter-arrival time of failures changes frequently and 
+then the dynamic estimation process is not able to update swiftly. For $T_c = 10000$, the performance 
+difference is not significant neither since the inter-arrival time is close to the workflow makespan. For 
+$\tau = 0.5 \cdot T_c$, the performance different between dynamic and static estimation is not significant
+and nearly constant (up to 9.1\%) since $\theta_{\gamma}$ has equal influence on the failure occurrence
+regardless of its value. 
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=1\linewidth]{pulse_t10.eps} \\
-	\small (a) $\tau=0.1T_c$ \\ \vspace{5pt}
+	\small (a) $\tau=0.1 \cdot T_c$ \\ \vspace{5pt}
 	\includegraphics[width=1\linewidth]{pulse_t30.eps} \\
-	\small (b) $\tau=0.3T_c$ \\ \vspace{5pt}
+	\small (b) $\tau=0.3 \cdot T_c$ \\ \vspace{5pt}
 	\includegraphics[width=1\linewidth]{pulse_t50.eps} \\
-	\small (c) $\tau=0.5T_c$
-	\caption{(\emph{Experiment 3}): Static Estimation vs. Dynamic Estimation (CyberShake, Pulse Function).}
+	\small (c) $\tau=0.5 \cdot T_c$
+	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function pulse function.}
 	\label{fig:exp3}
 \end{figure}
 
@@ -1273,7 +1293,7 @@ Furthermore, we assume that the inter-arrival time of transient failures is a fu
   \section*{Acknowledgment}
 \fi
 
-This work is supported by NFS under grant number IIS-0905032. We thank Gideon Juve, 
+This work was supported by NFS under grant number IIS-0905032. We thank Gideon Juve, 
 Karan Vahi, Mats Rynge, and Rajiv Mayani for their valuable help. Traces are collected from 
 experiments conducted on FutureGrid, which is supported by NSF under grant FutureGrid 0910812. 
 
