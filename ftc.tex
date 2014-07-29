@@ -804,6 +804,13 @@ workflow execution efficiency as shown in Section~\ref{sec:experiments}.
 	\vspace{-15pt}
 \end{figure}
 
+ \begin{figure}[b]
+	\centering
+	\includegraphics[width=0.73\linewidth]{dr.pdf}
+	\caption{An example of Dynamic Reclustering (red boxes are failed tasks). The clustering size is adjusted to 2 and thus failed tasks are merged into two new clustered jobs.}
+	\label{fig:clustering-dr}
+	\vspace{-5pt}
+\end{figure}
 
 \vspace{5pt}
 \noindent \textbf{Dynamic Reclustering} (\emph{DR}).
@@ -845,15 +852,7 @@ a different worker node.
 	\end{algorithmic}
 \end{algorithm}
 
- \begin{figure}[!t]
-	\centering
-	\includegraphics[width=0.73\linewidth]{dr.pdf}
-	\caption{An example of Dynamic Reclustering (red boxes are failed tasks). The clustering size is adjusted to 2 and thus failed tasks are merged into two new clustered jobs.}
-	\label{fig:clustering-dr}
-	\vspace{-15pt}
-\end{figure}
-
-\begin{algorithm}[t]
+\begin{algorithm}[!t]
 	\footnotesize
 	\caption{Vertical Reclustering algorithm.}
 	\label{alg:evaluation-vr}
@@ -896,7 +895,6 @@ a different worker node.
 			\State $W \gets W + J_{new}$ \Comment{Re-execute it}
 		\EndProcedure
 	\end{algorithmic}
-	\vspace{-15pt}
 \end{algorithm}
 
 \begin{figure}[t]
