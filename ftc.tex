@@ -1275,12 +1275,29 @@ regardless of its value.
 %
 \section{Conclusion and Future Work}
 
-In this paper, we model transient failures in a distributed environment and assess their influence on task clustering. We propose three dynamic clustering methods to improve the fault tolerance of task clustering and apply them to five widely used scientific workflows. From our experiments, we conclude that the three proposed methods significantly improve the makespan compared to an existing algorithm widely used in workflow management systems. In particular, our Dynamic Reclustering method performs best among the three methods since it can adjust the clustering size based on the Maximum Likelihood Estimation of task runtime, system overheads, and the inter-arrival time of failures. Our Vertical Reclustering method significantly improves the performance for  workflows that have a short task runtime. Our dynamic estimation using on-going data collected from the workflow execution can further improve the overall runtime in a dynamic environment where the inter-arrival time of failures is fluctuant. 
+In this work, we model transient failures in a distributed environment and assess their influence 
+on task clustering. We propose three dynamic clustering methods to improve the fault tolerance 
+of task clustering and apply them to five widely used scientific workflows. Experimental results 
+show that the proposed methods significantly improve the workflow's makespan when compared 
+to an existing task clustering method used in workflow management systems. In particular, the 
+Dynamic Reclustering method performs best among all methods since it can adjust the clustering 
+size based on the Maximum Likelihood Estimation of task runtime, system overheads, and the 
+inter-arrival time of failures. The Vertical Reclustering method significantly improves the performance 
+for  workflows that have short task runtimes. The dynamic estimation process, which uses data 
+collected during the workflow execution, can further improve the overall runtime in a dynamic 
+environment where the inter-arrival time of failures is fluctuant.
 
-In this paper, we only discuss the fault-tolerant clustering and apply it to a homogeneous environment. In the future, we aim to combine our work with fault-tolerant scheduling in heterogeneous environments, i.e, a scheduling algorithm that avoids mapping clustered jobs to failure-prone nodes. We are also interested to combine vertical clustering methods with horizontal clustering methods. For example, we can perform vertical clustering either before or after horizontal clustering, which we believe would bring different performance improvement. 
+This work is focused on the evaluation of fault-tolerant task clustering techniques on homogeneous 
+environments. In the future, we plan to combine our work with fault-tolerant scheduling in heterogeneous 
+environments, i.e, a scheduling algorithm that avoids mapping clustered jobs to failure-prone nodes. 
+We also intend to combine vertical clustering methods with horizontal clustering methods. For example, 
+vertical clustering can be performed either before or after horizontal clustering, which we believe would 
+bring different performance improvement. 
 %Our dynamic estimation using on-going data collected from the workflow execution can further improve the fault tolerance in a dynamic environment where the inter-arrival time of failures is fluctuant. 
 
-Furthermore, we assume that the inter-arrival time of transient failures is a function of task type, which is one of the major impact factors. In the future, we aim to consider other major factors such as the execution site, which will improve the accuracy of the model. 
+We assume that the inter-arrival time of transient failures is a function of task type, which is one of 
+the major impact factors. In the future, we plan to consider other major factors such as the execution 
+site, which may improve the accuracy of the model. 
 
 
 
