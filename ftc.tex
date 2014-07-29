@@ -37,11 +37,7 @@
         Rafael~Ferreira~da~Silva,
 	Ewa~Deelman, ~\IEEEmembership{Member, ~IEEE,}
         and~Thomas~Fahringer,~\IEEEmembership{Member,~IEEE}% <-this % stops a space
-\IEEEcompsocitemizethanks{\IEEEcompsocthanksitem W. Chen, R. Ferreira da Silva and E. Deelman are with the Information Sciences Institute, University of Southern California, Marina del Rey, CA, USA.\protect\\
-% note need leading \protect in front of \\ to get a newline within \thanks as
-% \\ is fragile and will error, could use \hfil\break instead.
-
-\IEEEcompsocthanksitem T. Fahringer is with the Institute for Computer Science, University of Innsbruck, Innsbruck, Austria.\protect\\
+\IEEEcompsocitemizethanks{\IEEEcompsocthanksitem W. Chen, R. Ferreira da Silva and E. Deelman are with the Information Sciences Institute, University of Southern California, Marina del Rey, CA, USA. T. Fahringer is with the Institute for Computer Science, University of Innsbruck, Innsbruck, Austria.\protect
 \IEEEcompsocthanksitem Corresponding author: Weiwei Chen weiweichen@acm.org
 }% <-this % stops a space
 \thanks{}}
@@ -331,9 +327,10 @@ within an execution site, execute jobs individually. The main components are int
 
 \begin{figure}[!t]
 	\centering
-	\includegraphics[width=\linewidth]{model}
+	\includegraphics[width=.95\linewidth]{model}
 	\caption{Overview of the workflow management system.}
 	\label{fig:model-system}
+	\vspace{-15pt}
 \end{figure}
 
 \vspace{4pt}
@@ -376,6 +373,7 @@ based on our prior study on workflow analysis~\cite{Chen2011}.
 	\includegraphics[width=0.6\linewidth]{odag.pdf}
 	\captionof{figure}{Extending DAG to o-DAG ($s$ denotes a system overhead).}
 	\label{fig:model-odag}
+	\vspace{-15pt}
 \end{figure}
 
 With an o-DAG model, we can explicitly express the process of task clustering. In this work, we 
@@ -399,7 +397,7 @@ $runtime_l > runtime_r$ as long as $c_1 < s_3$, which is often the case in many 
 since the clustering delay within a single execution node is usually shorter than the scheduling overhead 
 across different execution nodes. 
 
-\begin{figure}[!htb]
+\begin{figure}[b]
 \centering
  \includegraphics[width=0.45\linewidth]{hc.pdf}
   \captionof{figure}{A simple example of horizontal clustering (color indicates the horizontal level of a task).}
@@ -411,6 +409,7 @@ across different execution nodes.
  \includegraphics[width=0.5\linewidth]{vc.pdf}
   \captionof{figure}{A simple example of vertical clustering.}
   \label{fig:model-vc}
+  \vspace{-15pt}
 \end{figure}
 
 Fig.~\ref{fig:model-vc} illustrates an example of vertical clustering, in which tasks $t_2$, $t_4$, 
@@ -632,16 +631,17 @@ i.e., the value of $k$ such that $MLE(\bm{M})$ attains its minimum value:
 
 \begin{figure}[b]
 	\centering
-	\includegraphics[width=0.95\linewidth]{model_makespan2.eps}
+	\includegraphics[width=0.85\linewidth]{model_makespan2.eps}
 	\caption{Makespan with different clustering size and $\theta_{\gamma}$. ($n=1000$, $r=20$, $\phi_t=5$s, $\phi_s=50$s). Red dots are the minimums.}
 	\label{fig:model-makespan}
 \end{figure}
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.95\linewidth]{model_size2.eps}
+	\includegraphics[width=0.85\linewidth]{model_size2.eps}
 	\caption{Optimal clustering size ($k^*$) with different  $\theta_{\gamma}$ ($n=1000$, $r=20$, $\phi_t=5$s, $\phi_s=50$s).}
 	\label{fig:model-size}
+	\vspace{-15pt}
 \end{figure}
 
 It is difficult to find a analytical solution of $k^*$. However, there are a few constraints that can 
@@ -691,6 +691,7 @@ size according to the inter-arrival time, the overall runtime performance can be
 	\end{tabular}
 	\caption{Explanation of the symbols used in this work.}
 	\label{tab:model-variables}
+	\vspace{-15pt}
 \end{table} 
 
 %
@@ -755,6 +756,7 @@ mechanism, HC keeps retrying all of the four tasks in the following attempts unt
 	\includegraphics[width=0.6\linewidth]{hcr.pdf}
 	\caption{An example of Horizontal Clustering (red boxes are failed tasks).}
 	\label{fig:clustering-hc}
+	\vspace{-15pt}
 \end{figure}
 
 
@@ -799,6 +801,7 @@ workflow execution efficiency as shown in Section~\ref{sec:experiments}.
 	\includegraphics[width=0.53\linewidth]{sr.pdf}
 	\caption{An example of Selective Reclustering (red boxes are failed tasks). Failed tasks are merged into a new job and retried.}
 	\label{fig:clustering-sr}
+	\vspace{-15pt}
 \end{figure}
 
 
@@ -847,6 +850,7 @@ a different worker node.
 	\includegraphics[width=0.55\linewidth]{dr.pdf}
 	\caption{An example of Dynamic Reclustering (red boxes are failed tasks). The clustering size is adjusted to 2 and thus failed tasks are merged into two new clustered jobs.}
 	\label{fig:clustering-dr}
+	\vspace{-15pt}
 \end{figure}
 
 \begin{algorithm}[t]
@@ -952,6 +956,7 @@ of pipelines. The LIGO workflow is a data-intensive workflow.
 	\includegraphics[width=0.5\linewidth]{ligo_shape.pdf} \\
 	\caption{A simplified visualization of the LIGO Inspiral workflow.}
 	\label{fig:evaluation-shape-ligo}
+	\vspace{-5pt}
 \end{figure}
 
 \noindent \textbf{Montage.}
@@ -986,6 +991,7 @@ shows an illustration of the Cybershake workflow.
 	\includegraphics[width=0.53\linewidth]{cybershake_shape.pdf} \\
 	\caption{A simplified visualization of the CyberShake workflow.}
 	\label{fig:evaluation-shape-cybershake}
+	\vspace{-15pt}
 \end{figure}
 
 \noindent \textbf{Epigenomics.}
@@ -1002,6 +1008,7 @@ Epigenomics is shown in Fig.~\ref{fig:evaluation-shape-genome}.
 	\includegraphics[width=0.8\linewidth]{genome_shape.pdf} \\
 	\caption{A simplified visualization of the Epigenomics workflow with multiple branches.}
 	\label{fig:evaluation-shape-genome}
+	\vspace{-5pt}
 \end{figure}
 
 \noindent \textbf{SIPHT.}
@@ -1018,6 +1025,7 @@ A simplified structure of the SIPHT workflow is shown in Fig.~\ref{fig:evaluatio
 	\includegraphics[width=0.55\linewidth]{sipht_shape.pdf} \\
 	\caption{A simplified visualization of the SIPHT workflow.}
 	\label{fig:evaluation-shape-sipht}
+	\vspace{-5pt}
 \end{figure}
 
 Table~\ref{tab:evaluation-workflows} shows the summary of the main \emph{workflow characteristics}: 
@@ -1041,6 +1049,7 @@ number of tasks, average data size, and average task runtimes for the five workf
 	\end{tabular}
 	\caption{Summary of the scientific workflows characteristics.}
 	\label{tab:evaluation-workflows}
+	\vspace{-15pt}
 \end{table} 
 
 
@@ -1120,6 +1129,7 @@ beginning.
 	\includegraphics[width=0.8\linewidth]{step_signal.pdf} \\
 	\caption{A Step Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_d$ is the moment $\theta_{\gamma}$ changes from 500 to 50 seconds.}
 	\label{fig:evaluation_step_signal}
+	\vspace{-15pt}
 \end{figure}
 
 The second function is a pulse wave function (Fig. \ref{fig:evaluation_pulse_signal}) in which the 
@@ -1145,6 +1155,7 @@ $\tau$ from $0.1T_c$ to $0.5T_c$.
 	\includegraphics[width=0.8\linewidth]{pulse_signal.pdf} \\
 	\caption{A Pulse Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_c$ is the period of the wave. $\tau$ is the width of the pulse.}
 	\label{fig:evaluation_pulse_signal}
+	\vspace{-15pt}
 \end{figure}
 
 %Table~\ref{tab:evaluation_methods} summarizes the task clustering methods to be evaluated in 
@@ -1232,6 +1243,7 @@ makespans, in particular for high values of $\theta_t$.
 	\includegraphics[width=1\linewidth]{t.eps}
 	\caption{(\emph{Experiment 2}): Influence of varying task runtime ($\theta_t$) on makespan for the CyberShake workflow.}
 	\label{fig:expr_t}
+	\vspace{-15pt}
 \end{figure}
 
 Fig.~\ref{fig:expr_d} shows the performance (for the CyberShake workflow) of the task clustering 
@@ -1254,6 +1266,7 @@ system overhead per job.
 	\includegraphics[width=\linewidth]{versus.eps}
 	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function.}
 	\label{fig:expr_static_dynamic}
+	\vspace{-15pt}
 \end{figure}
 
 \vspace{5pt}
@@ -1279,6 +1292,7 @@ MLEs of $\theta_{\gamma}$ and adapt the clustering size.
 	\small (c) $\tau=0.5 \cdot T_c$
 	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function pulse function.}
 	\label{fig:exp3}
+	\vspace{-15pt}
 \end{figure}
 
 Fig.~\ref{fig:exp3} shows the performance evaluation of the dynamic and static estimations 
@@ -1337,6 +1351,7 @@ site, which may improve the accuracy of the model.
   \section*{Acknowledgment}
 \fi
 
+\footnotesize
 This work was supported by NFS under grant number IIS-0905032. We thank Gideon Juve, 
 Karan Vahi, Mats Rynge, and Rajiv Mayani for their valuable help. Traces are collected from 
 experiments conducted on FutureGrid, which is supported by NSF under grant FutureGrid 0910812. 
