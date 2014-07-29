@@ -899,7 +899,7 @@ a different worker node.
 
 \begin{figure}[t]
 \centering
-  \includegraphics[width=0.9\linewidth]{vr.pdf}
+  \includegraphics[width=0.8\linewidth]{vr.pdf}
   \caption{An example of Vertical Reclustering (red boxes are failed tasks). The clustering size is decreased by half when a job execution fails.}
   \label{fig:clustering-vr}
   \vspace{-15pt}
@@ -941,6 +941,14 @@ In the experiments, we use the following scientific workflow applications: LIGO 
 analysis, Montage, CyberShake, Epigenomics, and SIPHT. Below, we briefly describe 
 each of them and present their main characteristics and structures:
 
+\begin{figure}[b]
+	\centering
+	\includegraphics[width=0.5\linewidth]{ligo_shape.pdf} \\
+	\caption{Simplified visualization of the LIGO workflow.}
+	\label{fig:evaluation-shape-ligo}
+	\vspace{-5pt}
+\end{figure}
+
 \noindent \textbf{LIGO.}
 Laser Interferometer Gravitational Wave Observatory (LIGO)~\cite{LIGO} workflows are 
 used to search for gravitational wave signatures in data collected by large-scale interferometers. 
@@ -962,20 +970,12 @@ portion of the sky in question. Fig.~\ref{fig:evaluation-shape-montage} illustra
 workflow. The size of the workflow depends on the number of images used in constructing the desired 
 mosaic of the sky. 
 
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=0.5\linewidth]{ligo_shape.pdf} \\
-	\caption{Simplified visualization of the LIGO workflow.}
-	\label{fig:evaluation-shape-ligo}
-	\vspace{-10pt}
-\end{figure}
-
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=0.38\linewidth]{montage_shape.pdf} \\
 	\caption{Simplified visualization of the Montage workflow.}
 	\label{fig:evaluation-shape-montage}
-	\vspace{-5pt}
+	\vspace{-15pt}
 \end{figure}
 
 \noindent \textbf{Cybershake.}
@@ -1267,16 +1267,16 @@ system overhead per job.
 \noindent \textbf{Experiment 3.}
 Fig.~\ref{fig:expr_static_dynamic} shows the performance evaluation of the dynamic and static estimations 
 for the CyberShake workflow with a step function of $\theta_{\gamma}$. In this experiment, we use DR
-as the fault-tolerant task clustering method since it yielded the best performance in the past two 
+as the fault-tolerant task clustering method since it yielded the best performance in the past  
 experiments. The step signal function changes the inter-arrival time of failures ($\theta_\gamma$)
-from 500 seconds to 50 seconds at time $T_d$. For high values of $T_d$, failures are scarce since
+from 500 to 50 seconds at time $T_d$. For high values of $T_d$, failures are scarce since
 the inter-arrival time is close to the workflow makespan. Therefore, the influence of $\theta_\gamma$ is
 negligible, and thus both the static and dynamic estimations have the same behavior. When failures are
 more frequent, i.e., low values for $T_d$, the dynamic estimation improves the workflow's makespan 
 by up to 22\%. This improvement is due to the ability of the dynamic estimation process to update the 
 MLEs of $\theta_{\gamma}$ and adapt the clustering size. 
 
-\begin{figure}[!htb]
+\begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{versus.eps}
 	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function.}
@@ -1284,16 +1284,30 @@ MLEs of $\theta_{\gamma}$ and adapt the clustering size.
 	\vspace{-5pt}
 \end{figure}
 
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=1\linewidth]{pulse_t10.eps} \\
+	\small (a) $\tau=0.1 \cdot T_c$ \\ \vspace{4pt}
+	\includegraphics[width=1\linewidth]{pulse_t30.eps} \\
+	\small (b) $\tau=0.3 \cdot T_c$ \\ \vspace{4pt}
+	\includegraphics[width=1\linewidth]{pulse_t50.eps} \\
+	\small (c) $\tau=0.5 \cdot T_c$
+	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function pulse function.}
+	\label{fig:exp3}
+	\vspace{-20pt}
+\end{figure}
+
+
 Fig.~\ref{fig:exp3} shows the performance evaluation of the dynamic and static estimations 
-for the CyberShake workflow with a pulse function of $\theta_{\gamma}$. For this experiment,
-we use $\tau = 0.1 \cdot T_c$, $0.3 \cdot T_c$, $0.5 \cdot T_c$ (see Equation~\ref{eq:pulse_function}).
+with a pulse function of $\theta_{\gamma}$. For this experiment,
+we use $\tau = 0.1 \cdot T_c$, $0.3 \cdot T_c$, $0.5 \cdot T_c$ (Equation~\ref{eq:pulse_function}).
 For $\tau = 0.1 \cdot T_c$ (Fig.~\ref{fig:exp3}.a), the dynamic estimation improves the makespan by up 
-to 25.7\% compared to case where static estimation is used. For $\tau=0.3 \cdot T_c$ (Fig.~\ref{fig:exp3}.b), 
-the performance difference between dynamic estimation and static estimation is up to 27.3\%. For $T_c = 1000$, 
-the performance difference is not significant since the inter-arrival time of failures changes frequently and 
+to 25.7\% compared to the static estimation case. For $\tau=0.3 \cdot T_c$ (Fig.~\ref{fig:exp3}.b), 
+the performance gain of dynamic estimation over static estimation is up to 27.3\%. For $T_c = 1000$, 
+the performance gain is not significant since the inter-arrival time of failures changes frequently and 
 then the dynamic estimation process is not able to update swiftly. For $T_c = 10000$, the performance 
-difference is not significant neither since the inter-arrival time is close to the workflow makespan. For 
-$\tau = 0.5 \cdot T_c$, the performance different between dynamic and static estimation is not significant
+difference is not significant neither since the inter-arrival time is close to the makespan. For 
+$\tau = 0.5 \cdot T_c$, the performance gain of dynamic over static estimation is not significant
 and nearly constant (up to 9.1\%) since $\theta_{\gamma}$ has equal influence on the failure occurrence
 regardless of its value. 
 
@@ -1316,19 +1330,6 @@ inter-arrival time of failures. The Vertical Reclustering method significantly i
 for  workflows that have short task runtimes. The dynamic estimation process, which uses data 
 collected during the workflow execution, can further improve the overall runtime in a dynamic 
 environment where the inter-arrival time of failures is fluctuant.
-
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=1\linewidth]{pulse_t10.eps} \\
-	\small (a) $\tau=0.1 \cdot T_c$ \\ \vspace{5pt}
-	\includegraphics[width=1\linewidth]{pulse_t30.eps} \\
-	\small (b) $\tau=0.3 \cdot T_c$ \\ \vspace{5pt}
-	\includegraphics[width=1\linewidth]{pulse_t50.eps} \\
-	\small (c) $\tau=0.5 \cdot T_c$
-	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function pulse function.}
-	\label{fig:exp3}
-	\vspace{-20pt}
-\end{figure}
 
 This work is focused on the evaluation of fault-tolerant task clustering techniques on homogeneous 
 environments. In the future, we plan to combine our work with fault-tolerant scheduling in heterogeneous 
@@ -1372,7 +1373,7 @@ experiments conducted on FutureGrid, which is supported by NSF under grant Futur
 
 
 
-\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{rafael.eps}}]{Rafael Ferreira da Silva} is a Computer Scientist at the USC Information Sciences Institute. He received his PhD in Computer Science from INSA-Lyon, France, in 2013. In 2010, he received his Master's degree in Computer Science from Universidade Federal de Campina Grande, Brazil, and his BS degree in Computer Science  from Universidade Federal da Paraiba, in 2007. His research focuses on  the execution of scientific workflows on heterogeneous distributed systems. See http://www.rafaelsilva.com for further information.
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{rafael.eps}}]{Rafael Ferreira da Silva} is a Computer Scientist at the USC Information Sciences Institute. He received his PhD in Computer Science from INSA-Lyon, France, in 2013. His research focuses on the optimization of the execution of scientific workflows on heterogeneous distributed systems. See http://www.rafaelsilva.com for further information.
 \end{IEEEbiography}
 
 %\newpage
