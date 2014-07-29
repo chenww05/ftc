@@ -170,7 +170,7 @@ FerreiradaSilva-CCPE-2014, Integration2012}
 is a technique that merges several short tasks into a single job such that the job runtime is increased 
 and the overall system overhead is decreased. Task clustering has been proven to be an effective 
 method to address execution overheads and increase the computational granularity of workflow tasks 
-executing on distributed resources~\cite{Ying2009, Singh2008, Chen2013a, Chen2012, Ferreira-granularity-2013}.
+executing on distributed resources~\cite{Singh2008, Chen2013a, Chen2012, Ferreira-granularity-2013}.
 However, existing clustering strategies ignore or underestimate the impact of failures on the system, 
 despite the current and increasing importance of failures in large-scale distributed 
 systems~\cite{Zhang2004, Tang1990, Schroeder2006, Sahoo2004}, such as 
@@ -753,7 +753,7 @@ mechanism, HC keeps retrying all of the four tasks in the following attempts unt
 
 \begin{figure}[!t]
 	\centering
-	\includegraphics[width=0.6\linewidth]{hcr.pdf}
+	\includegraphics[width=0.85\linewidth]{hcr.pdf}
 	\caption{An example of Horizontal Clustering (red boxes are failed tasks).}
 	\label{fig:clustering-hc}
 	\vspace{-15pt}
@@ -798,7 +798,7 @@ workflow execution efficiency as shown in Section~\ref{sec:experiments}.
 
 \begin{figure}[!t]
 	\centering
-	\includegraphics[width=0.53\linewidth]{sr.pdf}
+	\includegraphics[width=0.78\linewidth]{sr.pdf}
 	\caption{An example of Selective Reclustering (red boxes are failed tasks). Failed tasks are merged into a new job and retried.}
 	\label{fig:clustering-sr}
 	\vspace{-15pt}
@@ -847,7 +847,7 @@ a different worker node.
 
  \begin{figure}[!t]
 	\centering
-	\includegraphics[width=0.55\linewidth]{dr.pdf}
+	\includegraphics[width=0.75\linewidth]{dr.pdf}
 	\caption{An example of Dynamic Reclustering (red boxes are failed tasks). The clustering size is adjusted to 2 and thus failed tasks are merged into two new clustered jobs.}
 	\label{fig:clustering-dr}
 	\vspace{-15pt}
@@ -898,11 +898,12 @@ a different worker node.
 	\end{algorithmic}
 \end{algorithm}
 
-\begin{figure}[b]
+\begin{figure}[t]
 \centering
   \includegraphics[width=0.9\linewidth]{vr.pdf}
   \caption{An example of Vertical Reclustering (red boxes are failed tasks). The clustering size is decreased by half when a job execution fails.}
   \label{fig:clustering-vr}
+  \vspace{-15pt}
 \end{figure}
 
 \vspace{5pt}
@@ -954,16 +955,16 @@ of pipelines. The LIGO workflow is a data-intensive workflow.
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.5\linewidth]{ligo_shape.pdf} \\
-	\caption{A simplified visualization of the LIGO Inspiral workflow.}
+	\caption{Simplified visualization of the LIGO Inspiral workflow.}
 	\label{fig:evaluation-shape-ligo}
 	\vspace{-5pt}
 \end{figure}
 
 \noindent \textbf{Montage.}
-Montage~\cite{Berriman2004} is an astronomy application that is used to construct large image 
+Montage~\cite{Berriman2004} is an astronomy application used to construct large image 
 mosaics of the sky. Input images are reprojected onto a sphere and overlap is calculated for each 
 input image. The application re-projects input images to the correct orientation while keeping 
-background emission level constant in all images. The images are added by rectifying them to a 
+background emission level constant in all images. Images are added by rectifying them to a 
 common flux scale and background level. Finally the reprojected images are co-added into a final 
 mosaic. The resulting mosaic image can provide a much deeper and detailed understanding of the 
 portion of the sky in question. Fig.~\ref{fig:evaluation-shape-montage} illustrates a small Montage 
@@ -972,8 +973,8 @@ mosaic of the sky.
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=0.4\linewidth]{montage_shape.pdf} \\
-	\caption{A simplified visualization of the Montage workflow.}
+	\includegraphics[width=0.38\linewidth]{montage_shape.pdf} \\
+	\caption{Simplified visualization of the Montage workflow.}
 	\label{fig:evaluation-shape-montage}
 \end{figure}
 
@@ -981,17 +982,17 @@ mosaic of the sky.
 CyberShake~\cite{Graves2010} is a seismology application that calculates probabilistic seismic hazard 
 curves for geographic sites in the Southern California region. It identifies all ruptures within 200km of the 
 site of interest and converts rupture definition into multiple rupture variations with differing hypocenter 
-locations and slip distributions. It then calculates synthetic seismograms for each rupture variance, and 
-peak intensity measures are then extracted from these synthetics and combined with the original rupture 
+locations and slip distributions. It calculates synthetic seismograms for each rupture variance from where 
+peak intensity measures are extracted and combined with the original rupture 
 probabilities to produce probabilistic seismic hazard curves for the site. Fig.~\ref{fig:evaluation-shape-cybershake} 
 shows an illustration of the Cybershake workflow.
 
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.53\linewidth]{cybershake_shape.pdf} \\
-	\caption{A simplified visualization of the CyberShake workflow.}
+	\caption{Simplified visualization of the CyberShake workflow.}
 	\label{fig:evaluation-shape-cybershake}
-	\vspace{-15pt}
+	\vspace{-10pt}
 \end{figure}
 
 \noindent \textbf{Epigenomics.}
@@ -1006,7 +1007,7 @@ Epigenomics is shown in Fig.~\ref{fig:evaluation-shape-genome}.
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.8\linewidth]{genome_shape.pdf} \\
-	\caption{A simplified visualization of the Epigenomics workflow with multiple branches.}
+	\caption{Simplified visualization of the Epigenomics workflow with multiple branches.}
 	\label{fig:evaluation-shape-genome}
 	\vspace{-5pt}
 \end{figure}
@@ -1129,7 +1130,7 @@ beginning.
 	\includegraphics[width=0.8\linewidth]{step_signal.pdf} \\
 	\caption{A Step Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_d$ is the moment $\theta_{\gamma}$ changes from 500 to 50 seconds.}
 	\label{fig:evaluation_step_signal}
-	\vspace{-15pt}
+	\vspace{-10pt}
 \end{figure}
 
 The second function is a pulse wave function (Fig. \ref{fig:evaluation_pulse_signal}) in which the 
@@ -1225,19 +1226,6 @@ does not generate long jobs and thus the performance of VR is less sensitive to 
 
 %4). Under some cases, i.e., the CyberShake workflow, we see that VR does not perform well compared to DR or SR. The reason is the graph structure of the CyberShake workflow does not leave much space for vertical clustering methods to improve since it does not have many pipelines as shown in Figure~\ref{fig:evaluation_shape_cybershake}. DR, a modification of HC, is more likely to improve the performance since most of these workflows have many parallel tasks in the same level. 
 
-\vspace{5pt}
-\noindent \textbf{Experiment 2.}
-Fig.~\ref{fig:expr_t} shows the performance (for the CyberShake workflow) of the task clustering 
-methods methods,  when the task runtime is varied by using a multiplier factor $\theta_{t}$. 
-By increasing the task runtime, HC has the most negative impact on the workflow's makespan 
-(increase from a scale of $10^4$ to $\sim10^6$). This is due to the lack of fault-tolerant mechanisms,
-since HC retries the entire clustered job. SR and VR, however, retry only failed tasks that are 
-merged into a new clustered job. Although the selective and vertical re-clustering methods 
-significantly speedup the execution when compared to HC, they have no mechanism to
-adjust the clustering size to the actual optimal clustering size, which may be larger or smaller
-than the number of failed tasks. By dynamically adjusting the clustering size, DR yields better
-makespans, in particular for high values of $\theta_t$.
-
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=1\linewidth]{t.eps}
@@ -1246,6 +1234,27 @@ makespans, in particular for high values of $\theta_t$.
 	\vspace{-15pt}
 \end{figure}
 
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=1\linewidth]{d.eps}
+	\caption{(\emph{Experiment 2}): Influence of varying system overhead ($\theta_s$) on makespan for the CyberShake workflow.}
+	\label{fig:expr_d}
+	\vspace{-15pt}
+\end{figure}
+
+\vspace{5pt}
+\noindent \textbf{Experiment 2.}
+Fig.~\ref{fig:expr_t} shows the performance (CyberShake workflow) of the task clustering 
+methods,  when the task runtime is varied by a multiplier factor $\theta_{t}$. 
+By increasing the task runtime, HC has the most negative impact on the workflow's makespan 
+(increase from a scale of $10^4$ to $\sim10^6$). This is due to the lack of fault-tolerant mechanisms,
+since HC retries the entire clustered job. SR and VR, however, retry only failed tasks that are 
+merged into a new clustered job. Although the selective and vertical methods 
+significantly speedup the execution when compared to HC, they have no mechanism to
+adjust the clustering size to the actual optimal clustering size, which may be larger or smaller
+than the number of failed tasks. By dynamically adjusting the clustering size, DR yields better
+makespans, in particular for high values of $\theta_t$.
+
 Fig.~\ref{fig:expr_d} shows the performance (for the CyberShake workflow) of the task clustering 
 methods methods,  when the system overhead is varied by using a multiplier factor $\theta_s$. 
 Similarly, with the increase of the system overhead, HC is significantly impacted while SR and VR 
@@ -1253,21 +1262,6 @@ perform better. Again, for high $\theta_s$ values DR performs best. Note that th
 yielded by the fault-tolerant methods is less significant than the performance improvements shown
 in Fig.~\ref{fig:expr_t}. The reason is that clustered jobs may have multiple tasks but only one 
 system overhead per job.
-
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=1\linewidth]{d.eps}
-	\caption{(\emph{Experiment 2}): Influence of varying system overhead ($\theta_s$) on makespan for the CyberShake workflow.}
-	\label{fig:expr_d}
-\end{figure}
-
-\begin{figure}[!t]
-	\centering
-	\includegraphics[width=\linewidth]{versus.eps}
-	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function.}
-	\label{fig:expr_static_dynamic}
-	\vspace{-15pt}
-\end{figure}
 
 \vspace{5pt}
 \noindent \textbf{Experiment 3.}
@@ -1284,15 +1278,10 @@ MLEs of $\theta_{\gamma}$ and adapt the clustering size.
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=1\linewidth]{pulse_t10.eps} \\
-	\small (a) $\tau=0.1 \cdot T_c$ \\ \vspace{5pt}
-	\includegraphics[width=1\linewidth]{pulse_t30.eps} \\
-	\small (b) $\tau=0.3 \cdot T_c$ \\ \vspace{5pt}
-	\includegraphics[width=1\linewidth]{pulse_t50.eps} \\
-	\small (c) $\tau=0.5 \cdot T_c$
-	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function pulse function.}
-	\label{fig:exp3}
-	\vspace{-15pt}
+	\includegraphics[width=\linewidth]{versus.eps}
+	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function.}
+	\label{fig:expr_static_dynamic}
+	\vspace{-5pt}
 \end{figure}
 
 Fig.~\ref{fig:exp3} shows the performance evaluation of the dynamic and static estimations 
@@ -1327,6 +1316,19 @@ inter-arrival time of failures. The Vertical Reclustering method significantly i
 for  workflows that have short task runtimes. The dynamic estimation process, which uses data 
 collected during the workflow execution, can further improve the overall runtime in a dynamic 
 environment where the inter-arrival time of failures is fluctuant.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=1\linewidth]{pulse_t10.eps} \\
+	\small (a) $\tau=0.1 \cdot T_c$ \\ \vspace{5pt}
+	\includegraphics[width=1\linewidth]{pulse_t30.eps} \\
+	\small (b) $\tau=0.3 \cdot T_c$ \\ \vspace{5pt}
+	\includegraphics[width=1\linewidth]{pulse_t50.eps} \\
+	\small (c) $\tau=0.5 \cdot T_c$
+	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function pulse function.}
+	\label{fig:exp3}
+	\vspace{-20pt}
+\end{figure}
 
 This work is focused on the evaluation of fault-tolerant task clustering techniques on homogeneous 
 environments. In the future, we plan to combine our work with fault-tolerant scheduling in heterogeneous 
