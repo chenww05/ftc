@@ -445,7 +445,6 @@ generality, we choose the Gamma distribution to model the task runtime~($\bm t$)
 overhead ($\bm s$), and the Weibull distribution to model the inter-arrival time of failures ($\bm\gamma$). 
 $\bm s$, $\bm t$ and $\bm \gamma$ are random variables of all tasks instead of one specific task. 
 
-\todo[inline]{Add a table that explains all variables used in the paper.}
 
 % We will reuse this shape parameter of 0.78 in our failure model. 
 
@@ -665,6 +664,35 @@ From this theoretic analysis, we conclude that (\emph{i}) the longer the inter-a
 the better runtime performance the task clustering has; and (\emph{ii}) by adjusting the clustering 
 size according to the inter-arrival time, the overall runtime performance can be improved. 
 
+Table~\ref{tab:model-variables} summaries all the variables used in this paper. 
+\begin{table}[!htb]
+	\setlength{\tabcolsep}{9pt}
+	\centering
+	\small
+	\begin{tabular}{lrrrr}
+		\hline
+		Parameter	& Description	  \\
+		\hline
+		$t$, $s$, $d$ & distribution of task runtime, overhead, job runtime\\
+		$\gamma$& distribution of the inter-arrival time of failures \\
+		$\theta_{\gamma}$, $\phi_{\gamma}$  		&scale and shape parameters of $\gamma$		\\
+		$\theta_{t}$, $\phi_{t}$  		&scale and shape parameters of $t$		\\
+		$\theta_{s}$, $\phi_{s}$  		&scale and shape parameters of $s$		\\
+		$a_{\gamma}$, $b_{\gamma}$ & prior knowledge of $\gamma$\\
+		$a_{t}$, $b_{t}$ & prior knowledge of $t$\\
+		$a_{s}$, $b_{s}$ & prior knowledge of $s$\\
+		$k$& number of tasks in a job\\
+		$N$& distribution of the retry time of clustered jobs\\
+		$N_i$& retry time of job $i$\\
+		$M$ & distribution of the overall runtime \\
+		$M_i$ & the overall runtime to complete job $i$\\
+		$r$ & the number of available worker nodes\\
+		$n$ & the number of tasks\\
+		\hline
+	\end{tabular}
+	\caption{All variables used in this paper.}
+	\label{tab:model-variables}
+\end{table} 
 
 %
 % Section: Fault-Tolerant Clustering
