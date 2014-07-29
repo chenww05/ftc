@@ -631,14 +631,14 @@ i.e., the value of $k$ such that $MLE(\bm{M})$ attains its minimum value:
 
 \begin{figure}[b]
 	\centering
-	\includegraphics[width=0.85\linewidth]{model_makespan2.eps}
+	\includegraphics[width=0.8\linewidth]{model_makespan2.eps}
 	\caption{Makespan with different clustering size and $\theta_{\gamma}$. ($n=1000$, $r=20$, $\phi_t=5$s, $\phi_s=50$s). Red dots are the minimums.}
 	\label{fig:model-makespan}
 \end{figure}
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.85\linewidth]{model_size2.eps}
+	\includegraphics[width=0.8\linewidth]{model_size2.eps}
 	\caption{Optimal clustering size ($k^*$) with different  $\theta_{\gamma}$ ($n=1000$, $r=20$, $\phi_t=5$s, $\phi_s=50$s).}
 	\label{fig:model-size}
 	\vspace{-15pt}
@@ -847,7 +847,7 @@ a different worker node.
 
  \begin{figure}[!t]
 	\centering
-	\includegraphics[width=0.75\linewidth]{dr.pdf}
+	\includegraphics[width=0.73\linewidth]{dr.pdf}
 	\caption{An example of Dynamic Reclustering (red boxes are failed tasks). The clustering size is adjusted to 2 and thus failed tasks are merged into two new clustered jobs.}
 	\label{fig:clustering-dr}
 	\vspace{-15pt}
@@ -896,6 +896,7 @@ a different worker node.
 			\State $W \gets W + J_{new}$ \Comment{Re-execute it}
 		\EndProcedure
 	\end{algorithmic}
+	\vspace{-15pt}
 \end{algorithm}
 
 \begin{figure}[t]
@@ -952,14 +953,6 @@ the workflow. The LIGO Inspiral workflow is separated into multiple groups of in
 tasks, which we call branches in the rest of this work. Each branch may have a different number 
 of pipelines. The LIGO workflow is a data-intensive workflow.
 
-\begin{figure}[!htb]
-	\centering
-	\includegraphics[width=0.5\linewidth]{ligo_shape.pdf} \\
-	\caption{Simplified visualization of the LIGO Inspiral workflow.}
-	\label{fig:evaluation-shape-ligo}
-	\vspace{-5pt}
-\end{figure}
-
 \noindent \textbf{Montage.}
 Montage~\cite{Berriman2004} is an astronomy application used to construct large image 
 mosaics of the sky. Input images are reprojected onto a sphere and overlap is calculated for each 
@@ -971,11 +964,20 @@ portion of the sky in question. Fig.~\ref{fig:evaluation-shape-montage} illustra
 workflow. The size of the workflow depends on the number of images used in constructing the desired 
 mosaic of the sky. 
 
-\begin{figure}[!htb]
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.5\linewidth]{ligo_shape.pdf} \\
+	\caption{Simplified visualization of the LIGO workflow.}
+	\label{fig:evaluation-shape-ligo}
+	\vspace{-10pt}
+\end{figure}
+
+\begin{figure}[!t]
 	\centering
 	\includegraphics[width=0.38\linewidth]{montage_shape.pdf} \\
 	\caption{Simplified visualization of the Montage workflow.}
 	\label{fig:evaluation-shape-montage}
+	\vspace{-5pt}
 \end{figure}
 
 \noindent \textbf{Cybershake.}
@@ -1048,7 +1050,7 @@ number of tasks, average data size, and average task runtimes for the five workf
 		SIPHT		&1000	& 360 KB 	& 180s\\
 		\hline
 	\end{tabular}
-	\caption{Summary of the scientific workflows characteristics.}
+	\caption{Summary of the main workflows characteristics.}
 	\label{tab:evaluation-workflows}
 	\vspace{-15pt}
 \end{table} 
