@@ -367,7 +367,7 @@ tasks are poorly clustered~\cite{Chen2011}. Fig.~\ref{fig:model-odag} shows how 
 a DAG to be an o-DAG with the capability to represent system overheads ($s$) such as the 
 workflow engine and queue delays. In addition, system overheads also include data transfer 
 delay caused by staging-in and staging-out data. This classification of system overheads is 
-based on our prior study on workflow analysis~\cite{Chen2011}. \rev{Table~\ref{tab:model-overheads} shows the system overheads and task runtimes of three widely used scientific workflows captured from real traces. Details about these scientific workflows will be introduced in Section~\ref{sec:applications}. The statistical information about these traces is consistent with our claim that system overheads constitute a significant portion of the overall runtime during the workflow execution. }
+based on our prior study on workflow analysis~\cite{Chen2011}. \rev{To make our statement more convincing, Table~\ref{tab:model-overheads} shows the system overheads and task runtimes of three widely used scientific workflows captured from real traces. Details about these scientific workflows will be introduced in Section~\ref{sec:applications}. }
 
 \begin{figure}[!t]
 	\centering
@@ -1089,11 +1089,11 @@ and its correctness has been verified in~\cite{WorkflowSim}.
 
 The simulated computing platform is composed of 20 single homogeneous core virtual machines 
 (worker nodes), which is the quota per user of some typical distributed environments such as Amazon 
-EC2~\cite{AmazonAWS} and FutureGrid~\cite{FutureGrid}. 
+EC2~\cite{AmazonAWS} and FutureGrid~\cite{FutureGrid}. \rev{It is also consistent with the setting of many real execution experiments~\cite{Juve2013}. } 
 %Amazon EC2 is a commercial, public cloud that has been widely used in distributed computing, in particular for scientific workflows~\cite{Berriman2010}. FutureGrid is a distributed, high-performance testbed that provides scientists with a set of computing resources to develop parallel, grid, and cloud applications. 
 Each simulated virtual machine (VM) has 512MB of memory and the capacity to process 1,000 million 
 instructions per second. The default network bandwidth is 15MB according to the execution environment 
-in FutureGrid from where our traces were collected. By default, tasks at the same horizontal level 
+in FutureGrid from where our traces were collected. \rev{According to the execution model of WorkflowSim, the network bandwidth is the maximum allowed data transfer speed between a pair of virtual machines for each file. }By default, tasks at the same horizontal level 
 are merged into 20 clustered jobs, which is a simple granularity control selection based on the strength 
 of task clustering (as shown in~\cite{Chen2013b}).
 
@@ -1103,7 +1103,8 @@ The traces are used to feed the Workflow Generator~\cite{rafael2014community} to
 synthetic workflows. The toolkit uses the information gathered from actual scientific workflow executions 
 to generate synthetic workflows resembling those used by real world scientific applications. The number 
 of inputs to be processed, the number of tasks in the workflow, and their composition determine the 
-structure of the generated workflow. 
+structure of the generated workflow. \rev{Traces, profile data, and characterizations are freely available
+online for the community through the Workflow Gallery Project\footnote{http://www.workflowarchive.org}.}
 
 Three sets of experiments are conducted. Experiment 1 evaluates the performance of our fault-tolerant 
 clustering methods (DR, VR, and SR) over an existing task clustering method (HC), which has no devoided 
