@@ -30,7 +30,7 @@
 
 %\pretitle{Pretitle}
 \title{Dynamic and Fault-Tolerant Clustering\\
-  in Scientific Workflows}
+  for Scientific Workflows}
 
 
 \author{Weiwei~Chen,~\IEEEmembership{Student Member,~IEEE,}
@@ -38,7 +38,7 @@
 	Ewa~Deelman, ~\IEEEmembership{Member, ~IEEE,}
         and~Thomas~Fahringer,~\IEEEmembership{Member,~IEEE}% <-this % stops a space
 \IEEEcompsocitemizethanks{\IEEEcompsocthanksitem W. Chen, R. Ferreira da Silva and E. Deelman are with the Information Sciences Institute, University of Southern California, Marina del Rey, CA, USA. T. Fahringer is with the Institute for Computer Science, University of Innsbruck, Innsbruck, Austria.\protect
-\IEEEcompsocthanksitem Corresponding author: Weiwei Chen weiweichen@acm.org
+\IEEEcompsocthanksitem Corresponding author: Weiwei Chen wchenpublic@gmail.com
 }% <-this % stops a space
 \thanks{}}
 
@@ -90,6 +90,7 @@
 % papers don't need this extra clearance.)
 
 
+\newcommand{\rev}[1]{\color{blue} #1\color{black}}
 
 
 % for Computer Society papers, we must declare the abstract and index terms
@@ -347,18 +348,18 @@ dependencies. Only jobs that have all their parent jobs completed are submitted 
 Scheduler. The workflow engine relies on the resources (compute, storage, and network) 
 defined in the executable workflow to perform computations. The elapsed time from when a 
 job is released (all of its parents have completed successfully) to when it is submitted to the 
-job scheduler is denoted as the workflow engine delay.
+job scheduler is denoted as the \textbf{workflow engine delay}.
 
 \vspace{4pt}
 \noindent \textbf{Job Scheduler and Local Queue.} Manage individual workflow jobs and 
 supervise their execution on local and remote resources. The elapsed time from when a 
 task is submitted to the job scheduler to when it starts its execution in a worker node is 
-denoted as the queue delay. It reflects both the efficiency of the job scheduler and the 
+denoted as the \textbf{queue delay}. It reflects both the efficiency of the job scheduler and the 
 resource availability. 
 
 \vspace{4pt}
 \noindent \textbf{Job Wrapper.} Extracts tasks from clustered jobs and executes them at 
-the worker nodes. The clustering delay is the elapsed time of the extraction process.
+the worker nodes. The \textbf{clustering delay} is the elapsed time of the extraction process.
 
 We extend the DAG model to be overhead aware (o-DAG). System overheads play an 
 important role in workflow execution and constitute a major part of the overall runtime when 
@@ -366,7 +367,7 @@ tasks are poorly clustered~\cite{Chen2011}. Fig.~\ref{fig:model-odag} shows how 
 a DAG to be an o-DAG with the capability to represent system overheads ($s$) such as the 
 workflow engine and queue delays. In addition, system overheads also include data transfer 
 delay caused by staging-in and staging-out data. This classification of system overheads is 
-based on our prior study on workflow analysis~\cite{Chen2011}. 
+based on our prior study on workflow analysis~\cite{Chen2011}. \rev{Table~\ref{tab:model-overheads} shows the system overheads and task runtimes of three widely used scientific workflows captured from real traces. Details about these scientific workflows will be introduced in Section~\ref{sec:applications}. The statistical information about these traces is consistent with our claim that system overheads constitute a significant portion of the overall runtime during the workflow execution. }
 
 \begin{figure}[!t]
 	\centering
@@ -375,6 +376,25 @@ based on our prior study on workflow analysis~\cite{Chen2011}.
 	\label{fig:model-odag}
 	\vspace{-15pt}
 \end{figure}
+
+\begin{table*}[!htb]
+	\setlength{\tabcolsep}{9pt}
+	\centering
+	\small
+	\begin{tabular}{lrrrrrr}
+		\hline
+		 & \multicolumn{1}{c}{Number} & \multicolumn{1}{c}{Number} & \multicolumn{1}{c}{Average Workflow} & \multicolumn{1}{c}{Average} &  \multicolumn{1}{c}{Average} \\
+		Workflow	& of Tasks & of Nodes	 &  Engine Delay & Queue Delay & Task Runtime \\
+		\hline
+		CyberShake 	&24142	&5	& 12s 	& 188s	&5s\\
+		Epigenomics 	&83		&8 	& 6s	& 311s	&158s\\
+		SIPHT		&33		&8	& 17s 	& 945s	&20s\\
+		\hline
+	\end{tabular}
+	\caption{System Overheads and Task Runtimes from Real Traces.}
+	\label{tab:model-overheads}
+	\vspace{-15pt}
+\end{table*} 
 
 With an o-DAG model, we can explicitly express the process of task clustering. In this work, we 
 address task clustering horizontally and vertically. \textbf{Horizontal Clustering} (HC) merges 
