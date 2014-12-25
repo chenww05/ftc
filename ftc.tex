@@ -253,7 +253,7 @@ analysis of techniques to prevent and mitigate service failures~\cite{Oppenheime
 %Tang et al.~\cite{Tang1990} presents common system failures characteristics such as errors, failure distributions and hazard rates. Schroeder et al. \cite{Schroeder2006} have studied the statistics of the data, including the root cause of failures, the mean time between failures, and the mean time to repair. Sahoo et al. \cite{Sahoo2004} analyzed the empirical and statistical properties of system errors and failures from a network of heterogeneous servers running a diverse workload. Oppenheimer et al. \cite{Oppenheimer2002} analyzed the causes of failures from three large-scale Internet services and the effectiveness of various techniques for preventing and mitigating service failure. 
 
 In scientific workflow management systems (WMS), fault tolerance issues have also 
-been addressed. For instance, the Pegasus WMS~\cite{Deelman2005} has incorporated 
+been addressed. For instance, the Pegasus WMS~\cite{Deelman2005, Deelman-FGCS-2014} has incorporated 
 a task-level monitoring system, which retries a job if a failure is detected. Provenance data
 is also tracked and used to analyze the cause of failures~\cite{Samak2011}. A survey of
 fault detection, prevention, and recovery techniques in current grid WMS such as 
@@ -317,7 +317,7 @@ a workflow task, and the edges represent dependencies between the tasks that con
 in which tasks are executed. \emph{Dependencies} typically represent data-flow dependencies in the 
 application, where the output files produced by one task are used as inputs of another task. Each 
 \emph{task} is a computational program and a set of parameters that need to be executed. This model 
-fits several WMS such as Pegasus~\cite{Deelman2005}, Askalon~\cite{fahringer2007askalon}, and 
+fits several WMS such as Pegasus~\cite{Deelman2005, Deelman-FGCS-2014}, Askalon~\cite{fahringer2007askalon}, and 
 Taverna~\cite{Oinn2004}. 
 
 In this work, we assume a single execution site with multiple compute resources, such as virtual machines 
@@ -336,7 +336,7 @@ within an execution site, execute jobs individually. The main components are int
 
 \vspace{4pt}
 \noindent \textbf{Workflow Mapper.} Generates an executable workflow from an abstract 
-workflow~\cite{Deelman2005} provided by the user or a workflow composition system. It restructures 
+workflow~\cite{Deelman2005, Deelman-FGCS-2014} provided by the user or a workflow composition system. It restructures 
 the workflow for performance optimization, and adds tasks for data management and provenance 
 information generation. In this work, the workflow mapper is also used to merge fine-grained tasks into
 a single clustered job (i.e., \emph{task clustering}). A job then is a single execution unit in the workflow 
@@ -725,7 +725,7 @@ environments. In this section, we propose three fault-tolerant task clustering m
 Reclustering (\emph{SR}), Dynamic Reclustering (\emph{DR}), and Vertical Reclustering 
 (\emph{VR})---that adjust the clustering size of the jobs to reduce the impact of task failures on the 
 workflow execution. These methods are based on the Horizontal Clustering (HC)~\cite{Singh2008} 
-technique that has been implemented and used in the Pegasus WMS~\cite{Deelman2005}.
+technique that has been implemented and used in the Pegasus WMS~\cite{Deelman2005, Deelman-FGCS-2014}.
 
 \vspace{5pt}
 \noindent \textbf{Horizontal Clustering} (\emph{HC}). 
@@ -1036,7 +1036,7 @@ Epigenomics is shown in Fig.~\ref{fig:evaluation-shape-genome}.
 The SIPHT workflow~\cite{SIPHT} conducts a wide search for small untranslated RNAs (sRNAs) that 
 regulates several processes such as secretion or virulence in bacteria. The kingdom-wide prediction and 
 annotation of sRNA encoding genes involves a variety of individual programs that are executed in the 
-proper order using Pegasus~\cite{Deelman2005}. These involve the prediction of $\rho$-independent 
+proper order using Pegasus~\cite{Deelman2005, Deelman-FGCS-2014}. These involve the prediction of $\rho$-independent 
 transcriptional terminators, BLAST (Basic Local Alignment Search Tools~\cite{BLAST}) comparisons 
 of the inter genetic regions of different replicons and the annotations of any sRNAs that are found. 
 A simplified structure of the SIPHT workflow is shown in Fig.~\ref{fig:evaluation-shape-sipht}. 
@@ -1075,7 +1075,7 @@ number of tasks, average data size, and average task runtimes for the five workf
 
 
 % Experiment conditions
-\subsection{Experiment conditions}
+\subsection{Experiment Conditions}
 \label{sec:experiment_conditions}
 
 We adopt a trace-based simulation approach, where we extend our WorkflowSim~\cite{WorkflowSim} 
