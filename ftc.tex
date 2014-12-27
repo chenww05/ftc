@@ -397,9 +397,9 @@ $t_3$ in $j_1$ can be executed in sequence or in parallel, if parallelism is sup
 we consider sequential executions only. The overall runtime for the workflow in Fig.~\ref{fig:model-hc}~(left) 
 is \rev{$runtime_l= s_1+t_1+\max(s_2,s_3)+\max(t_2,t_3)+s_4+t_4$}, while the overall runtime for the 
 clustered workflow in Fig.~\ref{fig:model-hc}~(right) is $runtime_r=s_1+t_1+s_2+c_1+t_2+t_3+s_4+t_4$.  
-$runtime_l > runtime_r$ as long as \rev{$c_1 < \max(s_2,s_3)$}, which is often the case in many distributed systems 
-since the clustering delay within a single execution node is usually shorter than the scheduling overhead 
-across different execution nodes. 
+$runtime_l > runtime_r$ as long as \rev{$c_1 < \max(s_2,s_3)$}, which is often the case in many distributed 
+systems since the clustering delay within a single execution node is usually shorter than the scheduling 
+overhead across different execution nodes. 
 
 \begin{figure}[!b]
 	\centering
