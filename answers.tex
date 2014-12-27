@@ -92,7 +92,7 @@ The scheduling objectives of the research should be better clarified in the abst
 I'd like to see more quantified clarification on the ``scheduling overhead'' and ``workflow engine delay''. Intuitively, or based on my experience, the scheduling overhead should be trivial in practice, especially compared with the data movement overhead between task stages. In this paper, it emphasizes the ``scheduling overhead'' by just citing some previous work of the same authors. It would be better to put some numbers here to make this statement more convincing. 
 \end{review}
 
-\answer{\todo{}}
+\answer{We added a table (Table 1) that shows the average workflow engine and queue delays for 3 scientific workflow applications executed on a distributed platform.}
 
 
 
@@ -100,7 +100,7 @@ I'd like to see more quantified clarification on the ``scheduling overhead'' and
 In Page 3, the formula for $runtime_l$, $t_2$ and $t_3$ have no data dependency, they should be easily parallelized. However they are assumed for only sequential execution in order to make the formulator $runtime_l$ holds. It would be good to provide more use cases to justify the sequential assumption.
 \end{review}
 
-\answer{\todo{}}
+\answer{We agree that since $t_2$ and $t_3$ have no data dependency, they could be run in parallel. However, this is true only when $t_2 > s_2$ and $t_3 > s_3$, which is not always the case as shown in Table 1. We changed the text to clarify our assumption.}
 
 
 

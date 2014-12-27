@@ -296,12 +296,12 @@ a workflow task, and the edges represent dependencies between the tasks that con
 in which tasks are executed. \emph{Dependencies} typically represent data-flow dependencies in the 
 application, where the output files produced by one task are used as inputs of another task. Each 
 \emph{task} is a computational program and a set of parameters that need to be executed. This model 
-fits several WMS such as Pegasus~\cite{Deelman2005, Deelman-FGCS-2014}, Askalon~\cite{fahringer2007askalon}, and 
-Taverna~\cite{Oinn2004}. 
+fits several WMS such as Pegasus~\cite{Deelman2005, Deelman-FGCS-2014}, 
+Askalon~\cite{fahringer2007askalon}, and Taverna~\cite{Oinn2004}. 
 
 In this work, we assume a single execution site with multiple compute resources, such as virtual machines 
-on cloud platforms. Fig.~\ref{fig:model-system} shows a typical workflow execution environment that 
-targets a homogeneous computer cluster, for example, a dedicated cluster or a virtual cluster on Clouds. 
+on Cloud platforms. Fig.~\ref{fig:model-system} shows a typical workflow execution environment that 
+targets a homogeneous computer cluster (e.g., a dedicated cluster or a virtual cluster on Clouds). 
 The submit host prepares a workflow for execution (e.g. clustering, mapping, etc.), and worker nodes, 
 within an execution site, execute jobs individually. The main components are introduced below:
 
@@ -315,26 +315,27 @@ within an execution site, execute jobs individually. The main components are int
 
 \vspace{4pt}
 \noindent \textbf{Workflow Mapper.} Generates an executable workflow from an abstract 
-workflow~\cite{Deelman2005, Deelman-FGCS-2014} provided by the user or a workflow composition system. It restructures 
-the workflow for performance optimization, and adds tasks for data management and provenance 
-information generation. In this work, the workflow mapper is also used to merge fine-grained tasks into
-a single clustered job (i.e., \emph{task clustering}). A job then is a single execution unit in the workflow 
-execution systems and is composed of one or more tasks. 
+workflow~\cite{Deelman2005, Deelman-FGCS-2014} provided by the user or a workflow 
+composition system. It restructures the workflow for performance optimization, and adds 
+tasks for data management and provenance information generation. In this work, the 
+workflow mapper is also used to merge fine-grained tasks into a single clustered job 
+(i.e., \emph{task clustering}). A job then is a single execution unit in the workflow execution 
+systems and is composed of one or more tasks. 
 
 \vspace{4pt}
 \noindent \textbf{Workflow Engine.} Executes jobs defined by the workflow in order of their 
 dependencies. Only jobs that have all their parent jobs completed are submitted to the Job 
 Scheduler. The workflow engine relies on the resources (compute, storage, and network) 
-defined in the executable workflow to perform computations. The elapsed time from when a 
-job is released (all of its parents have completed successfully) to when it is submitted to the 
-job scheduler is denoted as the \textbf{workflow engine delay}.
+defined in the executable workflow to perform computations. \rev{The time span between the 
+job release and its submission to the } Job Scheduler is denoted as the \textbf{workflow 
+engine delay}.
 
 \vspace{4pt}
 \noindent \textbf{Job Scheduler and Local Queue.} Manage individual workflow jobs and 
-supervise their execution on local and remote resources. The elapsed time from when a 
-task is submitted to the job scheduler to when it starts its execution in a worker node is 
-denoted as the \textbf{queue delay}. It reflects both the efficiency of the job scheduler and the 
-resource availability. 
+supervise their execution on local and remote resources. The \rev{time span between the
+job submission to the scheduler and the beginning of its execution } in a worker node is 
+denoted as the \textbf{queue delay}. \rev{This delay } reflects both the efficiency of the 
+scheduler and the resource availability. 
 
 \vspace{4pt}
 \noindent \textbf{Job Wrapper.} Extracts tasks from clustered jobs and executes them at 
@@ -342,35 +343,39 @@ the worker nodes. The \textbf{clustering delay} is the elapsed time of the extra
 
 We extend the DAG model to be overhead aware (o-DAG). System overheads play an 
 important role in workflow execution and constitute a major part of the overall runtime when 
-tasks are poorly clustered~\cite{Chen2011}. Fig.~\ref{fig:model-odag} shows how we augment 
-a DAG to be an o-DAG with the capability to represent system overheads ($s$) such as the 
-workflow engine and queue delays. In addition, system overheads also include data transfer 
-delay caused by staging-in and staging-out data. This classification of system overheads is 
-based on our prior study on workflow analysis~\cite{Chen2011}. \rev{To make our statement more convincing, Table~\ref{tab:model-overheads} shows the system overheads and task runtimes of three widely used scientific workflows captured from real traces. Details about these scientific workflows will be introduced in Section~\ref{sec:applications}. }
+tasks are poorly clustered~\cite{Chen2011}, \rev{in particular for tasks with very short runtimes. }
+Fig.~\ref{fig:model-odag} \rev{illustrates } how we augment a DAG to be an o-DAG with the
+capability to represent system overheads ($s$) such as the workflow engine and queue delays. 
+In addition, system overheads also include data transfer delay caused by staging-in and 
+staging-out data. This classification of system overheads is based on our prior study on 
+workflow analysis~\cite{Chen2011}. \rev{Table~\ref{tab:model-overheads} summarizes the 
+system overheads and task runtimes of three real scientific workflows executed on a real 
+distributed platform. Details about these scientific workflow applications will be presented 
+in Section~\ref{sec:applications}.}
 
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=0.6\linewidth]{odag.pdf}
-	\captionof{figure}{Extending DAG to o-DAG ($s$ denotes a system overhead).}
+	\captionof{figure}{Extending DAG to o-DAG ($s$ is a system overhead).}
 	\label{fig:model-odag}
 	\vspace{-15pt}
 \end{figure}
 
-\begin{table*}[!htb]
+\begin{table*}[!t]
 	\setlength{\tabcolsep}{9pt}
 	\centering
-	\small
+	\footnotesize
 	\begin{tabular}{lrrrrrr}
 		\hline
 		 & \multicolumn{1}{c}{Number} & \multicolumn{1}{c}{Number} & \multicolumn{1}{c}{Average Workflow} & \multicolumn{1}{c}{Average} &  \multicolumn{1}{c}{Average} \\
 		Workflow	& of Tasks & of Nodes	 &  Engine Delay & Queue Delay & Task Runtime \\
 		\hline
 		CyberShake 	&24142	&5	& 12s 	& 188s	&5s\\
-		Epigenomics 	&83		&8 	& 6s	& 311s	&158s\\
+		Epigenomics 	&83		&8 	& 6s		& 311s	&158s\\
 		SIPHT		&33		&8	& 17s 	& 945s	&20s\\
 		\hline
 	\end{tabular}
-	\caption{System Overheads and Task Runtimes from Real Traces.}
+	\caption{System overheads and task runtimes gathered from scientific workflow execution traces~\cite{Chen2011}.}
 	\label{tab:model-overheads}
 	\vspace{-15pt}
 \end{table*} 
@@ -385,36 +390,36 @@ has a unique child $t_b$.
 
 Fig.~\ref{fig:model-hc} shows a simple example on how to perform HC, in which two tasks $t_2$ 
 and $t_3$, without data dependency between them, are merged into a clustered job $j_1$. Job 
-wrappers are commonly used to execute clustered jobs, but they add an overhead denoted by the 
+wrappers are commonly used to execute clustered jobs, but they add an overhead denoted \rev{as } the 
 clustering delay $c$. The clustering delay measures the difference between the sum of the actual 
 task runtimes and the job runtime seen by the job scheduler. After horizontal clustering, $t_2$ and 
 $t_3$ in $j_1$ can be executed in sequence or in parallel, if parallelism is supported. In this work, 
-we consider sequential executions only. Given a single resource, the overall runtime for the workflow 
-in Fig.~\ref{fig:model-hc} (left) is $runtime_l= \sum_{i=1}^{4}(s_i+t_i)$, and the overall runtime for the 
-clustered workflow in Fig.~\ref{fig:model-hc} (right) is $runtime_r=s_1+t_1+s_2+c_1+t_2+t_3+s_4+t_4$.  
-$runtime_l > runtime_r$ as long as $c_1 < s_3$, which is often the case in many distributed systems 
+we consider sequential executions only. The overall runtime for the workflow in Fig.~\ref{fig:model-hc}~(left) 
+is \rev{$runtime_l= s_1+t_1+\max(s_2,s_3)+\max(t_2,t_3)+s_4+t_4$}, while the overall runtime for the 
+clustered workflow in Fig.~\ref{fig:model-hc}~(right) is $runtime_r=s_1+t_1+s_2+c_1+t_2+t_3+s_4+t_4$.  
+$runtime_l > runtime_r$ as long as \rev{$c_1 < \max(s_2,s_3)$}, which is often the case in many distributed systems 
 since the clustering delay within a single execution node is usually shorter than the scheduling overhead 
 across different execution nodes. 
 
-\begin{figure}[b]
-\centering
- \includegraphics[width=0.45\linewidth]{hc.pdf}
-  \captionof{figure}{A simple example of horizontal clustering (color indicates the horizontal level of a task).}
-  \label{fig:model-hc}
+\begin{figure}[!b]
+	\centering
+	\includegraphics[width=0.45\linewidth]{hc.pdf}
+	\captionof{figure}{A simple example of horizontal clustering (color indicates the horizontal level of a task).}
+	\label{fig:model-hc}
 \end{figure}
 
-\begin{figure}[!htb]
-\centering
- \includegraphics[width=0.5\linewidth]{vc.pdf}
-  \captionof{figure}{A simple example of vertical clustering.}
-  \label{fig:model-vc}
-  \vspace{-15pt}
-\end{figure}
 
 Fig.~\ref{fig:model-vc} illustrates an example of vertical clustering, in which tasks $t_2$, $t_4$, 
 and $t_6$ are merged into $j_1$, while tasks $t_3$, $t_5$, and $t_7$ are merged into $j_2$. 
 Similarly, clustering delays $c_2$ and $c_3$ are added to $j_1$ and $j_2$ respectively, but 
 system overheads $s_4$, $s_5$, $s_6$, and $s_7$ are removed. 
+
+\begin{figure}[!b]
+	\centering
+	\includegraphics[width=0.5\linewidth]{vc.pdf}
+	\captionof{figure}{A simple example of vertical clustering.}
+	\label{fig:model-vc}
+\end{figure}
 
 On situations where the scheduling and queue overheads are important, the use of task clustering 
 techniques can significantly improve the workflow execution performance. In an ideal scenario, where
