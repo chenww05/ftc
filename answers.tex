@@ -1,0 +1,186 @@
+\documentclass{letter}
+\usepackage{graphicx}
+\usepackage{color}
+\date{Feb 15, 2015}
+
+\newenvironment{review}%          environment name
+{\textbf{Reviewer comment:}\begin{quote}}% begin code
+{\end{quote}}%  
+
+\newcommand{\todo}[1]{%                                                                                                                            
+      \color{red}\textbf{[TODO]} #1\color{black}}
+
+\newcommand{\answer}[1]{%                                                                                                                            
+      \textbf{Answer:} #1}
+
+\usepackage{hyperref}
+
+\newcommand{\revised}[1]{\emph{#1}\color{black}}
+\newcommand{\rev}[1]{\color{blue} #1\color{black}}
+
+\begin{document}
+
+\begin{letter}{}
+
+\opening{Dear Editor and Reviewers,}
+
+We would like to thank you for your thorough review and the useful
+comments and suggestions formulated about our paper ``Dynamic and Fault-Tolerant Clustering for Scientific Workflows'' submitted to
+IEEE Transactions on Cloud Computing.
+
+The remainder of this letter contains our answers to your reviews. 
+
+We thank you again for your valuable review, and we remain available for any further information you may need.
+
+\vspace{0.5cm}
+
+Sincerely yours,
+
+\vspace{1cm}
+
+Weiwei Chen, Rafael Ferreira da Silva, Ewa Deelman, Thomas Fahringer
+
+\newpage
+
+%
+% Reviewer 1
+%
+\textbf{Reviewer 1}
+
+\begin{review}
+While Pegasus represents one good use case for this work, there are other systems based on different approaches like glideinWMS or Koala that strive to improve scheduling (and job throughput in particular) in faulty environments. The larger audience, including the Grid domain, will greatly benefit from comparisons with other scheduling strategies (e.g., based on static resource allocations). 
+\end{review}
+
+\answer{\todo{}}
+
+\revised{}
+
+
+
+\begin{review}
+Regarding the analysis, the paper uses mostly the makespan (a definition would be also good) for drawing the conclusions. I consider there are other important metrics to analyze for such strategies, especially from a scheduling point of view, otherwise the analysis seems geared towards achieving users' objectives without taking in consideration resource utilization or other objectives.
+\end{review}
+
+\answer{\todo{}}
+
+
+
+\begin{review}
+How does such an approach compare to Condor's matchmaking and its harnessing approach of wasted CPU power from otherwise idle desktop workstations?
+\end{review}
+
+\answer{\todo{}}
+
+
+
+\begin{review}
+The scheduling objectives of the research should be better clarified in the abstract. Also, the bibliography and references should include more concrete examples, as the Grid domain would benefit from this body of work. 
+\end{review}
+
+\answer{\todo{}}
+
+
+
+\newpage
+
+%
+% Reviewer 2
+%
+\textbf{Reviewer 2}
+
+\begin{review}
+I'd like to see more quantified clarification on the ``scheduling overhead'' and ``workflow engine delay''. Intuitively, or based on my experience, the scheduling overhead should be trivial in practice, especially compared with the data movement overhead between task stages. In this paper, it emphasizes the ``scheduling overhead'' by just citing some previous work of the same authors. It would be better to put some numbers here to make this statement more convincing. 
+\end{review}
+
+\answer{\todo{}}
+
+
+
+\begin{review}
+In Page 3, the formula for $runtime_l$, $t_2$ and $t_3$ have no data dependency, they should be easily parallelized. However they are assumed for only sequential execution in order to make the formulator $runtime_l$ holds. It would be good to provide more use cases to justify the sequential assumption.
+\end{review}
+
+\answer{\todo{}}
+
+
+
+\begin{review}
+``the default network bandwidth is 15MB'', I was wondering if in the simulation, each data transfer can achieve this bandwidth or simultaneous transfers will compete the 15MB bandwidth and will have some slowdowns?
+\end{review}
+
+\answer{\todo{}}
+
+
+
+\begin{review}
+I'd like to see more description on the workflow execution traces instead of just citing two papers.
+\end{review}
+
+\answer{\todo{}}
+
+
+
+\begin{review}
+The experiments are conducted against five different workflows. I?d like to see some generic comparison of these workflows. That is, what algorithms are good for what kind of workflow. A summary would be good at the end of the experimental results.
+\end{review}
+
+\answer{\todo{}}
+
+
+
+\newpage
+
+%
+% Reviewer 3
+%
+\textbf{Reviewer 3}
+
+\begin{review}
+One concern is that it might be difficult to apply these techniques in a practical system.  The authors collect quite a bit of data and use numerical optimization to obtain the task cluster size at regular intervals and that might be expensive, however, they consider relatively small clusters (20 CPUs) so it is probably tractable at that scale.  It would be interesting to hear more about how this would connect to a real workflow management system but the paper is self-contained given the space constraint. 
+\end{review}
+
+\answer{\todo{}}
+
+
+
+\newpage
+
+%
+% Reviewer 4
+%
+\textbf{Reviewer 4}
+
+\begin{review}
+The paper is written in easy to understand practical terms, except Section 2 which contrasts with the rest of the paper through its rather theoretical nature. The connection between Section 2 and the rest of the paper is not really obvious and it took me several iterations of the paper to understand it. I suggest that the authors increase the cross references to better highlight it. 
+\end{review}
+
+\answer{\todo{}}
+
+
+
+\begin{review}
+The drawback with this paper in my opinion is the evaluation done using some mixture of ``simulated real-world workflows''. While I acknowledge the importance of simulation in validating such heuristics, I am not convinced that one of its main characteristics, the reproducibility, is guaranteed in this paper. The workflow traces injected in the workflow simulator do not seem to be open data. In general, I favour a complete separation between complete synthetic simulation, and its validation in isolated real-world scenarios, but through real execution. 
+\end{review}
+
+\answer{\todo{}}
+
+
+
+\begin{review}
+On the other hand, the authors do not aim to analyse the results with respect to workflow structure and topological characteristics, which makes the reusability of the results in different contexts difficult to assess. Table 2 contains very superficial data in this direction. I suggest that the authors add a discussion section where they take a step back and try to formulate some general recommendations that can be used by practitioners for running different workflows in the Cloud. In this sense, I have doubts that the five workflows cover all patterns encountered today in scientific workflows. Adding some synthetic workflows to the simulation could strengthen the completeness of the evaluation.
+\end{review}
+
+\answer{\todo{}}
+
+
+
+\begin{review}
+With respect to style, the paper contains too many self-references and some captions in figures are too small.
+\end{review}
+
+\answer{\todo{}}
+
+
+
+\end{letter}
+\end{document}
