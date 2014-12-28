@@ -440,19 +440,16 @@ runtime $\bm t$, the system overhead $\bm s$, and the inter-arrival time of task
 
 In our prior work~\cite{Chen2011}, we have verified that system overheads $s$ better fits a Gamma or 
 a Weibull distribution rather than an Exponential or Normal distribution. Schroeder et al.~\cite{Schroeder2006} 
-have verified that the inter-arrival time of task failures fits a Weibull distribution with a shape parameter 
-of 0.78, which fits better than the Lognormal and Exponential distributions. In~\cite{McConnel}, transient 
+have verified that the inter-arrival time of task failures \rev{better fits a Weibull distribution (defined by a shape 
+parameter of 0.78) rather } than the Lognormal and Exponential distributions. In~\cite{McConnel}, transient 
 errors also follow a Weibull distribution. In~\cite{Sun2003, Iosup2008}, Weibull, Gamma and Lognormal 
 distributions are among the best fit to estimate task runtimes for a set of workflow traces. Without loss of 
 generality, we choose the Gamma distribution to model the task runtime~($\bm t$) and the system 
 overhead ($\bm s$), and the Weibull distribution to model the inter-arrival time of failures ($\bm\gamma$). 
-$\bm s$, $\bm t$ and $\bm \gamma$ are random variables of all tasks instead of one specific task. 
-
-
-% We will reuse this shape parameter of 0.78 in our failure model. 
+$\bm s$, $\bm t$, and $\bm \gamma$ are random variables of all tasks instead of one specific task. 
 
 Probability distributions such as Weibull and Gamma are usually described with two parameters: the 
-\emph{shape parameter}~($\phi$) and the \emph{scale parameter}~($\theta$). The shape parameter 
+\emph{shape parameter}~($\phi$), and the \emph{scale parameter}~($\theta$). The shape parameter 
 affects the shape of a distribution, while the scale parameter affects the stretching or shrinking of a 
 distribution. Both parameters control the characteristics of a distribution. For example, the mean of a 
 Gamma distribution is $\phi\theta$ and the Maximum Likelihood Estimation (MLE) is $(\phi-1)\theta$. 
@@ -461,7 +458,7 @@ Let $a$, $b$ be the parameters of the prior knowledge, $D$ the observed dataset,
 parameter we aim to estimate. In Bayesian probability theory, if the posterior distribution $p(\theta|D, a, b)$ 
 is in the same family as the prior distribution $p(\theta|a, b)$, the prior and the posterior distributions 
 are then called conjugate distributions, and the prior is called a conjugate prior for the likelihood 
-function~\cite{diaconis1979conjugate}. For example, the Inverse-Gamma family is conjugate to itself 
+function~\cite{diaconis1979conjugate}. For instance, the Inverse-Gamma family is conjugate to itself 
 (or self-conjugate) with respect to a Weibull likelihood function: if the likelihood function is Weibull, 
 choosing an Inverse-Gamma prior over the mean will ensure that the posterior distribution is also 
 Inverse-Gamma. Based on this definition, the parameters estimation of our task failure model has 
@@ -479,7 +476,7 @@ where $D$ is the observed inter-arrival time of failures~$X$, the observed task 
 or the observed system overheads~$S$; $p(\theta|D,a, b)$ is the posterior we aim to compute; 
 $p(\theta|a, b)$ is the prior, which we already known from previous works; and $p(D|\theta)$ is 
 the likelihood. We define $X=\{x_1, x_2, \dots, x_n\}$ as the observed data of the inter-arrival time 
-of failures~$\bm\gamma$ during the execution. Similarly, we define $RT=\{t_1, t_2, \dots, t_n\}$ 
+of failures~$\bm\gamma$ during the execution. Similarly, we define $RT=\{t_1, t_2, \dots, t_n\}$, 
 and  $S=\{s_1, s_2, \dots, s_n\}$ as the observed data of task runtime~$\bm t$ and system 
 overheads~$\bm s$ respectively.  
 
