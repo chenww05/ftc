@@ -84,6 +84,7 @@
 
 
 \newcommand{\rev}[1]{\color{blue} #1\color{black}}
+\newcommand{\note}[1]{\color{red} \textbf{[TODO]} #1\color{black}}
 
 
 % for Computer Society papers, we must declare the abstract and index terms
@@ -946,14 +947,7 @@ In the experiments, we use the following scientific workflow applications: LIGO 
 analysis, Montage, CyberShake, Epigenomics, and SIPHT. Below, we briefly describe 
 each of them and present their main characteristics and structures:
 
-\begin{figure}[b]
-	\centering
-	\includegraphics[width=0.5\linewidth]{ligo_shape.pdf} \\
-	\caption{Simplified visualization of the LIGO workflow.}
-	\label{fig:evaluation-shape-ligo}
-	\vspace{-5pt}
-\end{figure}
-
+\vspace{5pt}
 \noindent \textbf{LIGO.}
 Laser Interferometer Gravitational Wave Observatory (LIGO)~\cite{LIGO} workflows are 
 used to search for gravitational wave signatures in data collected by large-scale interferometers. 
@@ -964,6 +958,16 @@ the workflow. The LIGO Inspiral workflow is separated into multiple groups of in
 tasks, which we call branches in the rest of this work. Each branch may have a different number 
 of pipelines. The LIGO workflow is a data-intensive workflow.
 
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.5\linewidth]{ligo_shape.pdf} \\
+	\caption{Simplified visualization of the LIGO workflow.}
+	\label{fig:evaluation-shape-ligo}
+	\vspace{-5pt}
+\end{figure}
+
+
+\vspace{5pt}
 \noindent \textbf{Montage.}
 Montage~\cite{Berriman2004} is an astronomy application used to construct large image 
 mosaics of the sky. Input images are reprojected onto a sphere and overlap is calculated for each 
@@ -975,14 +979,14 @@ portion of the sky in question. Fig.~\ref{fig:evaluation-shape-montage} illustra
 workflow. The size of the workflow depends on the number of images used in constructing the desired 
 mosaic of the sky. 
 
-\begin{figure}[!t]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.38\linewidth]{montage_shape.pdf} \\
 	\caption{Simplified visualization of the Montage workflow.}
 	\label{fig:evaluation-shape-montage}
-	\vspace{-15pt}
 \end{figure}
 
+\vspace{5pt}
 \noindent \textbf{Cybershake.}
 CyberShake~\cite{Graves2010} is a seismology application that calculates probabilistic seismic hazard 
 curves for geographic sites in the Southern California region. It identifies all ruptures within 200km of the 
@@ -997,9 +1001,9 @@ shows an illustration of the Cybershake workflow.
 	\includegraphics[width=0.53\linewidth]{cybershake_shape.pdf} \\
 	\caption{Simplified visualization of the CyberShake workflow.}
 	\label{fig:evaluation-shape-cybershake}
-	\vspace{-10pt}
 \end{figure}
 
+\vspace{5pt}
 \noindent \textbf{Epigenomics.}
 The Epigenomics workflow~\cite{Epigenome} is a CPU-intensive application. Initial data are acquired 
 from the Illumina-Solexa Genetic Analyzer in the form of DNA sequence lanes. Each Solexa machine 
@@ -1017,6 +1021,7 @@ Epigenomics is shown in Fig.~\ref{fig:evaluation-shape-genome}.
 	\vspace{-5pt}
 \end{figure}
 
+\vspace{5pt}
 \noindent \textbf{SIPHT.}
 The SIPHT workflow~\cite{SIPHT} conducts a wide search for small untranslated RNAs (sRNAs) that 
 regulates several processes such as secretion or virulence in bacteria. The kingdom-wide prediction and 
@@ -1053,7 +1058,7 @@ number of tasks, average data size, and average task runtimes for the five workf
 		SIPHT		&1000	& 360 KB 	& 180s\\
 		\hline
 	\end{tabular}
-	\caption{Summary of the main workflows characteristics.}
+	\caption{Summary of the main workflow characteristics.}
 	\label{tab:evaluation-workflows}
 	\vspace{-15pt}
 \end{table} 
@@ -1064,44 +1069,58 @@ number of tasks, average data size, and average task runtimes for the five workf
 \label{sec:experiment_conditions}
 
 We adopt a trace-based simulation approach, where we extend our WorkflowSim~\cite{WorkflowSim} 
-simulator with the fault-tolerant clustering methods to simulate a controlled distributed environment,
-where system (i.e., the inter-arrival time of failures) and workflow (i.e., avg. task runtime) settings can
-be varied to fully explore the performance of our fault-tolerant clustering algorithms.
-WorkflowSim is an open source workflow simulator that extends CloudSim~\cite{Calheiros2011} by 
-providing support for task clustering, task scheduling, and resource provisioning at the workflow level. 
-It has been recently used in multiple workflow study areas~\cite{WorkflowSim,Chen2012, jrad2013broker} 
-and its correctness has been verified in~\cite{WorkflowSim}.
+simulator with the fault-tolerant clustering methods to simulate a controlled distributed 
+environment, where system (i.e., the inter-arrival time of failures) and workflow (i.e., avg. 
+task runtime) settings can be varied to fully explore the performance of our fault-tolerant 
+clustering algorithms. WorkflowSim is an open source workflow simulator that extends 
+CloudSim~\cite{Calheiros2011} by providing support for task clustering, task scheduling, 
+and resource provisioning at the workflow level. It has been recently used in multiple 
+workflow study areas~\cite{WorkflowSim,Chen2012, jrad2013broker} and its correctness 
+has been verified in~\cite{WorkflowSim}.
 
-The simulated computing platform is composed of 20 single homogeneous core virtual machines 
-(worker nodes), which is the quota per user of some typical distributed environments such as Amazon 
-EC2~\cite{AmazonAWS} and FutureGrid~\cite{FutureGrid}. \rev{It is also consistent with the setting of many real execution experiments~\cite{Juve2013}. } 
-%Amazon EC2 is a commercial, public cloud that has been widely used in distributed computing, in particular for scientific workflows~\cite{Berriman2010}. FutureGrid is a distributed, high-performance testbed that provides scientists with a set of computing resources to develop parallel, grid, and cloud applications. 
-Each simulated virtual machine (VM) has 512MB of memory and the capacity to process 1,000 million 
-instructions per second. The default network bandwidth is 15MB according to the execution environment 
-in FutureGrid from where our traces were collected. \rev{According to the execution model of WorkflowSim, the network bandwidth is the maximum allowed data transfer speed between a pair of virtual machines for each file. }By default, tasks at the same horizontal level 
-are merged into 20 clustered jobs, which is a simple granularity control selection based on the strength 
-of task clustering (as shown in~\cite{Chen2013b}).
+The simulated computing platform is composed of 20 single homogeneous core virtual 
+machines (worker nodes), which is the quota per user of some typical distributed 
+environments such as Amazon EC2~\cite{AmazonAWS} and FutureGrid~\cite{FutureGrid}. 
+\rev{This assumption is also consistent with the setting of many real execution 
+experiments~\cite{Juve2013}}. Each simulated virtual machine (VM) has 512MB of memory 
+and the capacity to process 1,000 million instructions per second. The default network 
+bandwidth is 15MB according to the execution environment in FutureGrid from where our 
+traces were collected. \rev{In our execution model, the network bandwidth is the maximum 
+allowed data transfer speed between a pair of virtual machines per file}. By default, tasks at 
+the same horizontal level are merged into 20 clustered jobs, which is a simple granularity 
+control selection based on the strength of task clustering (as shown in~\cite{Chen2013b}).
 
-We collected workflow execution traces~\cite{Juve2013, Chen2011} (including overhead and task 
-runtime information) from real runs of the scientific workflow applications described in Section~\ref{sec:applications}. 
-The traces are used to feed the Workflow Generator~\cite{rafael2014community} toolkit to generate 
-synthetic workflows. The toolkit uses the information gathered from actual scientific workflow executions 
-to generate synthetic workflows resembling those used by real world scientific applications. The number 
-of inputs to be processed, the number of tasks in the workflow, and their composition determine the 
-structure of the generated workflow. \rev{Traces, profile data, and characterizations are freely available
-online for the community through the Workflow Gallery Project\footnote{http://www.workflowarchive.org}.}
 
-Three sets of experiments are conducted. Experiment 1 evaluates the performance of our fault-tolerant 
-clustering methods (DR, VR, and SR) over an existing task clustering method (HC), which has no devoided 
-of fault-tolerant mechanisms. The goal of the experiment is to identify conditions where each method works 
-best and worst. We also evaluate the performance improvement for different $\theta_{\gamma}$ values 
-(the inter-arrival time of task failures). $\theta_{\gamma}$ ranges from 1 to 10 times of the average task 
-runtime such that the workflows do not run continuously and the performance difference is visually explicit. 
+\vspace{5pt}
+\noindent \textbf{\rev{Workload Dataset}.}
+We collected workflow execution traces~\cite{Juve2013, Chen2011} (including overhead 
+and task runtime information) from real runs of the \rev{5 scientific workflow applications 
+previously described}. The traces are used to feed the Workflow Generator~\cite{rafael2014community} 
+toolkit to \rev{create } synthetic workflows. The toolkit uses \rev{statistical data } gathered 
+from \rev{traces of } actual scientific workflow executions to generate \rev{realistic}, synthetic 
+workflows \rev{that resemble the real applications}. The number of inputs to be processed, 
+the number of tasks in the workflow, and their composition determine the structure of the 
+generated workflow. \rev{Traces, profile data, and characterizations are freely available 
+online for the community~\cite{WorkflowArchive}. For the experiments we generated... 
+\note{Weiwei: provide the number of synthetic workflows generated for each application 
+and the number of tasks in each workflow.}}
+
+
+\vspace{5pt}
+\noindent \textbf{\rev{Experiment Sets}.}
+Three sets of experiments are conducted. Experiment 1 evaluates the performance of 
+our fault-tolerant clustering methods (DR, VR, and SR) over an existing task clustering 
+method (HC), which \rev{is devoided } of fault-tolerant mechanisms. The goal of the 
+experiment is to identify conditions where each method works best and worst. We also 
+evaluate the performance improvement for different $\theta_{\gamma}$ values (the 
+inter-arrival time of task failures). $\theta_{\gamma}$ ranges from 1 to 10 times of the 
+average task runtime such that the workflows do not run continuously and the performance 
+difference is visually explicit. 
 
 Experiment 2 evaluates the performance impact of the variation of the average task runtime per level 
-(defined as the average of all the tasks per level) and the average system overheads per level for one 
+(defined as the average of all the tasks per level), and the average system overheads per level for one 
 scientific workflow application (CyberShake). In particular, we are interested in the performance of DR 
-based on the results of Experiment 1. For this experiment, we use $\theta_{\gamma}=100$ since it 
+based on the results of Experiment 1. For this experiment, we \rev{define } $\theta_{\gamma}=100$ since it 
 better highlights the difference between the four methods. We vary the average task runtime of the 
 CyberShake workflow (originally of about 23 seconds, Table~\ref{tab:evaluation-workflows}) by using 
 a multiplier factor $f_r \in [0.5, 1.3]$. We also vary the average system overheads (originally of about 50 
@@ -1136,7 +1155,6 @@ beginning.
 	\includegraphics[width=0.8\linewidth]{step_signal.pdf} \\
 	\caption{A Step Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_d$ is the moment $\theta_{\gamma}$ changes from 500 to 50 seconds.}
 	\label{fig:evaluation_step_signal}
-	\vspace{-10pt}
 \end{figure}
 
 The second function is a pulse wave function (Fig. \ref{fig:evaluation_pulse_signal}) in which the 
