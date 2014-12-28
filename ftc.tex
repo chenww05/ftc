@@ -668,32 +668,32 @@ size according to the inter-arrival time, the overall runtime performance can be
 \begin{table}[!htb]
 	\setlength{\tabcolsep}{9pt}
 	\centering
-	\small
-	\begin{tabular}{lrrrr}
+	\footnotesize
+	\begin{tabular}{lr}
 		\hline
-		Parameter	& Description	  \\
-		\hline
-		$t$, $s$, $d$ & distribution of task runtime, overhead, job runtime\\
-		$\gamma$& distribution of the inter-arrival time of failures \\
-		$\theta_{\gamma}$, $\phi_{\gamma}$  		&scale and shape parameters of $\gamma$		\\
-		$\theta_{t}$, $\phi_{t}$  		&scale and shape parameters of $t$		\\
-		$\theta_{s}$, $\phi_{s}$  		&scale and shape parameters of $s$		\\
-		$a_{\gamma}$, $b_{\gamma}$ & prior knowledge of $\gamma$\\
-		$a_{t}$, $b_{t}$ & prior knowledge of $t$\\
-		$a_{s}$, $b_{s}$ & prior knowledge of $s$\\
-		$k$& number of tasks in a job\\
-		$N$& distribution of the retry time of clustered jobs\\
-		$N_i$& retry time of job $i$\\
-		$M$ & distribution of the overall runtime \\
-		$M_i$ & the overall runtime to complete job $i$\\
-		$r$ & the number of available worker nodes\\
-		$n$ & the number of tasks\\
-		\hline
+		Parameter					& Description	  \\ \hline
+		$t$, $s$, $d$ 				& distribution of task runtime, overhead, job runtime\\
+		$\gamma$				& distribution of the inter-arrival time of failures \\
+		$\theta_{\gamma}$, $\phi_{\gamma}$  		&scale and shape parameters of $\gamma$ \\
+		$\theta_{t}$, $\phi_{t}$  		&scale and shape parameters of $t$	\\
+		$\theta_{s}$, $\phi_{s}$  		&scale and shape parameters of $s$	 \\
+		$a_{\gamma}$, $b_{\gamma}$ 	& prior knowledge of $\gamma$\\
+		$a_{t}$, $b_{t}$ 			& prior knowledge of $t$\\
+		$a_{s}$, $b_{s}$ 			& prior knowledge of $s$\\
+		$k$						& number of tasks in a job\\
+		$N$						& distribution of the retry time of clustered jobs\\
+		$N_i$					& retry time of job $i$\\
+		$M$ 						& distribution of the overall runtime \\
+		$M_i$ 					& the overall runtime to complete job $i$\\
+		$r$ 						& the number of available worker nodes\\
+		$n$ 						& the number of tasks\\ \hline
 	\end{tabular}
 	\caption{Explanation of the symbols used in this work.}
 	\label{tab:model-variables}
 	\vspace{-15pt}
 \end{table} 
+
+
 
 %
 % Section: Fault-Tolerant Clustering
@@ -701,29 +701,32 @@ size according to the inter-arrival time, the overall runtime performance can be
 \section{Fault-Tolerant Clustering}
 \label{sec:clustering}
 
-Inappropriate task clustering may negatively impact the workflow makespan in faulty distributed
-environments. In this section, we propose three fault-tolerant task clustering methods---Selective 
-Reclustering (\emph{SR}), Dynamic Reclustering (\emph{DR}), and Vertical Reclustering 
-(\emph{VR})---that adjust the clustering size of the jobs to reduce the impact of task failures on the 
-workflow execution. These methods are based on the Horizontal Clustering (HC)~\cite{Singh2008} 
-technique that has been implemented and used in the Pegasus WMS~\cite{Deelman2005, Deelman-FGCS-2014}.
+Inappropriate task clustering may negatively impact the workflow makespan 
+in faulty distributed environments. In this section, we propose three fault-tolerant 
+task clustering methods---Selective Reclustering (\emph{SR}), Dynamic Reclustering 
+(\emph{DR}), and Vertical Reclustering (\emph{VR})---that adjust the clustering size 
+\rev{(\emph{k}) } of the jobs to reduce the impact of task failures on the workflow 
+execution. These methods are based on the Horizontal Clustering (HC)~\cite{Singh2008} 
+technique that has been implemented and used in the Pegasus 
+workflow management system (WMS)~\cite{Deelman2005, Deelman-FGCS-2014}.
 
 \vspace{5pt}
 \noindent \textbf{Horizontal Clustering} (\emph{HC}). 
 Horizontal clustering merges multiple tasks within the same horizontal level of the workflow. The 
 clustering granularity (number of tasks within a cluster) of a clustered job is controlled by the user, 
 who defines either the number of tasks per clustered job (\emph{clusters.size}), or the number of 
-clustered jobs per horizontal level of the workflow (\emph{clusters.num}). For simplicity, we set \emph{clusters.num} 
-to be the same as the number of available resources. In our prior work~\cite{Chen2013a,Chen2013b}, 
-we have evaluated the runtime performance with different clustering granularity. 
-Algorithm~\ref{alg:evaluation-hc} shows the pseudocode for HC. The \texttt{Clustering} and \texttt{Merge} 
-procedures are called in the initial task clustering process, while the \texttt{Reclustering} procedure is 
-invoked when a failed job is detected by the monitoring system. Fig.~\ref{fig:clustering-hc} shows an 
-example where the initial clustering size is 4. As a result,  there are four tasks in a clustered job. 
-During execution, three out of these tasks ($t_1$, $t_2$, $t_3$) fail. Due to the lack of an adaptive 
-mechanism, HC keeps retrying all of the four tasks in the following attempts until all of them succeed.
+clustered jobs per horizontal level of the workflow (\emph{clusters.num}). For simplicity, we set 
+\emph{clusters.num} to be the same as the \rev{amount } of available resources. 
+In~\cite{Chen2013a,Chen2013b}, we have evaluated the runtime performance for different clustering 
+granularities. Algorithm~\ref{alg:evaluation-hc} shows the pseudocode for HC. The \texttt{Clustering} 
+and \texttt{Merge} procedures are \rev{invoked } in the initial task clustering process, while the 
+\texttt{Reclustering} procedure is invoked when a failed job is detected by the monitoring system. 
+Fig.~\ref{fig:clustering-hc} shows an example \rev{for $k$ = 4}. As a result,  there are four tasks in 
+a clustered job. During execution, three out of these tasks ($t_1$, $t_2$, $t_3$) fail. Due to the lack 
+of an adaptive mechanism, HC keeps retrying all of the four tasks in the following attempts until all 
+of them succeed.
 
-\begin{algorithm}[t]
+\begin{algorithm}[!t]
 	\footnotesize
 	\caption{Horizontal Clustering algorithm.}
 	\label{alg:evaluation-hc}
@@ -754,7 +757,7 @@ mechanism, HC keeps retrying all of the four tasks in the following attempts unt
 
 \begin{figure}[!t]
 	\centering
-	\includegraphics[width=0.85\linewidth]{hcr.pdf}
+	\includegraphics[width=0.9\linewidth]{hcr.pdf}
 	\caption{An example of Horizontal Clustering (red boxes are failed tasks).}
 	\label{fig:clustering-hc}
 	\vspace{-15pt}
@@ -763,22 +766,22 @@ mechanism, HC keeps retrying all of the four tasks in the following attempts unt
 
 \vspace{5pt}
 \noindent \textbf{Selective Reclustering} (\emph{SR}).
-The selective re-clustering technique, on the other hand, selects the failed tasks in a 
-clustered job and merges them into a new clustered job. Algorithm~\ref{alg:evaluation-sr}
+The selective re-clustering technique, on the other hand, \rev{merges only failed tasks within
+a clustered job } into a new clustered job. Algorithm~\ref{alg:evaluation-sr}
 shows the pseudocode of the \texttt{Reclustering} procedure for the SR method. The 
 \texttt{Clustering} and \texttt{Merge} procedures are the same as those for HC.
 Fig.~\ref{fig:clustering-sr} shows an example of the SR method. In the first attempt, the 
-clustered job, composed of 4 tasks,  has 3 failed tasks ($t_1$, $t_2$, $t_3$). Three failed 
+clustered job, composed of 4 tasks, has 3 failed tasks ($t_1$, $t_2$, $t_3$). Three failed 
 tasks are merged into a new clustered job $j_2$ and retried. This approach does not intend 
-to adjust the clustering size, although the clustering size will become smaller after each attempt 
-since there are fewer tasks in subsequent clustered jobs. In the example, the clustering size 
-has decreased from 4 to 3. However, the optimal clustering size may not be 3, which limits 
+to adjust the clustering size \rev{$k$}, although the clustering size \rev{may } become smaller 
+after each attempt since \rev{subsequent clustered jobs may have fewer tasks}. In the example,  
+\rev{$k$ } has decreased from 4 to 3. However, the optimal clustering size may not be 3, which limits 
 the workflow performance if the $\theta_{\gamma}$ is small and $k$ should be decreased 
 as much as possible. The advantage of SR is that it is simple to implement and can be 
-incorporated into existing workflow management systems with minimum impact on the 
-workflow execution efficiency as shown in Section~\ref{sec:experiments}.
+incorporated into existing WMS with minimum impact on the workflow execution efficiency 
+as shown in Section~\ref{sec:experiments}.
 
-\begin{algorithm}[t]
+\begin{algorithm}[!t]
 	\footnotesize
 	\caption{Selective Reclustering algorithm.}
 	\label{alg:evaluation-sr}
@@ -799,38 +802,13 @@ workflow execution efficiency as shown in Section~\ref{sec:experiments}.
 
 \begin{figure}[!t]
 	\centering
-	\includegraphics[width=0.78\linewidth]{sr.pdf}
+	\includegraphics[width=0.82\linewidth]{sr.pdf}
 	\caption{An example of Selective Reclustering (red boxes are failed tasks). Failed tasks are merged into a new job and retried.}
 	\label{fig:clustering-sr}
 	\vspace{-15pt}
 \end{figure}
 
- \begin{figure}[b]
-	\centering
-	\includegraphics[width=0.73\linewidth]{dr.pdf}
-	\caption{An example of Dynamic Reclustering (red boxes are failed tasks). The clustering size is adjusted to 2 and thus failed tasks are merged into two new clustered jobs.}
-	\label{fig:clustering-dr}
-	\vspace{-5pt}
-\end{figure}
-
-\vspace{5pt}
-\noindent \textbf{Dynamic Reclustering} (\emph{DR}).
-The Selective Reclustering method does not analyze the clustering size, rather it 
-uses a self-adjusted approach to reduce the clustering size to the number of failed tasks. 
-However, the actual optimal clustering size may be larger or smaller than the number of
-failed tasks. Therefore, we propose the Dynamic Reclustering method that merges failed
-tasks into new clustered jobs in which the clustering size is set to $k^*$ according to 
-Equation~\ref{eq:k_optimal}. Algorithm~\ref{alg:evaluation-dr} shows the pseudocode 
-for the \texttt{Reclustering} procedure for the DR method. Fig.~\ref{fig:clustering-dr} shows 
-an example where the initial clustering size is 4 and thereby there are 4 tasks in the 
-clustered job. In the first attempt, 3 tasks within the clustered job have failed. Therefore, 
-there are only 3 tasks to be retried, and thus the clustering size should be decreased to 2 
-accordingly. Two new clustered jobs $j_2$ (containing $t_1$ and $t_2$) and $j_3$ 
-(containing $t_3$) are created. Reducing the granularity of failed clustered jobs may
-decrease the probability of future failures, since at least one of the jobs will execute on
-a different worker node.
-
-\begin{algorithm}[t]
+\begin{algorithm}[!b]
 	\footnotesize
 	\caption{Dynamic Reclustering algorithm.}
 	\label{alg:evaluation-dr}
@@ -853,7 +831,32 @@ a different worker node.
 	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[!t]
+
+\vspace{5pt}
+\noindent \textbf{Dynamic Reclustering} (\emph{DR}).
+The Selective Reclustering method does not analyze the clustering size, rather it 
+uses a self-adjusted approach to reduce \rev{$k$ } to the number of failed tasks. 
+However, the actual optimal clustering size may be larger or smaller than the number of
+failed tasks. Therefore, we propose the Dynamic Reclustering method that merges failed
+tasks into new clustered jobs in which the clustering size is set to $k^*$ according to 
+Equation~\ref{eq:k_optimal}. Algorithm~\ref{alg:evaluation-dr} shows the pseudocode 
+for the \texttt{Reclustering} procedure for the DR method. Fig.~\ref{fig:clustering-dr} shows 
+an example where \rev{$k$ is initially set to 4}. In the first attempt, 3 tasks within the 
+clustered job have failed. Therefore, there are only 3 tasks to be retried, and thus the 
+clustering size should be decreased to 2 accordingly. Two new clustered jobs $j_2$ 
+(containing $t_1$ and $t_2$) and $j_3$ (containing $t_3$) are created. Reducing the 
+granularity of failed clustered jobs may decrease the probability of future failures, since 
+at least one of the jobs will execute on a different worker node.
+
+ \begin{figure}[!t]
+	\centering
+	\includegraphics[width=0.77\linewidth]{dr.pdf}
+	\caption{An example of Dynamic Reclustering (red boxes are failed tasks). The clustering size $k$ is adjusted to 2 and thus failed tasks are merged into two new clustered jobs.}
+	\label{fig:clustering-dr}
+	\vspace{-15pt}
+\end{figure}
+
+\begin{algorithm}[!b]
 	\footnotesize
 	\caption{Vertical Reclustering algorithm.}
 	\label{alg:evaluation-vr}
@@ -898,13 +901,14 @@ a different worker node.
 	\end{algorithmic}
 \end{algorithm}
 
-\begin{figure}[t]
-\centering
-  \includegraphics[width=0.8\linewidth]{vr.pdf}
-  \caption{An example of Vertical Reclustering (red boxes are failed tasks). The clustering size is decreased by half when a job execution fails.}
-  \label{fig:clustering-vr}
-  \vspace{-15pt}
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=0.8\linewidth]{vr.pdf}
+	\caption{An example of Vertical Reclustering (red boxes are failed tasks). The clustering size is decreased by half when a job execution fails.}
+	\label{fig:clustering-vr}
+	\vspace{-15pt}
 \end{figure}
+
 
 \vspace{5pt}
 \noindent \textbf{Vertical Reclustering} (\emph{VR}). VR is an extension of the Vertical 
@@ -916,10 +920,10 @@ clustered job ($t_1$, $t_2$, $t_3$, $t_4$). $t_3$ fails at the first attempt ass
 a failure-prone task (i.e., its $\theta_{\gamma}$ is short). VR then retries only the failed task 
 ($t_3$) and tasks that have not been yet completed ($t_4$) by merging them into a new 
 job $j_2$. In the second attempt, $j_2$ fails and then it is divided into two jobs containing one
-task each ($t_3$ and $t_4$). Since the clustering size is already 1, VR performs no vertical 
-clustering anymore and will continue retrying $t_3$ and $t_4$ (but still following their data 
-dependency) until they succeed. Algorithm \ref{alg:evaluation-vr} shows the pseudocode 
-for the VR method. 
+task each ($t_3$ and $t_4$). Since the clustering size is \rev{minimum ($k = 1$)}, VR 
+performs no vertical clustering anymore and will continue retrying $t_3$ and $t_4$ (but 
+still following their data dependency) until they succeed. Algorithm \ref{alg:evaluation-vr} 
+shows the pseudocode for the VR method. 
 
 
 
