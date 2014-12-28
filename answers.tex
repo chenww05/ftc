@@ -109,7 +109,9 @@ In Page 3, the formula for $runtime_l$, $t_2$ and $t_3$ have no data dependency,
 ``the default network bandwidth is 15MB'', I was wondering if in the simulation, each data transfer can achieve this bandwidth or simultaneous transfers will compete the 15MB bandwidth and will have some slowdowns?
 \end{review}
 
-\answer{\todo{}}
+\answer{The network bandwidth of 15MB is defined for each data transfer. We added the following sentence to clarify our assumption:}
+
+\revised{In our execution model, the network bandwidth is the maximum allowed data transfer speed between a pair of virtual machines per file.}
 
 
 
@@ -122,7 +124,7 @@ I'd like to see more description on the workflow execution traces instead of jus
 
 
 \begin{review}
-The experiments are conducted against five different workflows. I?d like to see some generic comparison of these workflows. That is, what algorithms are good for what kind of workflow. A summary would be good at the end of the experimental results.
+The experiments are conducted against five different workflows. I'd like to see some generic comparison of these workflows. That is, what algorithms are good for what kind of workflow. A summary would be good at the end of the experimental results.
 \end{review}
 
 \answer{\todo{}}
