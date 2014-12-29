@@ -51,7 +51,7 @@ Weiwei Chen, Rafael Ferreira da Silva, Ewa Deelman, Thomas Fahringer
 While Pegasus represents one good use case for this work, there are other systems based on different approaches like glideinWMS or Koala that strive to improve scheduling (and job throughput in particular) in faulty environments. The larger audience, including the Grid domain, will greatly benefit from comparisons with other scheduling strategies (e.g., based on static resource allocations). 
 \end{review}
 
-\answer{\todo{}}
+\answer{Our work is mainly focused on the optimization of workflow executions on distributed systems. Although there are several systems, such as glideinWMS or Koala, that provide fault-tolerance scheduling, they cannot optimize, for example, the workflow engine delay (the time span between the job release and its submission to the scheduler), which can be up to 100\% for very short runtime tasks (see Table 1). Our methods do not aim to replace these system schedulers, but to provide graph optimizations for the workflow execution regardless of the underlying scheduling system.}
 
 \revised{}
 
