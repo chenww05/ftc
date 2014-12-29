@@ -501,6 +501,7 @@ The MLE (Maximum Likelihood Estimation) of the scale parameter $\theta_{\gamma}$
 
 \begin{equation}
 	MLE(\theta_{\gamma})=\displaystyle\frac{b_{\gamma}+\displaystyle\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}{a_{\gamma}+n+1}
+	\label{eq:mle_theta-1}
 \end{equation}
 The understanding of the MLE is two fold: in the initial case there is no data, thus the MLE is determined
 by the prior knowledge, i.e. $\displaystyle\frac{b_{\gamma}}{a_{\gamma}+1}$; when $n~\to~\infty$, the 
@@ -520,6 +521,7 @@ $\theta_t$ is then defined as follows:
 
 \begin{equation}
 	MLE(\theta_t) = \displaystyle\frac{b_t+\displaystyle\sum_{i=1}^n{t_i}}{a_t+n\phi_t-1}
+	\label{eq:mle_theta_t}
 \end{equation}
 	
 Similarly, if we model the system overhead~$\bm s$ with a Gamma distribution with a known 
@@ -528,6 +530,7 @@ as $\Gamma(a_s, b_s)$, the MLE of $\theta_s$ is thus defined as follows:
 
 \begin{equation}
 	MLE(\theta_s) = \displaystyle\frac{b_s+\displaystyle\sum_{i=1}^n{s_i}}{a_s+n\phi_s-1}
+	\label{eq:mle_theta_s}
 \end{equation}
 
 We have assumed the task runtime, system overheads, and inter-arrival time between failures 
@@ -557,7 +560,7 @@ Therefore, the job runtime (regardless of whether it succeeds of fails) is defin
 	\displaystyle
 	\bm{d}\sim\Gamma(k\phi_{t}+\phi_{s}, \theta_{ts})\\
 	MLE(\bm{d})=\displaystyle{(k\phi_t+\phi_s - 1) }{\theta_{ts}}
-	\label{eq:N}
+	\label{eq:mle_theta_d}
 \end{eqnarray}
 
 %We assume that $n \gg r$, but $n/k$ is not necessarily much larger than $r$ since $k$ could be very large. Normally at the beginning of workflow execution, $n/k > r$, which means there are more clustered jobs than available resources. To try all $n$ tasks once, irrespective of whether they succeed or fail, one needs approximately $\displaystyle \frac{n}{rk}$ execution cycle(s) since at each execution cycle we can execute at most $r$ jobs. Therefore, 
@@ -586,7 +589,7 @@ complete $d_i$ successfully in a faulty execution environment is determined as f
 \begin{eqnarray}
 	\displaystyle\cfrac{1}{\theta_{\gamma}}\sim\Gamma\left(a_{\gamma}+n,\frac{1}{\displaystyle b_{\gamma}+\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}\right) \\
 	MLE\left(\displaystyle\cfrac{1}{\theta_{\gamma}}\right)=\displaystyle\cfrac{a_{\gamma}+n-1}{\displaystyle b_{\gamma}+\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}
-	\label{eq:theta}
+	\label{eq:mle_1_theta}
  \end{eqnarray}
 
 \noindent $M_i$ is a monotonic increasing function of both $d_i$ and $\displaystyle\cfrac{1}{\theta_{\gamma}}$, 
@@ -1102,9 +1105,7 @@ from \rev{traces of } actual scientific workflow executions to generate \rev{rea
 workflows \rev{that resemble the real applications}. The number of inputs to be processed, 
 the number of tasks in the workflow, and their composition determine the structure of the 
 generated workflow. \rev{Traces, profile data, and characterizations are freely available 
-online for the community~\cite{WorkflowArchive}. For the experiments we generated... 
-\note{Weiwei: provide the number of synthetic workflows generated for each application 
-and the number of tasks in each workflow.}}
+online for the community~\cite{WorkflowArchive}. For the experiments we generated, each workflow application has one synthetic workflow and the number of tasks in each workflow is shown in Table~\ref{tab:evaluation-workflows}.
 
 
 \vspace{5pt}
@@ -1135,9 +1136,8 @@ the MLEs of the unknown parameters \rev{(scales parameters of the inter-arrival
 failures $\theta_\gamma$, the task runtime $\theta_t$, and the system overhead 
 $\theta_s$)}. In contrast, the dynamic estimation process leverages the runtime 
 data collected during the execution and update the MLEs respectively.
-\rev{In this experiment, ...}
-\note{Weiwei: provide information on how did you determine the shape and scale 
-parameters to estimate the MLEs of the unknown parameters in the simulations.}
+\rev{In this experiment, the prior knowledge, such as the shape parameter $a_{\gamma}$ and the scale parameter $b_{\gamma}$ of the inter-arrival time of failures $\theta_{\gamma}$ are set manually based on our experience or other researchers' work~\cite{Schroeder2006}. The runtime data, such as the series of the actual inter-arrival time of tasks $x_i$, are collected during the simulation from WorkflowSim and used to adjust all the MLEs based on Equation~\ref{eq:mle_theta-1},~\ref{eq:mle_theta_t},~\ref{eq:mle_theta_s},~\ref{eq:mle_theta_d},~\ref{eq:mle_1_theta}.}
+
 
 \vspace{5pt}
 \noindent \textbf{\rev{Inter-arrival Time of Failures Function ($\theta_\gamma(t)$)}.}
