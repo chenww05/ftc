@@ -1113,21 +1113,21 @@ our fault-tolerant clustering methods (DR, VR, and SR) over an existing task clu
 method (HC), which \rev{is devoided } of fault-tolerant mechanisms. The goal of the 
 experiment is to identify conditions where each method works best and worst. We also 
 evaluate the performance improvement for different $\theta_{\gamma}$ values (the 
-inter-arrival time of task failures). $\theta_{\gamma}$ ranges from 1 to 10 times of the 
-average task runtime such that the workflows do not run continuously and the performance 
-difference is visually explicit. 
+\rev{scale parameter of the distribution of the } inter-arrival time of task failures). 
+$\theta_{\gamma}$ ranges from 1 to 10 times of the average task runtime such that the 
+workflows do not run continuously and the performance difference is visually explicit. 
 
 Experiment 2 evaluates the performance impact of the variation of the average task runtime per level 
 (defined as the average of all the tasks per level), and the average system overheads per level for one 
 scientific workflow application (CyberShake). In particular, we are interested in the performance of DR 
-based on the results of Experiment 1. For this experiment, we \rev{define } $\theta_{\gamma}=100$ since it 
+based on the results of Experiment~1. For this experiment, we \rev{define } $\theta_{\gamma}=100$ since it 
 better highlights the difference between the four methods. We vary the average task runtime of the 
 CyberShake workflow (originally of about 23 seconds, Table~\ref{tab:evaluation-workflows}) by using 
 a multiplier factor $f_r \in [0.5, 1.3]$. We also vary the average system overheads (originally of about 50 
 seconds) by using a multiplier factor $f_o \in [0.2, 1.8]$.  
 
 Experiment 3 evaluates the performance of the static and dynamic estimation. In the static estimation 
-process, only the prior knowledge is used to estimate the MLEs of the unknown parameters. In contrast,
+process, only the prior knowledge \rev{(shape and scale parameters of a Inverse-Gamma distribution for the inter-arrival failures, and a Gamma distribution for the task runtime and system overhead) } is used to estimate the MLEs of the unknown parameters \rev{(scales parameters of the inter-arrival failures $\theta_\gamma$, the task runtime $\theta_t$, and the system overhead $\theta_s$)}. In contrast,
 the dynamic estimation process leverages the runtime data collected during the execution and update 
 the MLEs respectively. 
 
@@ -1172,7 +1172,7 @@ amplitude alternates at a steady frequency between a fixed minimum (50 seconds) 
 where $T_c$ is the period, and $\tau$ is the duty cycle of the oscillator. This function simulates a 
 scenario where the failures follow a periodic pattern~\cite{yigitbasi2010analysis} extracted from 
 failure traces obtained from production distributed systems. In this work, we vary $T_c$ from 
-1000 seconds to 10000 seconds based on the estimation of the workflow's makespan, and 
+1,000 seconds to 10,000 seconds based on the estimation of the workflow's makespan, and 
 $\tau$ from $0.1T_c$ to $0.5T_c$. 
 
 \begin{figure}[!htb]
@@ -1183,25 +1183,6 @@ $\tau$ from $0.1T_c$ to $0.5T_c$.
 	\vspace{-15pt}
 \end{figure}
 
-%Table~\ref{tab:evaluation_methods} summarizes the task clustering methods to be evaluated in 
-%our experiments. 
-%
-%\begin{table}[!htb]
-%	\setlength{\tabcolsep}{10pt}
-%	\centering
-%	\small
-%	\begin{tabular}{c l}
-%		\hline
-%		Abbreviation	& Method	  \\ \hline
-%		DR 			& Dynamic Reclustering \\
-%		SR 			&Selective Reclustering \\
-%		VR 			&Vertical Reclustering \\
-%		HC 			&Horizontal Clustering \\
-%		\hline
-%	\end{tabular}
-%	\caption{Task clustering methods used in the experiements.}
-%	\label{tab:evaluation_methods}
-%\end{table} 
 
 
 % Results and Discussion
