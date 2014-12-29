@@ -1133,7 +1133,10 @@ Gamma distribution for the task runtime and system overhead) } is used to estima
 the MLEs of the unknown parameters \rev{(scales parameters of the inter-arrival 
 failures $\theta_\gamma$, the task runtime $\theta_t$, and the system overhead 
 $\theta_s$)}. In contrast, the dynamic estimation process leverages the runtime 
-data collected during the execution and update the MLEs respectively. 
+data collected during the execution and update the MLEs respectively.
+\rev{In this experiment, ...}
+\note{Weiwei: provide information on how did you determine the shape and scale 
+parameters to estimate the MLEs of the unknown parameters in the simulations.}
 
 \vspace{5pt}
 \noindent \textbf{\rev{Inter-arrival Time of Failures Function ($\theta_\gamma(t)$)}.}
@@ -1219,10 +1222,10 @@ $\tau$ from $0.1T_c$ to $0.5T_c$.
 Fig.~\ref{fig:exp1} shows the performance of the Horizontal Clustering (HC), Selective 
 Reclustering (SR), Dynamic Reclustering (DR), and Vertical Reclustering (VR) methods 
 for the five workflows. DR, SR, and VR significantly improve the makespan when compared 
-to HC in a large scale. By decreasing of the inter-arrival time~($\theta_{\gamma}$) and 
-consequently generating more task failures, the performance improvement for our fault-tolerant 
+to HC in a large scale. By decreasing the inter-arrival time \rev{of failures}~($\theta_{\gamma}$) and 
+\rev{thereby } generating more task failures, the performance improvement of our fault-tolerant 
 task clustering methods becomes more significant. Among the three methods, DR and VR 
-perform consistently better than SR, which fails to improve the makespan when $\theta_{\gamma}$ 
+perform consistently better than SR, which fails to improve the \rev{overall } makespan when $\theta_{\gamma}$ 
 is small. The reason is that SR does not adjust $k$ according to the occurrence of failures. 
 
 The performance of VR is tightly coupled to the workflow structure and the average task runtime. 
@@ -1234,22 +1237,20 @@ the makespan increases more significantly with the decrease of $\theta_{\gamma}$
 workflows. In contrast, vertical clustering does not improve makespan in the CyberShake workflow 
 (Fig.~\ref{fig:exp1}.c) since it does not have many pipelines (Fig.~\ref{fig:evaluation-shape-cybershake}). 
 In addition, the average task runtime of the CyberShake workflow is relatively short (around 23 
-seconds). Compared to horizontal clustering methods such as HC, SR and DR, vertical clustering 
-does not generate long jobs and thus the performance of VR is less sensitive to $\theta_{\gamma}$. 
+seconds). Compared to horizontal clustering methods such as HC, SR, and DR, vertical clustering 
+does not generate long jobs and thus the performance of VR is less sensitive to \rev{the variation of the
+scale parameter of the distribution of the inter-arrival time of failures } $\theta_{\gamma}$. 
 
-%4). Under some cases, i.e., the CyberShake workflow, we see that VR does not perform well compared to DR or SR. The reason is the graph structure of the CyberShake workflow does not leave much space for vertical clustering methods to improve since it does not have many pipelines as shown in Figure~\ref{fig:evaluation_shape_cybershake}. DR, a modification of HC, is more likely to improve the performance since most of these workflows have many parallel tasks in the same level. 
-
-\begin{figure}[t]
+\begin{figure}[!t]
 	\centering
 	\includegraphics[width=1\linewidth]{t.eps}
 	\caption{(\emph{Experiment 2}): Influence of varying task runtime ($\theta_t$) on makespan for the CyberShake workflow.}
 	\label{fig:expr_t}
-	\vspace{-15pt}
 \end{figure}
 
 \begin{figure}[!t]
 	\centering
-	\includegraphics[width=1\linewidth]{d.eps}
+	\includegraphics[width=.95\linewidth]{d.eps}
 	\caption{(\emph{Experiment 2}): Influence of varying system overhead ($\theta_s$) on makespan for the CyberShake workflow.}
 	\label{fig:expr_d}
 	\vspace{-15pt}
@@ -1264,12 +1265,12 @@ By increasing the task runtime, HC has the most negative impact on the workflow'
 since HC retries the entire clustered job. SR and VR, however, retry only failed tasks that are 
 merged into a new clustered job. Although the selective and vertical methods 
 significantly speedup the execution when compared to HC, they have no mechanism to
-adjust the clustering size to the actual optimal clustering size, which may be larger or smaller
+adjust the clustering size to the actual optimal clustering size \rev{$k$}, which may be larger or smaller
 than the number of failed tasks. By dynamically adjusting the clustering size, DR yields better
 makespans, in particular for high values of $\theta_t$.
 
 Fig.~\ref{fig:expr_d} shows the performance (for the CyberShake workflow) of the task clustering 
-methods methods,  when the system overhead is varied by using a multiplier factor $\theta_s$. 
+methods when the system overhead is varied by using a multiplier factor $\theta_s$. 
 Similarly, with the increase of the system overhead, HC is significantly impacted while SR and VR 
 perform better. Again, for high $\theta_s$ values DR performs best. Note that the improvement 
 yielded by the fault-tolerant methods is less significant than the performance improvements shown
@@ -1281,35 +1282,56 @@ system overhead per job.
 Fig.~\ref{fig:expr_static_dynamic} shows the performance evaluation of the dynamic and static estimations 
 for the CyberShake workflow with a step function of $\theta_{\gamma}$. In this experiment, we use DR
 as the fault-tolerant task clustering method since it yielded the best performance in the past  
-experiments. The step signal function changes the inter-arrival time of failures ($\theta_\gamma$)
+experiments. The step signal function changes the inter-arrival time of failures~($\theta_\gamma$)
 from 500 to 50 seconds at time $T_d$. For high values of $T_d$, failures are scarce since
-the inter-arrival time is close to the workflow makespan. Therefore, the influence of $\theta_\gamma$ is
+$\theta_\gamma$ is close to the workflow makespan. Therefore, the influence of $\theta_\gamma$ is
 negligible, and thus both the static and dynamic estimations have the same behavior. When failures are
 more frequent, i.e., low values for $T_d$, the dynamic estimation improves the workflow's makespan 
 by up to 22\%. This improvement is due to the ability of the dynamic estimation process to update the 
 MLEs of $\theta_{\gamma}$ and adapt the clustering size. 
 
-\begin{figure}[t]
+\begin{figure}[!t]
 	\centering
-	\includegraphics[width=\linewidth]{versus.eps}
+	\includegraphics[width=.95\linewidth]{versus.eps}
 	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function.}
 	\label{fig:expr_static_dynamic}
-	\vspace{-5pt}
+	\vspace{-15pt}
 \end{figure}
 
 Fig.~\ref{fig:exp3} shows the performance evaluation of the dynamic and static estimations 
-with a pulse function of $\theta_{\gamma}$. For this experiment,
-we use $\tau = 0.1 \cdot T_c$, $0.3 \cdot T_c$, $0.5 \cdot T_c$ (Equation~\ref{eq:pulse_function}).
-For $\tau = 0.1 \cdot T_c$ (Fig.~\ref{fig:exp3}.a), the dynamic estimation improves the makespan by up 
-to 25.7\% compared to the static estimation case. For $\tau=0.3 \cdot T_c$ (Fig.~\ref{fig:exp3}.b), 
-the performance gain of dynamic estimation over static estimation is up to 27.3\%. For $T_c = 1000$, 
+with a pulse function of $\theta_{\gamma}$. For this experiment, we \rev{define the width of 
+the pulse } $\tau = 0.1 \cdot T_c$, $0.3 \cdot T_c$, $0.5 \cdot T_c$, \rev{where $T_c$ is the period 
+of the wave } (Equation~\ref{eq:pulse_function}). For $\tau = 0.1 \cdot T_c$ (Fig.~\ref{fig:exp3}.a), 
+the dynamic estimation improves the makespan by up to 25.7\% \rev{when } compared to the static estimation case. For $\tau=0.3 \cdot T_c$ (Fig.~\ref{fig:exp3}.b), 
+the performance gain of dynamic estimation over static estimation is up to 27.3\%. For $T_c~=~1000$, 
 the performance gain is not significant since the inter-arrival time of failures changes frequently and 
-then the dynamic estimation process is not able to update swiftly. For $T_c = 10000$, the performance 
-difference is not significant neither since the inter-arrival time is close to the makespan. For 
+then the dynamic estimation process is not able to update swiftly. For $T_c~=~10000$, the performance 
+difference is not significant neither since the inter-arrival time is close to the workflow makespan. For 
 $\tau = 0.5 \cdot T_c$, the performance gain of dynamic over static estimation is not significant
 and nearly constant (up to 9.1\%) since $\theta_{\gamma}$ has equal influence on the failure occurrence
 regardless of its value. 
 
+\rev{Our experimental results show that adaptive task re-clustering methods outcomes 
+better performance than simple static methods that retry failed clustered jobs. However,
+the performance gain may be significantly impacted if the job clustering size is not 
+adjusted to the nearly optimal size. The Dynamic Reclustering algorithm outperforms
+most of the methods for the 5 workflow applications, however, it yields poorer 
+performance when the workflow structure is mostly composed of pipelines and very
+short runtime tasks (e.g., Epigenomics workflow). In this case, Vertical Reclustering 
+would be more suitable.}
+
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=.95\linewidth]{pulse_t10.eps} \\
+	\small (a) $\tau=0.1 \cdot T_c$ \\ \vspace{4pt}
+	\includegraphics[width=.95\linewidth]{pulse_t30.eps} \\
+	\small (b) $\tau=0.3 \cdot T_c$ \\ \vspace{4pt}
+	\includegraphics[width=.95\linewidth]{pulse_t50.eps} \\
+	\small (c) $\tau=0.5 \cdot T_c$
+	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function pulse function.}
+	\label{fig:exp3}
+	\vspace{-15pt}
+\end{figure}
 
 
 
@@ -1329,19 +1351,6 @@ inter-arrival time of failures. The Vertical Reclustering method significantly i
 for  workflows that have short task runtimes. The dynamic estimation process, which uses data 
 collected during the workflow execution, can further improve the overall runtime in a dynamic 
 environment where the inter-arrival time of failures is fluctuant.
-
-\begin{figure}[!t]
-	\centering
-	\includegraphics[width=1\linewidth]{pulse_t10.eps} \\
-	\small (a) $\tau=0.1 \cdot T_c$ \\ \vspace{4pt}
-	\includegraphics[width=1\linewidth]{pulse_t30.eps} \\
-	\small (b) $\tau=0.3 \cdot T_c$ \\ \vspace{4pt}
-	\includegraphics[width=1\linewidth]{pulse_t50.eps} \\
-	\small (c) $\tau=0.5 \cdot T_c$
-	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function pulse function.}
-	\label{fig:exp3}
-	\vspace{-20pt}
-\end{figure}
 
 This work is focused on the evaluation of fault-tolerant task clustering techniques on homogeneous 
 environments. In the future, we plan to combine our work with fault-tolerant scheduling in heterogeneous 
