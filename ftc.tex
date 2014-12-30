@@ -100,7 +100,7 @@ risk of suffering from failures than a job composed of a single task. Therefore,
 the impact of transient failures on the runtime performance of scientific workflow executions. We propose a general 
 task failure modeling framework that uses a Maximum Likelihood estimation-based parameter estimation process to 
 model these performance issues. We further propose 3 fault-tolerant static clustering strategies to improve the runtime 
-performance of executing workflows in faulty execution environments. Experimental results show that failures can have significant 
+performance of \rev{workflow executions } in faulty execution environments. Experimental results show that failures can have significant 
 impact on executions where task clustering policies are not fault-tolerant, and that our approaches yield makespan
 improvements in such scenario. In addition, we propose a dynamic task clustering strategy, which aims at optimizing the 
 workflow's makespan by dynamically adjusting the clustering granularity when failures arise. A trace-based simulation 
@@ -637,14 +637,14 @@ i.e., the value of $k$ such that $MLE(\bm{M})$ attains its minimum value:
 
 \begin{figure}[b]
 	\centering
-	\includegraphics[width=0.8\linewidth]{model_makespan2.eps}
+	\includegraphics[width=0.75\linewidth]{model_makespan2.eps}
 	\caption{Makespan with different clustering size and $\theta_{\gamma}$. ($n=1000$, $r=20$, $\phi_t=5$s, $\phi_s=50$s). Red dots are the minimums.}
 	\label{fig:model-makespan}
 \end{figure}
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.8\linewidth]{model_size2.eps}
+	\includegraphics[width=0.7\linewidth]{model_size2.eps}
 	\caption{Optimal clustering size ($k^*$) with different  $\theta_{\gamma}$ ($n=1000$, $r=20$, $\phi_t=5$s, $\phi_s=50$s).}
 	\label{fig:model-size}
 	\vspace{-15pt}
@@ -964,10 +964,10 @@ of pipelines. The LIGO workflow is a data-intensive workflow.
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=0.5\linewidth]{ligo_shape.pdf} \\
+	\includegraphics[width=0.45\linewidth]{ligo_shape.pdf} \\
 	\caption{Simplified visualization of the LIGO workflow.}
 	\label{fig:evaluation-shape-ligo}
-	\vspace{-5pt}
+	\vspace{-15pt}
 \end{figure}
 
 
@@ -985,9 +985,10 @@ mosaic of the sky.
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=0.38\linewidth]{montage_shape.pdf} \\
+	\includegraphics[width=0.35\linewidth]{montage_shape.pdf} \\
 	\caption{Simplified visualization of the Montage workflow.}
 	\label{fig:evaluation-shape-montage}
+	\vspace{-10pt}
 \end{figure}
 
 \vspace{5pt}
@@ -1002,9 +1003,10 @@ shows an illustration of the Cybershake workflow.
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[width=0.53\linewidth]{cybershake_shape.pdf} \\
+	\includegraphics[width=0.5\linewidth]{cybershake_shape.pdf} \\
 	\caption{Simplified visualization of the CyberShake workflow.}
 	\label{fig:evaluation-shape-cybershake}
+	\vspace{-10pt}
 \end{figure}
 
 \vspace{5pt}
@@ -1017,12 +1019,12 @@ Genome. Then it generates a map that displays the sequence density showing how m
 sequence expresses itself on a particular location on the reference genome. The simplified structure of 
 Epigenomics is shown in Fig.~\ref{fig:evaluation-shape-genome}. 
 
-\begin{figure}[!htb]
+\begin{figure}[!t]
 	\centering
-	\includegraphics[width=0.8\linewidth]{genome_shape.pdf} \\
+	\includegraphics[width=0.75\linewidth]{genome_shape.pdf} \\
 	\caption{Simplified visualization of the Epigenomics workflow with multiple branches.}
 	\label{fig:evaluation-shape-genome}
-	\vspace{-5pt}
+	\vspace{-15pt}
 \end{figure}
 
 \vspace{5pt}
@@ -1037,7 +1039,7 @@ A simplified structure of the SIPHT workflow is shown in Fig.~\ref{fig:evaluatio
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=0.55\linewidth]{sipht_shape.pdf} \\
+	\includegraphics[width=0.5\linewidth]{sipht_shape.pdf} \\
 	\caption{A simplified visualization of the SIPHT workflow.}
 	\label{fig:evaluation-shape-sipht}
 	\vspace{-5pt}
@@ -1047,13 +1049,12 @@ Table~\ref{tab:evaluation-workflows} shows the summary of the main \emph{workflo
 number of tasks, average data size, and average task runtimes for the five workflows. 
 
 \begin{table}[!htb]
-	\setlength{\tabcolsep}{9pt}
+	\setlength{\tabcolsep}{4pt}
 	\centering
 	\small
 	\begin{tabular}{lrrrr}
 		\hline
-		 & \multicolumn{1}{c}{Number} & \multicolumn{1}{c}{Average} &  \multicolumn{1}{c}{Average} \\
-		Workflow	& of Tasks	 & Data Size & Task Runtime \\
+		 & \multicolumn{1}{c}{\# Tasks} & \multicolumn{1}{c}{Avg. Data Size} &  \multicolumn{1}{c}{Avg. Task Runtime} \\
 		\hline
 		LIGO 		&800		& 5 MB	& 228s\\
 		Montage 		&300		&3 MB	&11s\\
@@ -1252,7 +1253,7 @@ scale parameter of the distribution of the inter-arrival time of failures } $\th
 
 \begin{figure}[!t]
 	\centering
-	\includegraphics[width=1\linewidth]{t.eps}
+	\includegraphics[width=.95\linewidth]{t.eps}
 	\caption{(\emph{Experiment 2}): Influence of varying task runtime ($\theta_t$) on makespan for the CyberShake workflow.}
 	\label{fig:expr_t}
 \end{figure}
@@ -1329,19 +1330,6 @@ performance when the workflow structure is mostly composed of pipelines and very
 short runtime tasks (e.g., Epigenomics workflow). In this case, Vertical Reclustering 
 would be more suitable.}
 
-\begin{figure}[!t]
-	\centering
-	\includegraphics[width=.95\linewidth]{pulse_t10.eps} \\
-	\small (a) $\tau=0.1 \cdot T_c$ \\ \vspace{4pt}
-	\includegraphics[width=.95\linewidth]{pulse_t30.eps} \\
-	\small (b) $\tau=0.3 \cdot T_c$ \\ \vspace{4pt}
-	\includegraphics[width=.95\linewidth]{pulse_t50.eps} \\
-	\small (c) $\tau=0.5 \cdot T_c$
-	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function pulse function.}
-	\label{fig:exp3}
-	\vspace{-15pt}
-\end{figure}
-
 
 
 %
@@ -1360,6 +1348,19 @@ inter-arrival time of failures. The Vertical Reclustering method significantly i
 for  workflows that have short task runtimes. The dynamic estimation process, which uses data 
 collected during the workflow execution, can further improve the overall runtime in a dynamic 
 environment where the inter-arrival time of failures is fluctuant.
+
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=.95\linewidth]{pulse_t10.eps} \\
+	\small (a) $\tau=0.1 \cdot T_c$ \\ \vspace{4pt}
+	\includegraphics[width=.95\linewidth]{pulse_t30.eps} \\
+	\small (b) $\tau=0.3 \cdot T_c$ \\ \vspace{4pt}
+	\includegraphics[width=.95\linewidth]{pulse_t50.eps} \\
+	\small (c) $\tau=0.5 \cdot T_c$
+	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function pulse function.}
+	\label{fig:exp3}
+	\vspace{-15pt}
+\end{figure}
 
 This work is focused on the evaluation of fault-tolerant task clustering techniques on homogeneous 
 environments. In the future, we plan to combine our work with fault-tolerant scheduling in heterogeneous 
