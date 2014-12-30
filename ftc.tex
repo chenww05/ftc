@@ -357,7 +357,7 @@ in Section~\ref{sec:applications}.}
 
 \begin{figure}[!t]
 	\centering
-	\includegraphics[width=0.6\linewidth]{odag.pdf}
+	\includegraphics[width=0.55\linewidth]{odag.pdf}
 	\captionof{figure}{Extending DAG to o-DAG ($s$ is a system overhead).}
 	\label{fig:model-odag}
 	\vspace{-15pt}
@@ -416,11 +416,12 @@ and $t_6$ are merged into $j_1$, while tasks $t_3$, $t_5$, and $t_7$ are merged 
 Similarly, clustering delays $c_2$ and $c_3$ are added to $j_1$ and $j_2$ respectively, but 
 system overheads $s_4$, $s_5$, $s_6$, and $s_7$ are removed. 
 
-\begin{figure}[!b]
+\begin{figure}[!t]
 	\centering
 	\includegraphics[width=0.5\linewidth]{vc.pdf}
 	\captionof{figure}{A simple example of vertical clustering.}
 	\label{fig:model-vc}
+	\vspace{-15pt}
 \end{figure}
 
 On situations where the scheduling and queue overheads are important, the use of task clustering 
@@ -611,26 +612,25 @@ In this work, we consider a compute cluster as a homogeneous cluster, which is o
 in dedicated clusters and cloud platforms. 
 
 Let $k^*$ be the optimal clustering size that minimizes Equation~\ref{eq:MLE-M}. $\arg min$  
-stands for the argument ($k$) of the minimum\footnote{http://en.wikipedia.org/wiki/Arg\_max}, 
+stands for the argument ($k$) of the minimum~\cite{argmax}, 
 i.e., the value of $k$ such that $MLE(\bm{M})$ attains its minimum value:
 \begin{eqnarray} 
 	\label{eq:k_optimal}
 	k^*=\arg min\{MLE(\bm{M})\} 
 \end{eqnarray}
 
-\begin{figure}[b]
+\begin{figure}[!b]
 	\centering
 	\includegraphics[width=0.75\linewidth]{model_makespan2.eps}
 	\caption{Makespan with different clustering size and $\theta_{\gamma}$. ($n=1000$, $r=20$, $\phi_t=5$s, $\phi_s=50$s). Red dots are the minimums.}
 	\label{fig:model-makespan}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[!b]
 	\centering
 	\includegraphics[width=0.7\linewidth]{model_size2.eps}
 	\caption{Optimal clustering size ($k^*$) with different  $\theta_{\gamma}$ ($n=1000$, $r=20$, $\phi_t=5$s, $\phi_s=50$s).}
 	\label{fig:model-size}
-	\vspace{-15pt}
 \end{figure}
 
 It is difficult to find a analytical solution of $k^*$. However, there are a few constraints that can 
@@ -722,7 +722,7 @@ of them succeed.
 		\Require $W$: workflow; $C$: max number of tasks per job defined by \emph{clusters.size} or \emph{clusters.num}
 		\Procedure{Clustering}{$W,C$}
 			\For{$level < depth(W)$}
-				\State $TL\gets $\ \Call{GetTasksAtLevel}{$W,level$} \Comment{Partition $W$ based on depth}
+				\State $TL\gets $\ \Call{TasksAtLevel}{$W,level$} \Comment{Divide $W$ based on depth}
 				\State $CL\gets$  \ \Call{Merge}{$TL,C$} \Comment{Returns a list of clustered jobs}
 				\State $W \gets W - TL + CL$  \Comment{Merge dependencies as well} 
 			\EndFor
@@ -769,7 +769,7 @@ as much as possible. The advantage of SR is that it is simple to implement and c
 incorporated into existing WMS with minimum impact on the workflow execution efficiency 
 as shown in Section~\ref{sec:experiments}.
 
-\begin{algorithm}[!t]
+\begin{algorithm}[!b]
 	\footnotesize
 	\caption{Selective Reclustering algorithm.}
 	\label{alg:evaluation-sr}
@@ -788,13 +788,29 @@ as shown in Section~\ref{sec:experiments}.
 	\end{algorithmic}
 \end{algorithm}
 
-\begin{figure}[!t]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.82\linewidth]{sr.pdf}
 	\caption{An example of Selective Reclustering (red boxes are failed tasks). Failed tasks are merged into a new job and retried.}
 	\label{fig:clustering-sr}
 	\vspace{-15pt}
 \end{figure}
+
+\vspace{5pt}
+\noindent \textbf{Dynamic Reclustering} (\emph{DR}).
+The Selective Reclustering method does not analyze the clustering size, rather it 
+uses a self-adjusted approach to reduce \rev{$k$ } to the number of failed tasks. 
+However, the actual optimal clustering size may be larger or smaller than the number of
+failed tasks. Therefore, we propose the Dynamic Reclustering method that merges failed
+tasks into new clustered jobs in which the clustering size is set to $k^*$ according to 
+Equation~\ref{eq:k_optimal}. Algorithm~\ref{alg:evaluation-dr} shows the pseudocode 
+for the \texttt{Reclustering} procedure for the DR method. Fig.~\ref{fig:clustering-dr} shows 
+an example where \rev{$k$ is initially set to 4}. In the first attempt, 3 tasks within the 
+clustered job have failed. Therefore, there are only 3 tasks to be retried, and thus the 
+clustering size should be decreased to 2 accordingly. Two new clustered jobs $j_2$ 
+(containing $t_1$ and $t_2$) and $j_3$ (containing $t_3$) are created. Reducing the 
+granularity of failed clustered jobs may decrease the probability of future failures, since 
+at least one of the jobs will execute on a different worker node.
 
 \begin{algorithm}[!b]
 	\footnotesize
@@ -819,32 +835,21 @@ as shown in Section~\ref{sec:experiments}.
 	\end{algorithmic}
 \end{algorithm}
 
-
-\vspace{5pt}
-\noindent \textbf{Dynamic Reclustering} (\emph{DR}).
-The Selective Reclustering method does not analyze the clustering size, rather it 
-uses a self-adjusted approach to reduce \rev{$k$ } to the number of failed tasks. 
-However, the actual optimal clustering size may be larger or smaller than the number of
-failed tasks. Therefore, we propose the Dynamic Reclustering method that merges failed
-tasks into new clustered jobs in which the clustering size is set to $k^*$ according to 
-Equation~\ref{eq:k_optimal}. Algorithm~\ref{alg:evaluation-dr} shows the pseudocode 
-for the \texttt{Reclustering} procedure for the DR method. Fig.~\ref{fig:clustering-dr} shows 
-an example where \rev{$k$ is initially set to 4}. In the first attempt, 3 tasks within the 
-clustered job have failed. Therefore, there are only 3 tasks to be retried, and thus the 
-clustering size should be decreased to 2 accordingly. Two new clustered jobs $j_2$ 
-(containing $t_1$ and $t_2$) and $j_3$ (containing $t_3$) are created. Reducing the 
-granularity of failed clustered jobs may decrease the probability of future failures, since 
-at least one of the jobs will execute on a different worker node.
-
- \begin{figure}[!t]
+ \begin{figure}[!b]
 	\centering
 	\includegraphics[width=0.77\linewidth]{dr.pdf}
 	\caption{An example of Dynamic Reclustering (red boxes are failed tasks). The clustering size $k$ is adjusted to 2 and thus failed tasks are merged into two new clustered jobs.}
 	\label{fig:clustering-dr}
-	\vspace{-15pt}
 \end{figure}
 
-\begin{algorithm}[!b]
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=0.8\linewidth]{vr.pdf}
+	\caption{An example of Vertical Reclustering (red boxes are failed tasks). The clustering size is decreased by half when a job execution fails.}
+	\label{fig:clustering-vr}
+\end{figure}
+
+\begin{algorithm}[!t]
 	\footnotesize
 	\caption{Vertical Reclustering algorithm.}
 	\label{alg:evaluation-vr}
@@ -852,8 +857,8 @@ at least one of the jobs will execute on a different worker node.
 		\Require $W$: workflow; 
 		\Procedure{Clustering}{$W$}
 			\For{$level < depth(W)$}
-				\State $TL\gets $\ \Call{GetTasksAtLevel}{$W,level$} \Comment{Partition $W$ based on depth}
-				\State $CL, TL_{merged}\gets$  \ \Call{Merge}{$TL$} \Comment{Returns a list of clustered jobs}
+				\State $TL\gets $\ \Call{TasksAtLevel}{$W,level$} \Comment{Divide $W$ based on depth}
+				\State $CL, TL_{merged}\gets$  \ \Call{Merge}{$TL$} \Comment{List of clustered jobs}
 				\State $W \gets W - TL_{merged} + CL$  \Comment{Merge dependencies as well} 
 			\EndFor
 		\EndProcedure
@@ -862,7 +867,7 @@ at least one of the jobs will execute on a different worker node.
 			\State $CL\gets$\{\}\Comment{An empty list of clustered jobs}
 			\ForAll{$t$ in $TL$}
 				\State $J\gets$ \{$t$\}
-				\While{$t$ has only one child $t_{child}$ and $t_{child}$ has only one parent}
+				\While{$t$ has only 1 child $t_{child}$ and $t_{child}$ has only 1 parent}
 					\State $J$.add ($t_{child}$)
 					\State $TL_{merged}\gets TL_{merged} + t_{child}$ 
 					\State $t\gets t_{child}$
@@ -880,22 +885,13 @@ at least one of the jobs will execute on a different worker node.
 					\State $J_{new}$.add ($t$)
 				\EndIf
 				\If{$J_{new}.size() > k^*$}
-					\State $W \gets W + J_{new}$
-					\State $J_{new}\gets$\{\}
+					\State $W \gets W + J_{new}$; $J_{new}\gets$\{\}
 				\EndIf
 			\EndFor
 			\State $W \gets W + J_{new}$ \Comment{Re-execute it}
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
-
-\begin{figure}[!t]
-	\centering
-	\includegraphics[width=0.8\linewidth]{vr.pdf}
-	\caption{An example of Vertical Reclustering (red boxes are failed tasks). The clustering size is decreased by half when a job execution fails.}
-	\label{fig:clustering-vr}
-	\vspace{-15pt}
-\end{figure}
 
 
 \vspace{5pt}
@@ -1007,7 +1003,7 @@ Epigenomics is shown in Fig.~\ref{fig:evaluation-shape-genome}.
 	\includegraphics[width=0.75\linewidth]{genome_shape.pdf} \\
 	\caption{Simplified visualization of the Epigenomics workflow with multiple branches.}
 	\label{fig:evaluation-shape-genome}
-	\vspace{-5pt}
+	\vspace{-15pt}
 \end{figure}
 
 \vspace{5pt}
@@ -1025,7 +1021,7 @@ A simplified structure of the SIPHT workflow is shown in Fig.~\ref{fig:evaluatio
 	\includegraphics[width=0.5\linewidth]{sipht_shape.pdf} \\
 	\caption{A simplified visualization of the SIPHT workflow.}
 	\label{fig:evaluation-shape-sipht}
-	\vspace{-5pt}
+	\vspace{-15pt}
 \end{figure}
 
 Table~\ref{tab:evaluation-workflows} shows the summary of the main \emph{workflow characteristics}: 
@@ -1158,7 +1154,7 @@ beginning.
 	\includegraphics[width=0.8\linewidth]{step_signal.pdf} \\
 	\caption{A Step Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_d$ is the moment $\theta_{\gamma}$ changes from 500 to 50 seconds.}
 	\label{fig:evaluation_step_signal}
-	\vspace{-15pt}
+	\vspace{-14pt}
 \end{figure}
 
 The second function is a pulse wave function (Fig. \ref{fig:evaluation_pulse_signal}) in which the 
@@ -1234,7 +1230,7 @@ seconds). Compared to horizontal clustering methods such as HC, SR, and DR, vert
 does not generate long jobs and thus the performance of VR is less sensitive to \rev{the variation of the
 scale parameter of the distribution of the inter-arrival time of failures } $\theta_{\gamma}$. 
 
-\begin{figure}[!t]
+\begin{figure}[!b]
 	\centering
 	\includegraphics[width=.95\linewidth]{t.eps}
 	\caption{(\emph{Experiment 2}): Influence of varying task runtime ($\theta_t$) on makespan for the CyberShake workflow.}
@@ -1246,7 +1242,7 @@ scale parameter of the distribution of the inter-arrival time of failures } $\th
 	\includegraphics[width=.95\linewidth]{d.eps}
 	\caption{(\emph{Experiment 2}): Influence of varying system overhead ($\theta_s$) on makespan for the CyberShake workflow.}
 	\label{fig:expr_d}
-	\vspace{-15pt}
+	\vspace{-10pt}
 \end{figure}
 
 \vspace{5pt}
@@ -1313,6 +1309,20 @@ performance when the workflow structure is mostly composed of pipelines and very
 short runtime tasks (e.g., Epigenomics workflow). In this case, Vertical Reclustering 
 would be more suitable.}
 
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=.95\linewidth]{pulse_t10.eps} \\
+	\small (a) $\tau=0.1 \cdot T_c$ \\ \vspace{4pt}
+	\includegraphics[width=.95\linewidth]{pulse_t30.eps} \\
+	\small (b) $\tau=0.3 \cdot T_c$ \\ \vspace{4pt}
+	\includegraphics[width=.95\linewidth]{pulse_t50.eps} \\
+	\small (c) $\tau=0.5 \cdot T_c$
+	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function pulse function.}
+	\label{fig:exp3}
+	\vspace{-15pt}
+\end{figure}
+
+
 
 
 %
@@ -1331,19 +1341,6 @@ inter-arrival time of failures. The Vertical Reclustering method significantly i
 for  workflows that have short task runtimes. The dynamic estimation process, which uses data 
 collected during the workflow execution, can further improve the overall runtime in a dynamic 
 environment where the inter-arrival time of failures is fluctuant.
-
-\begin{figure}[!t]
-	\centering
-	\includegraphics[width=.95\linewidth]{pulse_t10.eps} \\
-	\small (a) $\tau=0.1 \cdot T_c$ \\ \vspace{4pt}
-	\includegraphics[width=.95\linewidth]{pulse_t30.eps} \\
-	\small (b) $\tau=0.3 \cdot T_c$ \\ \vspace{4pt}
-	\includegraphics[width=.95\linewidth]{pulse_t50.eps} \\
-	\small (c) $\tau=0.5 \cdot T_c$
-	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function pulse function.}
-	\label{fig:exp3}
-	\vspace{-15pt}
-\end{figure}
 
 This work is focused on the evaluation of fault-tolerant task clustering techniques on homogeneous 
 environments. In the future, we plan to combine our work with fault-tolerant scheduling in heterogeneous 
@@ -1372,7 +1369,6 @@ site, which may improve the accuracy of the model.
 This work was supported by NFS under grant number IIS-0905032. We thank Gideon Juve, 
 Karan Vahi, Mats Rynge, and Rajiv Mayani for their valuable help. Traces are collected from 
 experiments conducted on FutureGrid, which is supported by NSF under grant FutureGrid 0910812. 
-
 
 
 
