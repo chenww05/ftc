@@ -1105,7 +1105,9 @@ from \rev{traces of } actual scientific workflow executions to generate \rev{rea
 workflows \rev{that resemble the real applications}. The number of inputs to be processed, 
 the number of tasks in the workflow, and their composition determine the structure of the 
 generated workflow. \rev{Traces, profile data, and characterizations are freely available 
-online for the community~\cite{WorkflowArchive}. For the experiments we generated, each workflow application has one synthetic workflow and the number of tasks in each workflow is shown in Table~\ref{tab:evaluation-workflows}.
+online for the community~\cite{WorkflowArchive}. For the experiments a synthetic workflow
+was generated for each workflow application according to the characteristics shown in 
+Table~\ref{tab:evaluation-workflows}}.
 
 
 \vspace{5pt}
@@ -1136,7 +1138,13 @@ the MLEs of the unknown parameters \rev{(scales parameters of the inter-arrival
 failures $\theta_\gamma$, the task runtime $\theta_t$, and the system overhead 
 $\theta_s$)}. In contrast, the dynamic estimation process leverages the runtime 
 data collected during the execution and update the MLEs respectively.
-\rev{In this experiment, the prior knowledge, such as the shape parameter $a_{\gamma}$ and the scale parameter $b_{\gamma}$ of the inter-arrival time of failures $\theta_{\gamma}$ are set manually based on our experience or other researchers' work~\cite{Schroeder2006}. The runtime data, such as the series of the actual inter-arrival time of tasks $x_i$, are collected during the simulation from WorkflowSim and used to adjust all the MLEs based on Equation~\ref{eq:mle_theta-1},~\ref{eq:mle_theta_t},~\ref{eq:mle_theta_s},~\ref{eq:mle_theta_d},~\ref{eq:mle_1_theta}.}
+\rev{In this experiment, the prior knowledge such as the shape parameter $a_{\gamma}$, 
+and the scale parameter $b_{\gamma}$ of the inter-arrival time of failures $\theta_{\gamma}$ 
+are set manually based on our experience and other researchers' work~\cite{Schroeder2006}. 
+The runtime data, such as the series of the actual inter-arrival time of tasks $x_i$, 
+are collected during the simulation execution and used to adjust all the MLEs 
+based on 
+Equations~\ref{eq:mle_theta-1},~\ref{eq:mle_theta_t},~\ref{eq:mle_theta_s},~\ref{eq:mle_theta_d},~\ref{eq:mle_1_theta}.}
 
 
 \vspace{5pt}
