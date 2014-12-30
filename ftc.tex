@@ -471,7 +471,7 @@ Therefore, once observed data $D$, the posterior distribution of $\theta$ is det
 
 \begin{eqnarray}
 	\displaystyle  
-	p(\theta|D, a, b)&=&\frac{p(\theta|a, b)\times p(D|\theta)}{p(D|a, b)}\nonumber  \\
+	p(\theta|D, a, b)&=&\tfrac{p(\theta|a, b)\times p(D|\theta)}{p(D|a, b)}\nonumber  \\
 	&\propto&p(\theta|a, b)\times p(D|\theta)
 \end{eqnarray}
 where $D$ is the observed inter-arrival time of failures~$X$, the observed task runtime~$RT$, 
@@ -493,19 +493,19 @@ and the scale parameter as $b_{\gamma}$, then the posterior follows an Inverse-G
 as follows:
 
 \begin{equation}
-	\theta_{\gamma}\sim\Gamma^{-1}(a_{\gamma}+n,\displaystyle b_{\gamma}+\sum_{i=1}^n{x_i^{\phi_{\gamma}}})
+	\theta_{\gamma}\sim\Gamma^{-1}(a_{\gamma}+n,\displaystyle b_{\gamma}+\sum\nolimits_{i=1}^n{x_i^{\phi_{\gamma}}})
 	\label{eq:theta-1}
  \end{equation}
 
 The MLE (Maximum Likelihood Estimation) of the scale parameter $\theta_{\gamma}$ is defined as:
 
 \begin{equation}
-	MLE(\theta_{\gamma})=\displaystyle\frac{b_{\gamma}+\displaystyle\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}{a_{\gamma}+n+1}
+	MLE(\theta_{\gamma})=\displaystyle\tfrac{b_{\gamma}+\displaystyle\sum\nolimits_{i=1}^n{x_i^{\phi_{\gamma}}}}{a_{\gamma}+n+1}
 	\label{eq:mle_theta-1}
 \end{equation}
 The understanding of the MLE is two fold: in the initial case there is no data, thus the MLE is determined
-by the prior knowledge, i.e. $\displaystyle\frac{b_{\gamma}}{a_{\gamma}+1}$; when $n~\to~\infty$, the 
-MLE $\displaystyle\frac{\displaystyle\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}{n+1}\to\overline{x^{\phi_{\gamma}}}$, 
+by the prior knowledge, i.e. $\displaystyle\tfrac{b_{\gamma}}{a_{\gamma}+1}$; when $n~\to~\infty$, the 
+MLE~$\displaystyle\tfrac{\displaystyle\sum\nolimits_{i=1}^n{x_i^{\phi_{\gamma}}}}{n+1}\to\overline{x^{\phi_{\gamma}}}$, 
 which means it is determined by the observed data, and is close to the regularized average of the observed 
 data. If the estimation process only utilizes the prior knowledge, it is named \textbf{Static Estimation}. If the
 process utilizes both the prior and posterior knowledge, it is named \textbf{Dynamic Estimation}.
@@ -514,13 +514,13 @@ We model the task runtime ($\bm t$) with a Gamma distribution as in~\cite{Sun200
 with a known shape parameter~$\phi_{t}$ and an unknown scale parameter~$\theta_t$. The 
 conjugate pair of Gamma distribution with a known shape parameter is also a Gamma distribution. 
 If the prior knowledge follows $\Gamma(a_t, b_t)$, where $a_t$ is the shape parameter and 
-$b_t$ the rate parameter (or $\displaystyle \tfrac{1}{b_t}$ is the scale parameter), the posterior 
-follows $\Gamma(a_t+n\phi_t, b_t+\displaystyle\sum_{i=1}^n{t_i})$ with $a_t+n\phi_t$ as the 
-shape parameter and $b_t+\displaystyle\sum_{i=1}^n{t_i}$ as the rate parameter. The MLE of 
+$b_t$ the rate parameter (or $\tfrac{1}{b_t}$ is the scale parameter), the posterior 
+follows $\Gamma(a_t+n\phi_t, b_t+\sum\nolimits_{i=1}^n{t_i})$ with $a_t+n\phi_t$ as the 
+shape parameter and $b_t+\sum\nolimits_{i=1}^n{t_i}$ as the rate parameter. The MLE of 
 $\theta_t$ is then defined as follows: 
 
 \begin{equation}
-	MLE(\theta_t) = \displaystyle\frac{b_t+\displaystyle\sum_{i=1}^n{t_i}}{a_t+n\phi_t-1}
+	MLE(\theta_t) = \displaystyle\tfrac{b_t+\displaystyle\sum\nolimits_{i=1}^n{t_i}}{a_t+n\phi_t-1}
 	\label{eq:mle_theta_t}
 \end{equation}
 	
@@ -529,7 +529,7 @@ shape parameter $\phi_{s}$ and an unknown scale parameter $\theta_s$, and the pr
 as $\Gamma(a_s, b_s)$, the MLE of $\theta_s$ is thus defined as follows:
 
 \begin{equation}
-	MLE(\theta_s) = \displaystyle\frac{b_s+\displaystyle\sum_{i=1}^n{s_i}}{a_s+n\phi_s-1}
+	MLE(\theta_s) = \frac{b_s+\sum\nolimits_{i=1}^n{s_i}}{a_s+n\phi_s-1}
 	\label{eq:mle_theta_s}
 \end{equation}
 
@@ -563,69 +563,52 @@ Therefore, the job runtime (regardless of whether it succeeds of fails) is defin
 	\label{eq:mle_theta_d}
 \end{eqnarray}
 
-%We assume that $n \gg r$, but $n/k$ is not necessarily much larger than $r$ since $k$ could be very large. Normally at the beginning of workflow execution, $n/k > r$, which means there are more clustered jobs than available resources. To try all $n$ tasks once, irrespective of whether they succeed or fail, one needs approximately $\displaystyle \frac{n}{rk}$ execution cycle(s) since at each execution cycle we can execute at most $r$ jobs. Therefore, 
-
-%We have assumed the task runtime $t\sim\Gamma^{-1}(a_t, b_t)$. $(a_t, b_t)$ are estimated from prior knowledge and/or posterior knowledge. The system overhead $s\sim\Gamma^{-1}(a_s, b_s)$ similarly. By merging the $k$ tasks together, their computational runtime still follows a Inverse-Gamma distribution with parameter $(a_t, kb_t)$. We use $\mathcal{L}(f)$ to indicate the Laplace transform of the distribution $f$ (time-series signal in Laplace transform). $d$ is a random variable that represents the job runtime, which includes the computational runtime of $k$ tasks and the system overhead $s$. The PDF of $d$ is: $M$ is a random variable represents the cumulative job runtime of $\displaystyle\frac{n}{k}$ jobs. For a given $M$, we have:
-
 Let $N$ be the retry time of clustered jobs. The process to run and retry a job is a Bernoulli trial 
 with exactly two possible outcomes: \emph{success} or \emph{failure}. Once a job fails, it will be 
 re-executed until it is eventually successfully executed (since failures are assumed transient). 
 For a given job runtime $d_i$, the retry time $N_i$ of a clustered job $i$ is defined as follows:
 \begin{eqnarray}
 	\displaystyle
-	N_i=\frac{1}{1-F(d_i)}=\frac{1}{e^{-\left(\displaystyle\frac{d_i}{\theta_{\gamma}}\right)^{\phi_{\gamma}}}}=e^{\left(\displaystyle\frac{d_i}	{\theta_{\gamma}}\right)^{\phi_{\gamma}}} 
+	N_i=\frac{1}{1-F(d_i)}=\frac{1}{e^{-\left(\tfrac{d_i}{\theta_{\gamma}}\right)^{\phi_{\gamma}}}}=e^{\left(\tfrac{d_i}	{\theta_{\gamma}}\right)^{\phi_{\gamma}}} 
 	\label{eq:N}
 \end{eqnarray}
 where $F(d_i)$ is the CDF (Cumulative Distribution Function) of $\bm\gamma$. The time to 
 complete $d_i$ successfully in a faulty execution environment is determined as follows:
 \begin{eqnarray}
 	\displaystyle
-	M_i=d_i \times N_i=d_i \times e^{\left(\displaystyle\frac{d_i}{\theta_{\gamma}}\right)^{\phi_{\gamma}}} 
+	M_i=d_i \times N_i=d_i \times e^{\left(\tfrac{d_i}{\theta_{\gamma}}\right)^{\phi_{\gamma}}} 
 	\label{eq:M}
 \end{eqnarray}
 
 \noindent Equation \ref{eq:M} has involved two distributions $\bm d$ and $\theta_{\gamma}$ 
 ($\phi_{\gamma}$ is known). From Equation \ref{eq:theta-1}, we have:
 \begin{eqnarray}
-	\displaystyle\cfrac{1}{\theta_{\gamma}}\sim\Gamma\left(a_{\gamma}+n,\frac{1}{\displaystyle b_{\gamma}+\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}\right) \\
-	MLE\left(\displaystyle\cfrac{1}{\theta_{\gamma}}\right)=\displaystyle\cfrac{a_{\gamma}+n-1}{\displaystyle b_{\gamma}+\sum_{i=1}^n{x_i^{\phi_{\gamma}}}}
+	\displaystyle\cfrac{1}{\theta_{\gamma}}\sim\Gamma\left(a_{\gamma}+n,\frac{1}{b_{\gamma}+\sum\nolimits_{i=1}^n{x_i^{\phi_{\gamma}}}}\right) \\
+	MLE\left(\tfrac{1}{\theta_{\gamma}}\right)=\cfrac{a_{\gamma}+n-1}{b_{\gamma}+\sum\nolimits_{i=1}^n{x_i^{\phi_{\gamma}}}}
 	\label{eq:mle_1_theta}
  \end{eqnarray}
 
-\noindent $M_i$ is a monotonic increasing function of both $d_i$ and $\displaystyle\cfrac{1}{\theta_{\gamma}}$, 
+\noindent $M_i$ is a monotonic increasing function of both $d_i$ and $\tfrac{1}{\theta_{\gamma}}$, 
 and the two random variables are independent of each other, therefore:
 \begin{equation} 
-	MLE(M_i)=MLE(d_i)e^{\left(\displaystyle MLE(d_i)MLE\left(\cfrac{1}{\theta_{\gamma}}\right)\right)^{\phi_{\gamma}}} 
+	MLE(M_i)=MLE(d_i)e^{\left(\displaystyle MLE(d_i)MLE\left(\tfrac{1}{\theta_{\gamma}}\right)\right)^{\phi_{\gamma}}} 
 	\label{eq:MLE-M-i}
 \end{equation}
 
 From Equation \ref{eq:MLE-M-i}, to attain $MLE(M_i)$ we just need to attain $MLE(d_i)$ and 
 $MLE\left(\tfrac{1}{\theta_{\gamma}}\right)$ at the same time. In both dimensions ($d_i$ and 
-$\displaystyle\tfrac{1}{\theta_{\gamma}}$), $M_i$ is a Gamma distribution, and each $M_i$ 
+$\tfrac{1}{\theta_{\gamma}}$), $M_i$ is a Gamma distribution, and each $M_i$ 
 has the same distribution parameters, therefore:
 \begin{eqnarray} 
 	\label{eq:MLE-M}
-	\bm{M}&=&\displaystyle\cfrac{1}{r} \times \sum_{i=1}^{\cfrac{n}{k}}M_i\sim\Gamma \nonumber\\
-	MLE(\bm{M})&=&\displaystyle\cfrac{n}{rk} \times MLE(M_i)\\
-	&=&\displaystyle\frac{n}{rk} \times MLE(d_i)e^{\left(\displaystyle MLE(d_i)MLE\left(\tfrac{1}{\theta_{\gamma}}\right)\right)^{\phi_{\gamma}}} 
+	\bm{M}&=&\cfrac{1}{r} \times \sum\nolimits_{i=1}^{\tfrac{n}{k}}M_i\sim\Gamma \nonumber\\
+	MLE(\bm{M})&=&\tfrac{n}{rk} \times MLE(M_i)\\
+	&=&\tfrac{n}{rk} \times MLE(d_i)e^{\left(MLE(d_i)MLE\left(\tfrac{1}{\theta_{\gamma}}\right)\right)^{\phi_{\gamma}}} 
 \end{eqnarray}
 where $r$ is the number of resources. 
 
 In this work, we consider a compute cluster as a homogeneous cluster, which is often the case 
 in dedicated clusters and cloud platforms. 
-
-%On the other side, at the end of the workflow execution, since n is decreasing with the process of workflow, it is possible that $\displaystyle \frac{n}{k} < r$, which means there are fewer jobs than the available resources. One needs just one execution cycle to execute these tasks once. The time to complete all $n$ tasks successfully is $N(kt+s)$. 
-
-%In summary, the estimated overall runtime is, 
-
-%\begin{equation} 
-%\label{eq:jfm}
-%M=
-%\begin{cases}
-%\cfrac{n(kt+s)}{rk}{e^{(\cfrac{kt+s}{\theta})^{\phi}}}, & \text{if } \cfrac{n}{k}\geq r \\
-%(kt+s){e^{(\cfrac{kt+s}{\theta})^{\phi}}}, & \text{else}
-%\end{cases}
-%\end{equation}
 
 Let $k^*$ be the optimal clustering size that minimizes Equation~\ref{eq:MLE-M}. $\arg min$  
 stands for the argument ($k$) of the minimum\footnote{http://en.wikipedia.org/wiki/Arg\_max}, 
@@ -1024,7 +1007,7 @@ Epigenomics is shown in Fig.~\ref{fig:evaluation-shape-genome}.
 	\includegraphics[width=0.75\linewidth]{genome_shape.pdf} \\
 	\caption{Simplified visualization of the Epigenomics workflow with multiple branches.}
 	\label{fig:evaluation-shape-genome}
-	\vspace{-15pt}
+	\vspace{-5pt}
 \end{figure}
 
 \vspace{5pt}
@@ -1037,7 +1020,7 @@ transcriptional terminators, BLAST (Basic Local Alignment Search Tools~\cite{BLA
 of the inter genetic regions of different replicons and the annotations of any sRNAs that are found. 
 A simplified structure of the SIPHT workflow is shown in Fig.~\ref{fig:evaluation-shape-sipht}. 
 
-\begin{figure}[htb]
+\begin{figure}[!t]
 	\centering
 	\includegraphics[width=0.5\linewidth]{sipht_shape.pdf} \\
 	\caption{A simplified visualization of the SIPHT workflow.}
