@@ -61,7 +61,9 @@ While Pegasus represents one good use case for this work, there are other system
 Regarding the analysis, the paper uses mostly the makespan (a definition would be also good) for drawing the conclusions. I consider there are other important metrics to analyze for such strategies, especially from a scheduling point of view, otherwise the analysis seems geared towards achieving users' objectives without taking in consideration resource utilization or other objectives.
 \end{review}
 
-\answer{We added a definition of makespan to the introduction section of the paper. \todo{}}
+\answer{We added a definition of makespan to the introduction section of the paper:}
+
+\revised{the performance impact of the variance of the distribution of the task runtimes, the system overheads, and the inter-arrival time of failures the workflow's makespan (time between the start and finish of all workflow tasks)}
 
 
 
@@ -69,7 +71,7 @@ Regarding the analysis, the paper uses mostly the makespan (a definition would b
 How does such an approach compare to Condor's matchmaking and its harnessing approach of wasted CPU power from otherwise idle desktop workstations?
 \end{review}
 
-\answer{\todo{}}
+\answer{\todo{Add related work to Condor papers and scheduling}}
 
 
 
@@ -142,7 +144,9 @@ The experiments are conducted against five different workflows. I'd like to see 
 One concern is that it might be difficult to apply these techniques in a practical system.  The authors collect quite a bit of data and use numerical optimization to obtain the task cluster size at regular intervals and that might be expensive, however, they consider relatively small clusters (20 CPUs) so it is probably tractable at that scale.  It would be interesting to hear more about how this would connect to a real workflow management system but the paper is self-contained given the space constraint. 
 \end{review}
 
-\answer{\todo{}}
+\answer{We added a reference to show that such setting is consistent with many real execution experiments in Section 4.2:}
+
+\revised{This assumption is also consistent with the setting of many real execution experiments [60]. }
 
 
 
