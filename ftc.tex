@@ -260,6 +260,8 @@ network bandwidth. Liu and Liao~\cite{Liu2009} proposed an adaptive scheduling a
 group fine-grained tasks according to the processing capacity and the network bandwidth of the 
 current available resources.
 
+\rev{There have been a considerable amount of work trying to solve workflow-mapping problem using DAG scheduling heuristics such as HEFT \cite{Topcuoglu2002}, Min-Min \cite{Blythe2005}, MaxMin \cite{Braun2001}, MCT \cite{Braun2001}, etc. Duan \cite{Rubing2005} and Wieczorek \cite{Wieczorek2005} have discussed the scheduling of scientific workflows in dynamic grids. Condor \cite{Kalayci2010} has used matchmaking to avoid scheduling tasks to compute nodes without sufficient resources (CPU power, etc.). In our previous work~\cite{Chen2012}, we adopted a similar approach to avoid schedule workflow tasks to compute nodes with a high failure rate. In this work, we focus on the performance gain of task clustering and in particular, how to adjust the clustering size to balance the cost of task retry and the scheduling overheads.}
+
 The task granularity control has also been addressed in scientific workflows. For instance, Singh et 
 al.~\cite{Singh2008} proposed a level- and label-based clustering. In level-based clustering, tasks 
 at the same workflow level are clustered together. The number of clusters or tasks per cluster are 
