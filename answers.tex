@@ -61,9 +61,7 @@ While Pegasus represents one good use case for this work, there are other system
 Regarding the analysis, the paper uses mostly the makespan (a definition would be also good) for drawing the conclusions. I consider there are other important metrics to analyze for such strategies, especially from a scheduling point of view, otherwise the analysis seems geared towards achieving users' objectives without taking in consideration resource utilization or other objectives.
 \end{review}
 
-\answer{We added a definition of makespan to the introduction section of the paper:}
-
-\revised{the performance impact of the variance of the distribution of the task runtimes, the system overheads, and the inter-arrival time of failures the workflow's makespan (time between the start and finish of all workflow tasks)}
+\answer{We added a definition of makespan to the introduction section of the paper. We do not aim at measuring resource utilization since high resource utilization may imply in poor clustering (task re-computation). However, we define a \emph{waste} metric to measure the amount of tasks re-computed for each strategy. The metric measurements are presented in \todo{}.}
 
 
 
@@ -71,7 +69,7 @@ Regarding the analysis, the paper uses mostly the makespan (a definition would b
 How does such an approach compare to Condor's matchmaking and its harnessing approach of wasted CPU power from otherwise idle desktop workstations?
 \end{review}
 
-\answer{We added a paragraph in Related Work to discuses the difference and related scheduling algorithms.}
+\answer{We added a paragraph in Related Work to discuss the difference and related scheduling algorithms.}
 
 
 
@@ -146,7 +144,14 @@ One concern is that it might be difficult to apply these techniques in a practic
 
 \answer{We added a reference to show that such setting is consistent with many real execution experiments in Section 4.2:}
 
-\revised{This assumption is also consistent with the setting of many real execution experiments [60]. }
+\revised{This assumption is also consistent with the setting of many real execution experiments [63]. }
+
+Due to the space constraint we are not able to provide an experiment where we vary the number of virtual machines (VMs) to represent large-scale execution. However, in a recent work [Chen-2014], we demonstrated that task clustering techniques have similar performance for small- (20 VMs) and large-scale (1800 VMs) scenarios.
+
+[Chen-2014] W. Chen, R. Ferreira da Silva, E. Deelman, R. Sakellariou, Using imbalance metrics to optimize task clustering in scientific workflow executions, Future Generation Computer Systems, http://dx.doi.org/10.1016/j.future.2014.09.014.
+
+
+
 
 
 
@@ -169,9 +174,9 @@ The paper is written in easy to understand practical terms, except Section 2 whi
 The drawback with this paper in my opinion is the evaluation done using some mixture of ``simulated real-world workflows''. While I acknowledge the importance of simulation in validating such heuristics, I am not convinced that one of its main characteristics, the reproducibility, is guaranteed in this paper. The workflow traces injected in the workflow simulator do not seem to be open data. In general, I favour a complete separation between complete synthetic simulation, and its validation in isolated real-world scenarios, but through real execution. 
 \end{review}
 
-\answer{We added a link where other researchers can download our traces.}
+\answer{Synthetic workflows are computer-generated workflows that have characteristics derived from real workflow applications. They are similar to real workflows, but instead of specifying real computations, they specify artificial resource requirements, including the runtime and memory usage of tasks, and the sizes of input and output files. Synthetic workflows are generated from synthetic workflow generators, which use randomization and parameter sweeps to create many different synthetic workflows using the same set of input parameters. We added a reference to the generator as well as the traces, profile data, and characterizations:}
 
-\revised{Traces, profile data, and characterizations are freely available online for the community [68]. }
+\revised{Traces, profile data, and characterizations are freely available online for the community [65]. }
 
 
 
@@ -179,9 +184,9 @@ The drawback with this paper in my opinion is the evaluation done using some mix
 On the other hand, the authors do not aim to analyse the results with respect to workflow structure and topological characteristics, which makes the reusability of the results in different contexts difficult to assess. Table 2 contains very superficial data in this direction. I suggest that the authors add a discussion section where they take a step back and try to formulate some general recommendations that can be used by practitioners for running different workflows in the Cloud. In this sense, I have doubts that the five workflows cover all patterns encountered today in scientific workflows. Adding some synthetic workflows to the simulation could strengthen the completeness of the evaluation.
 \end{review}
 
-\answer{We added a paragraph to discuss the general recommendations in Section 4.3:}
+\answer{Due to the space constraint, we added to the end of Section 4.3 a brief discussion on general recommendations based on the workflow structure and the proposed strategies:}
 
-\revised{Our experimental results show that adaptive task reclustering methods outcomes better performance than simple static methods that retry failed clustered jobs...}
+\revised{Our experimental results show that adaptive task re- clustering methods outcomes better performance than simple static methods that retry failed clustered jobs. However, the performance gain may be significantly impacted if the job clustering size is not adjusted to the nearly optimal size. The Dynamic Reclustering algorithm outperforms most of the methods for the 5 workflow applications, however, it yields poorer performance when the workflow structure is mostly composed of pipelines and very short runtime tasks (e.g., Epigenomics workflow). In this case, Vertical Reclustering would be more suitable.}
 
 
 

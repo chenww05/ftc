@@ -56,7 +56,7 @@
 
 
 % The paper headers
-\markboth{IEEE Transactions on Cloud Computing, July~2014}%
+\markboth{IEEE Transactions on Cloud Computing, February~2015}%
 {Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for Computer Society Journals}
 % The only time the second header will appear is for the odd numbered pages
 % after the title page when using the twoside option.
@@ -93,19 +93,21 @@
 \IEEEcompsoctitleabstractindextext{%
 \begin{abstract}
 %\boldmath
-Large-scale scientific workflows can be composed of many fine computational granularity tasks. Task clustering has 
-been proven to be an effective method to reduce execution overhead and improve the computational granularity of 
-workflow tasks executing on distributed resources. However, a job composed of multiple tasks may have a higher 
-risk of suffering from failures than a job composed of a single task. Therefore, we conduct a theoretical analysis on
-the impact of transient failures on the runtime performance of scientific workflow executions. We propose a general 
-task failure modeling framework that uses a Maximum Likelihood estimation-based parameter estimation process to 
-model these performance issues. We further propose 3 fault-tolerant static clustering strategies to improve the runtime 
-performance of \rev{workflow executions } in faulty execution environments. Experimental results show that failures can have significant 
-impact on executions where task clustering policies are not fault-tolerant, and that our approaches yield makespan
-improvements in such scenario. In addition, we propose a dynamic task clustering strategy, which aims at optimizing the 
-workflow's makespan by dynamically adjusting the clustering granularity when failures arise. A trace-based simulation 
-of 5 real scientific workflows shows that our dynamic method is able to adapt from unexpected behaviors out of the model,
-and yields better makespan when compared to static methods.
+\rev{Task clustering has been proven to be an effective method to reduce execution overhead 
+and improve the computational granularity of scientific workflow tasks executing on distributed 
+resources}. However, a job composed of multiple tasks may have a higher risk of suffering from 
+failures than a single task job. Therefore, we conduct a theoretical analysis on the impact of 
+transient failures on the runtime performance of scientific workflow executions. We propose a 
+general task failure modeling framework that uses a Maximum Likelihood estimation-based 
+parameter estimation process to model these performance issues. We further propose 3 
+fault-tolerant static clustering strategies to improve the runtime performance of \rev{workflow 
+executions } in faulty execution environments. Experimental results show that failures can have 
+significant impact on executions where task clustering policies are not fault-tolerant, and that our 
+approaches yield makespan improvements in such scenario. In addition, we propose a dynamic 
+task clustering strategy \rev{to optimize } the workflow's makespan by dynamically adjusting the 
+clustering granularity when failures arise. A trace-based simulation of 5 real workflows shows 
+that our dynamic method is able to adapt from unexpected behaviors, and yields better makespan 
+when compared to static methods.
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
 % This preserves the distinction between vectors and scalars. However,
@@ -157,7 +159,7 @@ scientific workflows, fault tolerance, parameter estimation, failure, machine le
 \section*{Introduction}
 
 \IEEEPARstart{S}{cientific} workflows can be composed of many fine computational granularity 
-tasks in which the runtime may be shorter than the system overhead. System overhead is the 
+tasks in which the runtime may be shorter than the system overhead---the 
 period of time during which miscellaneous work other than the user'€™s computation is performed. 
 Task clustering~\cite{Chen2013a, Singh2008, Chen2012, Ferreira-granularity-2013, Maheshwari2012, 
 FerreiradaSilva-CCPE-2014, Integration2012} merges several short tasks into a single job such 
@@ -177,13 +179,13 @@ A clustered job consists of multiple tasks. If a task within a clustered job fai
 by unexpected events during its computation), the job is marked as failed, even though tasks 
 within the same job have successfully completed their execution. Several techniques have
 been developed to cope with the negative impact of job failures on the execution of scientific
-workflows. The most common technique is to resubmit the failed job~\cite{5071878, 5671856, 4534303}. 
+workflows. The most common technique is to \rev{retry } the failed job~\cite{5071878, 5671856, 4534303}. 
 However, retrying a clustered job can be expensive since completed tasks within the job should
-be recomputed, thereby resource cycles are wasted. In addition, there is no guarantee that the 
-task will recompute successfully.  As an alternative, jobs can be replicated to avoid failures 
-related to one specific worker node~\cite{Plankensteiner2009}. However, task replication
+be recomputed, thereby resource cycles are wasted. In addition, there is no guarantee that 
+\rev{recomputed tasks will succeed}. As an alternative, jobs can be replicated to avoid failures 
+specific to a worker node~\cite{Plankensteiner2009}. However, job replication
 may also waste resources, in particular for long-running jobs. To reduce resource waste, job
-executions can be periodically checkpointed to limit the amount of work to be retried. However, 
+executions can be periodically checkpointed to limit the \rev{amount of retried work}. However, 
 the overhead produced for performing checkpointing can limit its benefits~\cite{Zhang2004}. 
 
 In this work, we propose three fault-tolerant task clustering methods to improve existing 
@@ -238,14 +240,14 @@ In scientific workflow management systems (WMS), fault tolerance issues have als
 been addressed. For instance, the Pegasus WMS~\cite{Deelman2005, Deelman-FGCS-2014} has incorporated 
 a task-level monitoring system, which retries a job if a failure is detected. Provenance data
 is also tracked and used to analyze the cause of failures~\cite{Samak2011}. A survey of
-fault detection, prevention, and recovery techniques in current grid WMS such as 
-Askalon~\cite{fahringer2007askalon}, Chemomentum~\cite{schuller2008chemomentum}, 
-Escogitare~\cite{laforenza2007biological}, and Triana~\cite{taylor2007triana} is available
-in~\cite{plankensteiner2009fault}. The survey provides a compilation of recovery techniques
+fault detection, prevention, and recovery techniques in current grid WMS
+%such as Askalon~\cite{fahringer2007askalon}, Chemomentum~\cite{schuller2008chemomentum}, 
+%Escogitare~\cite{laforenza2007biological}, and Triana~\cite{taylor2007triana} 
+is available in~\cite{plankensteiner2009fault}. The survey provides a compilation of recovery techniques
 such as task replication, checkpointing, resubmission, and migration. In this work, we combine
 some of these techniques with task clustering methods to improve the performance and 
 reliability of \emph{fine-grained} tasks. To the be best of our knowledge, none of the existing 
-scientific workflow management systems have provided such feature.
+WMS have provided such feature.
 
 The low performance of fine-grained tasks is a common problem in widely distributed platforms 
 where the scheduling overhead and queuing times at resources are high. Several works have 
@@ -260,7 +262,14 @@ network bandwidth. Liu and Liao~\cite{Liu2009} proposed an adaptive scheduling a
 group fine-grained tasks according to the processing capacity and the network bandwidth of the 
 current available resources.
 
-\rev{There have been a considerable amount of work trying to solve workflow-mapping problem using DAG scheduling heuristics such as HEFT \cite{Topcuoglu2002}, Min-Min \cite{Blythe2005}, MaxMin \cite{Braun2001}, MCT \cite{Braun2001}, etc. Duan \cite{Rubing2005} and Wieczorek \cite{Wieczorek2005} have discussed the scheduling of scientific workflows in dynamic grids. Condor \cite{Kalayci2010} has used matchmaking to avoid scheduling tasks to compute nodes without sufficient resources (CPU power, etc.). In our previous work~\cite{Chen2012}, we adopted a similar approach to avoid schedule workflow tasks to compute nodes with a high failure rate. In this work, we focus on the performance gain of task clustering and in particular, how to adjust the clustering size to balance the cost of task retry and the scheduling overheads.}
+\rev{There have been a considerable amount of work trying to solve workflow-mapping problem 
+using DAG scheduling heuristics~\cite{Topcuoglu2002, Blythe2005, Braun2001, Rubing2005, 
+Wieczorek2005, Kalayci2010}.
+In particular, HTCondor~\cite{Kalayci2010} has used matchmaking to avoid scheduling tasks to 
+compute nodes without sufficient resources (CPU power, etc.). In our previous work~\cite{Chen2012}, 
+we adopted a similar approach to avoid schedule workflow tasks to compute nodes with a high 
+failure rate. In this work, we focus on the performance gain of task clustering and in particular, 
+how to adjust the clustering size to balance the cost of task retry and the scheduling overheads.}
 
 The task granularity control has also been addressed in scientific workflows. For instance, Singh et 
 al.~\cite{Singh2008} proposed a level- and label-based clustering. In level-based clustering, tasks 
@@ -307,7 +316,7 @@ In this work, we assume a single execution site with multiple compute resources,
 on Cloud platforms. Fig.~\ref{fig:model-system} shows a typical workflow execution environment that 
 targets a homogeneous computer cluster (e.g., a dedicated cluster or a virtual cluster on Clouds). 
 The submit host prepares a workflow for execution (e.g. clustering, mapping, etc.), and worker nodes, 
-within an execution site, execute jobs individually. The main components are introduced below:
+within an execution site, execute jobs individually. The main components are:
 
 \begin{figure}[!t]
 	\centering
@@ -319,12 +328,12 @@ within an execution site, execute jobs individually. The main components are int
 
 \vspace{4pt}
 \noindent \textbf{Workflow Mapper.} Generates an executable workflow from an abstract 
-workflow~\cite{Deelman2005, Deelman-FGCS-2014} provided by the user or a workflow 
+workflow~\cite{Deelman-FGCS-2014} provided by the user or a workflow 
 composition system. It restructures the workflow for performance optimization, and adds 
 tasks for data management and provenance information generation. In this work, the 
-workflow mapper is also used to merge fine-grained tasks into a single clustered job 
+workflow mapper is also used to merge tasks into a single clustered job 
 (i.e., \emph{task clustering}). A job then is a single execution unit in the workflow execution 
-systems and is composed of one or more tasks. 
+system and is composed of one or more tasks. 
 
 \vspace{4pt}
 \noindent \textbf{Workflow Engine.} Executes jobs defined by the workflow in order of their 
@@ -335,7 +344,7 @@ job release and its submission to the } Job Scheduler is denoted as the \textbf{
 engine delay}.
 
 \vspace{4pt}
-\noindent \textbf{Job Scheduler and Local Queue.} Manage individual workflow jobs and 
+\noindent \textbf{Job Scheduler/Local Queue.} Manage individual workflow jobs and 
 supervise their execution on local and remote resources. The \rev{time span between the
 job submission to the scheduler and the beginning of its execution } in a worker node is 
 denoted as the \textbf{queue delay}. \rev{This delay } reflects both the efficiency of the 
@@ -362,7 +371,7 @@ in Section~\ref{sec:applications}.}
 	\includegraphics[width=0.55\linewidth]{odag.pdf}
 	\captionof{figure}{Extending DAG to o-DAG ($s$ is a system overhead).}
 	\label{fig:model-odag}
-	\vspace{-15pt}
+	\vspace{-8pt}
 \end{figure}
 
 \begin{table*}[!t]
@@ -394,22 +403,23 @@ has a unique child $t_b$.
 
 Fig.~\ref{fig:model-hc} shows a simple example on how to perform HC, in which two tasks $t_2$ 
 and $t_3$, without data dependency between them, are merged into a clustered job $j_1$. Job 
-wrappers are commonly used to execute clustered jobs, but they add an overhead denoted \rev{as } the 
+wrappers are often used to execute clustered jobs, but they add an overhead \rev{defined as } the 
 clustering delay $c$. The clustering delay measures the difference between the sum of the actual 
 task runtimes and the job runtime seen by the job scheduler. After horizontal clustering, $t_2$ and 
-$t_3$ in $j_1$ can be executed in sequence or in parallel, if parallelism is supported. In this work, 
-we consider sequential executions only. The overall runtime for the workflow in Fig.~\ref{fig:model-hc}~(left) 
+$t_3$ in $j_1$ can be executed in sequence or in parallel, if parallelism is supported.
+\rev{In a parallel environment}, the overall runtime for the workflow in Fig.~\ref{fig:model-hc}~(left) 
 is \rev{$runtime_l= s_1+t_1+\max(s_2,s_3)+\max(t_2,t_3)+s_4+t_4$}, while the overall runtime for the 
 clustered workflow in Fig.~\ref{fig:model-hc}~(right) is $runtime_r=s_1+t_1+s_2+c_1+t_2+t_3+s_4+t_4$.  
 $runtime_l > runtime_r$ as long as \rev{$c_1 < \max(s_2,s_3)$}, which is often the case in many distributed 
 systems since the clustering delay within a single execution node is usually shorter than the scheduling 
 overhead across different execution nodes. 
 
-\begin{figure}[!b]
+\begin{figure}[!t]
 	\centering
 	\includegraphics[width=0.45\linewidth]{hc.pdf}
 	\captionof{figure}{A simple example of horizontal clustering (color indicates the horizontal level of a task).}
 	\label{fig:model-hc}
+	\vspace{-15pt}
 \end{figure}
 
 
@@ -513,7 +523,7 @@ which means it is determined by the observed data, and is close to the regulariz
 data. If the estimation process only utilizes the prior knowledge, it is named \textbf{Static Estimation}. If the
 process utilizes both the prior and posterior knowledge, it is named \textbf{Dynamic Estimation}.
 
-We model the task runtime ($\bm t$) with a Gamma distribution as in~\cite{Sun2003, Iosup2008}, 
+We model the task runtime $\bm t$ with a Gamma distribution as in~\cite{Sun2003, Iosup2008}, 
 with a known shape parameter~$\phi_{t}$ and an unknown scale parameter~$\theta_t$. The 
 conjugate pair of Gamma distribution with a known shape parameter is also a Gamma distribution. 
 If the prior knowledge follows $\Gamma(a_t, b_t)$, where $a_t$ is the shape parameter and 
@@ -538,8 +548,8 @@ as $\Gamma(a_s, b_s)$, the MLE of $\theta_s$ is thus defined as follows:
 
 We have assumed the task runtime, system overheads, and inter-arrival time between failures 
 are a function of task types. The reason is that tasks at different levels (the deepest depth from 
-the entry task to this task) are often of different types (a.k.a. transformations) in scientific 
-workflows. Given $n$ independent tasks at the same workflow level and the distribution of the 
+the entry task to this task) are often of different types in scientific workflows. 
+Given $n$ independent tasks at the same workflow level and the distribution of the 
 task runtime, the system overheads, and the inter-arrival time of failures, we aim at reducing the 
 overall runtime $\bm M$ for completing these tasks by adjusting the clustering size $k$ (the 
 number of tasks in a job). $\bm M$ is also a random variable, which includes the system overheads 
@@ -586,7 +596,7 @@ complete $d_i$ successfully in a faulty execution environment is determined as f
 \noindent Equation \ref{eq:M} has involved two distributions $\bm d$ and $\theta_{\gamma}$ 
 ($\phi_{\gamma}$ is known). From Equation \ref{eq:theta-1}, we have:
 \begin{eqnarray}
-	\displaystyle\cfrac{1}{\theta_{\gamma}}\sim\Gamma\left(a_{\gamma}+n,\frac{1}{b_{\gamma}+\sum\nolimits_{i=1}^n{x_i^{\phi_{\gamma}}}}\right) \\
+	\tfrac{1}{\theta_{\gamma}}\sim\Gamma\left(a_{\gamma}+n,\tfrac{1}{b_{\gamma}+\sum\nolimits_{i=1}^n{x_i^{\phi_{\gamma}}}}\right) \\
 	MLE\left(\tfrac{1}{\theta_{\gamma}}\right)=\cfrac{a_{\gamma}+n-1}{b_{\gamma}+\sum\nolimits_{i=1}^n{x_i^{\phi_{\gamma}}}}
 	\label{eq:mle_1_theta}
  \end{eqnarray}
@@ -643,7 +653,7 @@ shows an example of $MLE(\bm{M})$ using static estimation with a low task failur
 a medium task failure rate ($\theta_{\gamma}=30$s) and a high task failure rate ($\theta_{\gamma}=20$s). 
 Other parameters are $n=50$, $\phi_{t}=5$s and $\phi_{s}=50$s, and the scale parameter $\theta_{ts}$ is 
 defined as 2 for simplicity. These parameters are close to the parameters of tasks at the level of 
-the \texttt{mProjectPP} transformation of the Montage workflow (Section \ref{sec:experiments}).
+the \texttt{mProjectPP} tasks of the Montage workflow (Section \ref{sec:experiments}).
 Fig.~\ref{fig:model-size} shows the relationship between the optimal clustering size ($k^*$) and 
 $\theta_{\gamma}$, which is a non-decreasing function. The optimal clustering size (red dots in 
 Fig.~\ref{fig:model-makespan}) when $\theta_{\gamma} \in \{20,30,40\}$ is 2, 3, and 5 respectively. 
@@ -771,7 +781,23 @@ as much as possible. The advantage of SR is that it is simple to implement and c
 incorporated into existing WMS with minimum impact on the workflow execution efficiency 
 as shown in Section~\ref{sec:experiments}.
 
-\begin{algorithm}[!b]
+\vspace{5pt}
+\noindent \textbf{Dynamic Reclustering} (\emph{DR}).
+The Selective Reclustering method does not analyze the clustering size, rather it 
+uses a self-adjusted approach to reduce \rev{$k$ } to the number of failed tasks. 
+However, the actual optimal clustering size may be larger or smaller than the number of
+failed tasks. Therefore, we propose the Dynamic Reclustering method that merges failed
+tasks into new clustered jobs in which the clustering size is set to $k^*$ according to 
+Equation~\ref{eq:k_optimal}. Algorithm~\ref{alg:evaluation-dr} shows the pseudocode 
+for the \texttt{Reclustering} procedure for the DR method. Fig.~\ref{fig:clustering-dr} shows 
+an example where \rev{$k$ is initially set to 4}. In the first attempt, 3 tasks within the 
+clustered job have failed. Therefore, there are only 3 tasks to be retried, and thus the 
+clustering size should be decreased to 2 accordingly. Two new clustered jobs $j_2$ 
+(containing $t_1$ and $t_2$) and $j_3$ (containing $t_3$) are created. Reducing the 
+granularity of failed clustered jobs may decrease the probability of future failures, since 
+at least one of the jobs will execute on a different worker node.
+
+\begin{algorithm}[!t]
 	\footnotesize
 	\caption{Selective Reclustering algorithm.}
 	\label{alg:evaluation-sr}
@@ -790,29 +816,13 @@ as shown in Section~\ref{sec:experiments}.
 	\end{algorithmic}
 \end{algorithm}
 
-\begin{figure}[!htb]
+\begin{figure}[!t]
 	\centering
 	\includegraphics[width=0.82\linewidth]{sr.pdf}
 	\caption{An example of Selective Reclustering (red boxes are failed tasks). Failed tasks are merged into a new job and retried.}
 	\label{fig:clustering-sr}
 	\vspace{-15pt}
 \end{figure}
-
-\vspace{5pt}
-\noindent \textbf{Dynamic Reclustering} (\emph{DR}).
-The Selective Reclustering method does not analyze the clustering size, rather it 
-uses a self-adjusted approach to reduce \rev{$k$ } to the number of failed tasks. 
-However, the actual optimal clustering size may be larger or smaller than the number of
-failed tasks. Therefore, we propose the Dynamic Reclustering method that merges failed
-tasks into new clustered jobs in which the clustering size is set to $k^*$ according to 
-Equation~\ref{eq:k_optimal}. Algorithm~\ref{alg:evaluation-dr} shows the pseudocode 
-for the \texttt{Reclustering} procedure for the DR method. Fig.~\ref{fig:clustering-dr} shows 
-an example where \rev{$k$ is initially set to 4}. In the first attempt, 3 tasks within the 
-clustered job have failed. Therefore, there are only 3 tasks to be retried, and thus the 
-clustering size should be decreased to 2 accordingly. Two new clustered jobs $j_2$ 
-(containing $t_1$ and $t_2$) and $j_3$ (containing $t_3$) are created. Reducing the 
-granularity of failed clustered jobs may decrease the probability of future failures, since 
-at least one of the jobs will execute on a different worker node.
 
 \begin{algorithm}[!b]
 	\footnotesize
@@ -842,13 +852,6 @@ at least one of the jobs will execute on a different worker node.
 	\includegraphics[width=0.77\linewidth]{dr.pdf}
 	\caption{An example of Dynamic Reclustering (red boxes are failed tasks). The clustering size $k$ is adjusted to 2 and thus failed tasks are merged into two new clustered jobs.}
 	\label{fig:clustering-dr}
-\end{figure}
-
-\begin{figure}[!t]
-	\centering
-	\includegraphics[width=0.8\linewidth]{vr.pdf}
-	\caption{An example of Vertical Reclustering (red boxes are failed tasks). The clustering size is decreased by half when a job execution fails.}
-	\label{fig:clustering-vr}
 \end{figure}
 
 \begin{algorithm}[!t]
@@ -895,6 +898,14 @@ at least one of the jobs will execute on a different worker node.
 	\end{algorithmic}
 \end{algorithm}
 
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=0.8\linewidth]{vr.pdf}
+	\caption{An example of Vertical Reclustering (red boxes are failed tasks). The clustering size is decreased by half when a job execution fails.}
+	\label{fig:clustering-vr}
+	\vspace{-15pt}
+\end{figure}
+
 
 \vspace{5pt}
 \noindent \textbf{Vertical Reclustering} (\emph{VR}). VR is an extension of the Vertical 
@@ -910,6 +921,7 @@ task each ($t_3$ and $t_4$). Since the clustering size is \rev{minimum ($k = 1$)
 performs no vertical clustering anymore and will continue retrying $t_3$ and $t_4$ (but 
 still following their data dependency) until they succeed. Algorithm \ref{alg:evaluation-vr} 
 shows the pseudocode for the VR method. 
+
 
 
 
@@ -943,13 +955,43 @@ the workflow. The LIGO Inspiral workflow is separated into multiple groups of in
 tasks, which we call branches in the rest of this work. Each branch may have a different number 
 of pipelines. The LIGO workflow is a data-intensive workflow.
 
-\begin{figure}[!htb]
+\begin{figure*}[!htb]
 	\centering
-	\includegraphics[width=0.45\linewidth]{ligo_shape.pdf} \\
-	\caption{Simplified visualization of the LIGO workflow.}
-	\label{fig:evaluation-shape-ligo}
+	\begin{subfigure}{.32\linewidth}
+		\centering
+		\includegraphics[width=.7\linewidth]{ligo_shape.pdf}
+		\caption{LIGO}
+		\label{fig:evaluation-shape-ligo}
+	\end{subfigure}
+	\begin{subfigure}{.32\linewidth}
+		\centering
+		\includegraphics[width=.5\linewidth]{montage_shape.pdf}
+		\caption{Montage}
+		\label{fig:evaluation-shape-montage}
+	\end{subfigure}
+	\begin{subfigure}{.32\linewidth}
+		\centering
+		\includegraphics[width=.7\linewidth]{cybershake_shape.pdf}
+		\caption{CyberShake}
+		\label{fig:evaluation-shape-cybershake}
+	\end{subfigure}
+	\begin{subfigure}{.32\linewidth}
+		\centering
+		\includegraphics[width=.95\linewidth]{genome_shape.pdf}
+		\caption{Epigenomics (multiple branches)}
+		\label{fig:evaluation-shape-genome}
+	\end{subfigure}
+	\begin{subfigure}{.32\linewidth}
+		\centering
+		\includegraphics[width=.7\linewidth]{sipht_shape.pdf}
+		\caption{SIPHT}
+		\label{fig:evaluation-shape-sipht}
+	\end{subfigure}
+
+	\caption{Simplified visualization of the scientific workflows.}
+	\label{fig:evaluation-shape}
 	\vspace{-15pt}
-\end{figure}
+\end{figure*}
 
 
 \vspace{5pt}
@@ -964,14 +1006,6 @@ portion of the sky in question. Fig.~\ref{fig:evaluation-shape-montage} illustra
 workflow. The size of the workflow depends on the number of images used in constructing the desired 
 mosaic of the sky. 
 
-\begin{figure}[!htb]
-	\centering
-	\includegraphics[width=0.35\linewidth]{montage_shape.pdf} \\
-	\caption{Simplified visualization of the Montage workflow.}
-	\label{fig:evaluation-shape-montage}
-	\vspace{-10pt}
-\end{figure}
-
 \vspace{5pt}
 \noindent \textbf{Cybershake.}
 CyberShake~\cite{Graves2010} is a seismology application that calculates probabilistic seismic hazard 
@@ -981,14 +1015,6 @@ locations and slip distributions. It calculates synthetic seismograms for each r
 peak intensity measures are extracted and combined with the original rupture 
 probabilities to produce probabilistic seismic hazard curves for the site. Fig.~\ref{fig:evaluation-shape-cybershake} 
 shows an illustration of the Cybershake workflow.
-
-\begin{figure}[!htb]
-	\centering
-	\includegraphics[width=0.5\linewidth]{cybershake_shape.pdf} \\
-	\caption{Simplified visualization of the CyberShake workflow.}
-	\label{fig:evaluation-shape-cybershake}
-	\vspace{-10pt}
-\end{figure}
 
 \vspace{5pt}
 \noindent \textbf{Epigenomics.}
@@ -1000,14 +1026,6 @@ Genome. Then it generates a map that displays the sequence density showing how m
 sequence expresses itself on a particular location on the reference genome. The simplified structure of 
 Epigenomics is shown in Fig.~\ref{fig:evaluation-shape-genome}. 
 
-\begin{figure}[!t]
-	\centering
-	\includegraphics[width=0.75\linewidth]{genome_shape.pdf} \\
-	\caption{Simplified visualization of the Epigenomics workflow with multiple branches.}
-	\label{fig:evaluation-shape-genome}
-	\vspace{-15pt}
-\end{figure}
-
 \vspace{5pt}
 \noindent \textbf{SIPHT.}
 The SIPHT workflow~\cite{SIPHT} conducts a wide search for small untranslated RNAs (sRNAs) that 
@@ -1017,14 +1035,6 @@ proper order using Pegasus~\cite{Deelman2005, Deelman-FGCS-2014}. These involve 
 transcriptional terminators, BLAST (Basic Local Alignment Search Tools~\cite{BLAST}) comparisons 
 of the inter genetic regions of different replicons and the annotations of any sRNAs that are found. 
 A simplified structure of the SIPHT workflow is shown in Fig.~\ref{fig:evaluation-shape-sipht}. 
-
-\begin{figure}[!t]
-	\centering
-	\includegraphics[width=0.5\linewidth]{sipht_shape.pdf} \\
-	\caption{A simplified visualization of the SIPHT workflow.}
-	\label{fig:evaluation-shape-sipht}
-	\vspace{-15pt}
-\end{figure}
 
 Table~\ref{tab:evaluation-workflows} shows the summary of the main \emph{workflow characteristics}: 
 number of tasks, average data size, and average task runtimes for the five workflows. 
@@ -1159,6 +1169,15 @@ beginning.
 	\vspace{-14pt}
 \end{figure}
 
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=0.8\linewidth]{pulse_signal.pdf} \\
+	\caption{A Pulse Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_c$ is the period of the wave. $\tau$ is the width of the pulse.}
+	\label{fig:evaluation_pulse_signal}
+	\vspace{-15pt}
+\end{figure}
+
+
 The second function is a pulse wave function (Fig. \ref{fig:evaluation_pulse_signal}) in which the 
 amplitude alternates at a steady frequency between a fixed minimum (50 seconds) to a maximum 
 (500 seconds) value. The function is defined as follows:
@@ -1176,14 +1195,6 @@ scenario where the failures follow a periodic pattern~\cite{yigitbasi2010analysi
 failure traces obtained from production distributed systems. In this work, we vary $T_c$ from 
 1,000 seconds to 10,000 seconds based on the estimation of the workflow's makespan, and 
 $\tau$ from $0.1T_c$ to $0.5T_c$. 
-
-\begin{figure}[!t]
-	\centering
-	\includegraphics[width=0.8\linewidth]{pulse_signal.pdf} \\
-	\caption{A Pulse Function of $\theta_{\gamma}$. $t_c$ is the current time and $T_c$ is the period of the wave. $\tau$ is the width of the pulse.}
-	\label{fig:evaluation_pulse_signal}
-	\vspace{-15pt}
-\end{figure}
 
 
 
@@ -1239,12 +1250,11 @@ scale parameter of the distribution of the inter-arrival time of failures } $\th
 	\label{fig:expr_t}
 \end{figure}
 
-\begin{figure}[!t]
+\begin{figure}[!b]
 	\centering
 	\includegraphics[width=.95\linewidth]{d.eps}
 	\caption{(\emph{Experiment 2}): Influence of varying system overhead ($\theta_s$) on makespan for the CyberShake workflow.}
 	\label{fig:expr_d}
-	\vspace{-10pt}
 \end{figure}
 
 \vspace{5pt}
@@ -1323,7 +1333,6 @@ would be more suitable.}
 	\label{fig:exp3}
 	\vspace{-15pt}
 \end{figure}
-
 
 
 
