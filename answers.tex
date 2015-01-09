@@ -181,12 +181,28 @@ The drawback with this paper in my opinion is the evaluation done using some mix
 
 
 \begin{review}
-On the other hand, the authors do not aim to analyse the results with respect to workflow structure and topological characteristics, which makes the reusability of the results in different contexts difficult to assess. Table 2 contains very superficial data in this direction. I suggest that the authors add a discussion section where they take a step back and try to formulate some general recommendations that can be used by practitioners for running different workflows in the Cloud. In this sense, I have doubts that the five workflows cover all patterns encountered today in scientific workflows. Adding some synthetic workflows to the simulation could strengthen the completeness of the evaluation.
+On the other hand, the authors do not aim to analyse the results with respect to workflow structure and topological characteristics, which makes the reusability of the results in different contexts difficult to assess. Table 2 contains very superficial data in this direction. I suggest that the authors add a discussion section where they take a step back and try to formulate some general recommendations that can be used by practitioners for running different workflows in the Cloud.
 \end{review}
 
 \answer{Due to the space constraint, we added to the end of Section 4.3 a brief discussion on general recommendations based on the workflow structure and the proposed strategies:}
 
-\revised{Our experimental results show that adaptive task re- clustering methods outcomes better performance than simple static methods that retry failed clustered jobs. However, the performance gain may be significantly impacted if the job clustering size is not adjusted to the nearly optimal size. The Dynamic Reclustering algorithm outperforms most of the methods for the 5 workflow applications, however, it yields poorer performance when the workflow structure is mostly composed of pipelines and very short runtime tasks (e.g., Epigenomics workflow). In this case, Vertical Reclustering would be more suitable.}
+\revised{Our experimental results show that adaptive task re-clustering methods outcomes better performance than simple static methods that retry failed clustered jobs. However, the performance gain may be significantly impacted if the job clustering size is not adjusted to the nearly optimal size. The Dynamic Reclustering algorithm outperforms most of the methods for the 5 workflow applications, however, it yields poorer performance when the workflow structure is mostly composed of pipelines and very short runtime tasks (e.g., Epigenomics workflow). In this case, Vertical Reclustering would be more suitable.}
+
+
+
+\begin{review}
+In this sense, I have doubts that the five workflows cover all patterns encountered today in scientific workflows. Adding some synthetic workflows to the simulation could strengthen the completeness of the evaluation.
+\end{review}
+
+\answer{We believe the simulated workflow applications used in this work represent most of the workflow patterns found in the literature and real workflows:}
+
+\revised{Cerezo, Nadia. Workflows conceptuels. Diss. Université Nice Sophia Antipolis, 2013.}
+
+\revised{Cordasco, Gennaro, and Arnold L. Rosenberg. "On scheduling series-parallel DAGs to maximize AREA." International Journal of Foundations of Computer Science 25.05 (2014): 597-621.}
+
+\revised{Workflow Patterns, http://www.workflowpatterns.com}
+
+\revised{Pegasus Applications, https://pegasus.isi.edu/applications}
 
 
 
