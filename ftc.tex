@@ -13,6 +13,7 @@
 \usepackage{wrapfig}
 \usepackage{array}
 \usepackage{multicol}
+\usepackage{multirow}
 \usepackage{amsmath}
 \usepackage{amssymb }
 \usepackage{bm}
@@ -262,13 +263,13 @@ network bandwidth. Liu and Liao~\cite{Liu2009} proposed an adaptive scheduling a
 group fine-grained tasks according to the processing capacity and the network bandwidth of the 
 current available resources.
 
-\rev{There have been a considerable amount of work trying to solve workflow-mapping problem 
-using DAG scheduling heuristics~\cite{Topcuoglu2002, Blythe2005, Braun2001, Rubing2005, 
+\rev{Several works have addressed the workflow-mapping problem by
+using DAG scheduling heuristics~\cite{Topcuoglu2002, Blythe2005, Rubing2005, 
 Wieczorek2005, Kalayci2010}.
-In particular, HTCondor~\cite{Kalayci2010} has used matchmaking to avoid scheduling tasks to 
-compute nodes without sufficient resources (CPU power, etc.). In our previous work~\cite{Chen2012}, 
+In particular, HTCondor~\cite{Kalayci2010} uses matchmaking to avoid scheduling tasks to 
+compute nodes without sufficient resources (CPU power, etc.). In a previous work~\cite{Chen2012}, 
 we adopted a similar approach to avoid schedule workflow tasks to compute nodes with a high 
-failure rate. In this work, we focus on the performance gain of task clustering and in particular, 
+failure rate. In this work, we focus on the performance gain of task clustering, in particular on
 how to adjust the clustering size to balance the cost of task retry and the scheduling overheads.}
 
 The task granularity control has also been addressed in scientific workflows. For instance, Singh et 
@@ -377,7 +378,6 @@ in Section~\ref{sec:applications}.}
 \begin{table*}[!t]
 	\setlength{\tabcolsep}{9pt}
 	\centering
-	\footnotesize
 	\begin{tabular}{lrrrrrr}
 		\hline
 		 & \multicolumn{1}{c}{Number} & \multicolumn{1}{c}{Number} & \multicolumn{1}{c}{Average Workflow} & \multicolumn{1}{c}{Average} &  \multicolumn{1}{c}{Average} \\
@@ -633,7 +633,8 @@ i.e., the value of $k$ such that $MLE(\bm{M})$ attains its minimum value:
 
 \begin{figure}[!b]
 	\centering
-	\includegraphics[width=0.75\linewidth]{model_makespan2.eps}
+	\vspace{-10pt}
+	\includegraphics[width=0.7\linewidth]{model_makespan2.eps}
 	\caption{Makespan with different clustering size and $\theta_{\gamma}$. ($n=1000$, $r=20$, $\phi_t=5$s, $\phi_s=50$s). Red dots are the minimums.}
 	\label{fig:model-makespan}
 \end{figure}
@@ -916,9 +917,9 @@ shows an example of VR where tasks within a pipeline are initially merged into a
 clustered job ($t_1$, $t_2$, $t_3$, $t_4$). $t_3$ fails at the first attempt assuming it is 
 a failure-prone task (i.e., its $\theta_{\gamma}$ is short). VR then retries only the failed task 
 ($t_3$) and tasks that have not been yet completed ($t_4$) by merging them into a new 
-job $j_2$. In the second attempt, $j_2$ fails and then it is divided into two jobs containing one
-task each ($t_3$ and $t_4$). Since the clustering size is \rev{minimum ($k = 1$)}, VR 
-performs no vertical clustering anymore and will continue retrying $t_3$ and $t_4$ (but 
+job $j_2$. In the second attempt, $j_2$ fails and then it is divided into two \rev{single task jobs }
+($t_3$ and $t_4$). Since the clustering size is \rev{minimum ($k = 1$)}, VR 
+performs no vertical clustering and continue retrying $t_3$ and $t_4$ (but 
 still following their data dependency) until they succeed. Algorithm \ref{alg:evaluation-vr} 
 shows the pseudocode for the VR method. 
 
@@ -959,19 +960,19 @@ of pipelines. The LIGO workflow is a data-intensive workflow.
 	\centering
 	\begin{subfigure}{.32\linewidth}
 		\centering
-		\includegraphics[width=.7\linewidth]{ligo_shape.pdf}
+		\includegraphics[width=.65\linewidth]{ligo_shape.pdf}
 		\caption{LIGO}
 		\label{fig:evaluation-shape-ligo}
 	\end{subfigure}
 	\begin{subfigure}{.32\linewidth}
 		\centering
-		\includegraphics[width=.5\linewidth]{montage_shape.pdf}
+		\includegraphics[width=.45\linewidth]{montage_shape.pdf}
 		\caption{Montage}
 		\label{fig:evaluation-shape-montage}
 	\end{subfigure}
 	\begin{subfigure}{.32\linewidth}
 		\centering
-		\includegraphics[width=.7\linewidth]{cybershake_shape.pdf}
+		\includegraphics[width=.65\linewidth]{cybershake_shape.pdf}
 		\caption{CyberShake}
 		\label{fig:evaluation-shape-cybershake}
 	\end{subfigure}
@@ -983,7 +984,7 @@ of pipelines. The LIGO workflow is a data-intensive workflow.
 	\end{subfigure}
 	\begin{subfigure}{.32\linewidth}
 		\centering
-		\includegraphics[width=.7\linewidth]{sipht_shape.pdf}
+		\includegraphics[width=.65\linewidth]{sipht_shape.pdf}
 		\caption{SIPHT}
 		\label{fig:evaluation-shape-sipht}
 	\end{subfigure}
@@ -1225,8 +1226,8 @@ Fig.~\ref{fig:exp1} shows the performance of the Horizontal Clustering (HC), Sel
 Reclustering (SR), Dynamic Reclustering (DR), and Vertical Reclustering (VR) methods 
 for the five workflows. DR, SR, and VR significantly improve the makespan when compared 
 to HC in a large scale. By decreasing the inter-arrival time \rev{of failures}~($\theta_{\gamma}$) and 
-\rev{thereby } generating more task failures, the performance improvement of our fault-tolerant 
-task clustering methods becomes more significant. Among the three methods, DR and VR 
+\rev{thereby } generating more task failures, the performance improvement of our methods 
+becomes more significant. Among the three methods, DR and VR 
 perform consistently better than SR, which fails to improve the \rev{overall } makespan when $\theta_{\gamma}$ 
 is small. The reason is that SR does not adjust $k$ according to the occurrence of failures. 
 
@@ -1256,6 +1257,32 @@ scale parameter of the distribution of the inter-arrival time of failures } $\th
 	\caption{(\emph{Experiment 2}): Influence of varying system overhead ($\theta_s$) on makespan for the CyberShake workflow.}
 	\label{fig:expr_d}
 \end{figure}
+
+\rev{Table~\ref{tab:tasks} shows the average number of tasks for the minimum 
+(min($\theta_{\gamma}$)) and maximum (max($\theta_{\gamma}$)) values of 
+the scale parameter of the inter-arrival time of failures. Most of the algorithms 
+have same performance when the inter-arrival time of failures is sparse, except 
+for HC. For small $\theta_{\gamma}$ values, DR significantly reduces the number 
+of tasks.}
+
+\begin{table*}[!htb]
+	\centering
+	\setlength{\tabcolsep}{4pt}
+	\begin{tabular}{l  r r | r r | r r | r r}
+		\hline
+		\multirow{2}{*}{Workflow} & \multicolumn{2}{c|}{HC} & \multicolumn{2}{c|}{VR} & \multicolumn{2}{c|}{SR} & \multicolumn{2}{c}{DR} \\
+		& min($\theta_{\gamma}$) & max($\theta_{\gamma}$) & min($\theta_{\gamma}$) & max($\theta_{\gamma}$) & min($\theta_{\gamma}$) & max($\theta_{\gamma}$) & min($\theta_{\gamma}$) & max($\theta_{\gamma}$) \\ \hline
+		LIGO 		& 9765	& 2300	& 1113	& 966	& 1569	& 924	& 939	& 848 \\
+		Montage 		& 2467	& 613 	& 469	& 331	& 694	& 333	& 411	& 335 \\
+		CyberShake 	& 30470  	& 1014	& 849	& 714	& 1480	& 712	& 786	& 712 \\
+		Epigenomics	& 6134	& 369	& 1016	& 311	& 3304	& 335	& 455	& 202 \\
+		SIPHT		&18803	& 1693	& 1158	& 1016	& 1640	& 1015	& 1113	& 1018 \\ \hline
+	\end{tabular}
+	\caption{\rev{(\emph{Experiment 1}): Average number of tasks for min and max values of $\theta_{\gamma}$ for each algorithm.}}
+	\label{tab:tasks}
+	\vspace{-10pt}
+\end{table*}
+
 
 \vspace{5pt}
 \noindent \textbf{Experiment 2.}
@@ -1291,12 +1318,12 @@ more frequent, i.e., low values for $T_d$, the dynamic estimation improves the w
 by up to 22\%. This improvement is due to the ability of the dynamic estimation process to update the 
 MLEs of $\theta_{\gamma}$ and adapt the clustering size. 
 
-\begin{figure}[!t]
+\begin{figure}[!b]
 	\centering
+	\vspace{-15pt}
 	\includegraphics[width=.95\linewidth]{versus.eps}
 	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function.}
 	\label{fig:expr_static_dynamic}
-	\vspace{-15pt}
 \end{figure}
 
 Fig.~\ref{fig:exp3} shows the performance evaluation of the dynamic and static estimations 
@@ -1307,19 +1334,10 @@ the dynamic estimation improves the makespan by up to 25.7\% \rev{when } compare
 the performance gain of dynamic estimation over static estimation is up to 27.3\%. For $T_c~=~1000$, 
 the performance gain is not significant since the inter-arrival time of failures changes frequently and 
 then the dynamic estimation process is not able to update swiftly. For $T_c~=~10000$, the performance 
-difference is not significant neither since the inter-arrival time is close to the workflow makespan. For 
-$\tau = 0.5 \cdot T_c$, the performance gain of dynamic over static estimation is not significant
+difference is \rev{negligible } since the inter-arrival time is close to the workflow makespan. For 
+$\tau = 0.5 \cdot T_c$, the gain of dynamic over static estimation is negligible
 and nearly constant (up to 9.1\%) since $\theta_{\gamma}$ has equal influence on the failure occurrence
 regardless of its value. 
-
-\rev{Our experimental results show that adaptive task re-clustering methods outcomes 
-better performance than simple static methods that retry failed clustered jobs. However,
-the performance gain may be significantly impacted if the job clustering size is not 
-adjusted to the nearly optimal size. The Dynamic Reclustering algorithm outperforms
-most of the methods for the 5 workflow applications, however, it yields poorer 
-performance when the workflow structure is mostly composed of pipelines and very
-short runtime tasks (e.g., Epigenomics workflow). In this case, Vertical Reclustering 
-would be more suitable.}
 
 \begin{figure}[!t]
 	\centering
@@ -1329,10 +1347,19 @@ would be more suitable.}
 	\small (b) $\tau=0.3 \cdot T_c$ \\ \vspace{4pt}
 	\includegraphics[width=.95\linewidth]{pulse_t50.eps} \\
 	\small (c) $\tau=0.5 \cdot T_c$
-	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a step function pulse function.}
+	\caption{(\emph{Experiment 3}): Performance evaluation of the static and dynamic estimations for the CyberShake workflow using a pulse function.}
 	\label{fig:exp3}
 	\vspace{-15pt}
 \end{figure}
+
+\rev{Our experimental results show that adaptive task re-clustering methods outcomes 
+better performance than simple static methods that retry failed clustered jobs. However,
+the performance gain may be significantly impacted if the job clustering size is not 
+adjusted to the nearly optimal size. The Dynamic Reclustering algorithm outperforms
+most of the methods for the 5 workflow applications, however, it yields poorer 
+performance when the workflow structure is mostly composed of pipelines and very
+short runtime tasks (e.g., Epigenomics workflow). In this case, Vertical Reclustering 
+would be more suitable.}
 
 
 
