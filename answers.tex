@@ -127,7 +127,8 @@ I'd like to see more description on the workflow execution traces instead of jus
 The experiments are conducted against five different workflows. I'd like to see some generic comparison of these workflows. That is, what algorithms are good for what kind of workflow. A summary would be good at the end of the experimental results.
 \end{review}
 
-\answer{The Dynamic Reclustering algorithm outperforms most of the methods for the 5 workflow applications, however, it yields poorer performance when the workflow structure is mostly composed of pipelines and very short runtime tasks (e.g., Epigenomics workflow). We added a paragraph to the end of the experiments section to summarize the experimental results.}
+\answer{The Dynamic Reclustering algorithm outperforms most of the methods for the 5 workflow applications, however, it yields poorer 
+performance when the workflow structure is irregular (e.g., SIPHT workflow). We added a paragraph to the end of the experiments section to summarize the experimental results.}
 
 
 
@@ -186,7 +187,8 @@ On the other hand, the authors do not aim to analyse the results with respect to
 
 \answer{Due to the space constraint, we added to the end of Section 4.3 a brief discussion on general recommendations based on the workflow structure and the proposed strategies:}
 
-\revised{Our experimental results show that adaptive task re-clustering methods outcomes better performance than simple static methods that retry failed clustered jobs. However, the performance gain may be significantly impacted if the job clustering size is not adjusted to the nearly optimal size. The Dynamic Reclustering algorithm outperforms most of the methods for the 5 workflow applications, however, it yields poorer performance when the workflow structure is mostly composed of pipelines and very short runtime tasks (e.g., Epigenomics workflow). In this case, Vertical Reclustering would be more suitable.}
+\revised{Our experimental results show that adaptive task re-clustering methods outcomes better performance than simple static methods that retry failed clustered jobs. However, the performance gain may be significantly impacted if the job clustering size is not adjusted to the nearly optimal size. The Dynamic Reclustering algorithm outperforms most of the methods for the 5 workflow applications, however, it yields poorer 
+performance when the workflow structure is irregular (e.g., SIPHT workflow). In this case, Vertical Reclustering would be more suitable.}
 
 
 
