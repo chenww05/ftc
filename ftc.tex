@@ -465,8 +465,8 @@ $\bm s$, $\bm t$, and $\bm \gamma$ are random variables of all tasks instead of 
 
 Probability distributions such as Weibull and Gamma are usually described with two parameters: the 
 \emph{shape parameter}~($\phi$), and the \emph{scale parameter}~($\theta$). The shape parameter 
-affects the shape of a distribution, while the scale parameter affects the stretching or shrinking of a 
-distribution. Both parameters control the characteristics of a distribution. For example, the mean of a 
+affects the shape of a distribution\rev{, for example, whether it is symmetrical or not. }The scale parameter affects the stretching or shrinking of a 
+distribution\rev{, for example, whether it is approximately uniform or it has a peak. }Both parameters control the characteristics of a distribution. For example, the mean of a 
 Gamma distribution is $\phi\theta$ and the Maximum Likelihood Estimation (MLE) is $(\phi-1)\theta$. 
 
 Let $a$, $b$ be the parameters of the prior knowledge, $D$ the observed dataset, and $\theta$ the 
@@ -489,7 +489,7 @@ Therefore, once observed data $D$, the posterior distribution of $\theta$ is det
 \end{eqnarray}
 where $D$ is the observed inter-arrival time of failures~$X$, the observed task runtime~$RT$, 
 or the observed system overheads~$S$; $p(\theta|D,a, b)$ is the posterior we aim to compute; 
-$p(\theta|a, b)$ is the prior, which we already known from previous works; and $p(D|\theta)$ is 
+$p(\theta|a, b)$ is the prior, which we \rev{have }already known from previous works; and $p(D|\theta)$ is 
 the likelihood. We define $X=\{x_1, x_2, \dots, x_n\}$ as the observed data of the inter-arrival time 
 of failures~$\bm\gamma$ during the execution. Similarly, we define $RT=\{t_1, t_2, \dots, t_n\}$, 
 and  $S=\{s_1, s_2, \dots, s_n\}$ as the observed data of task runtime~$\bm t$ and system 
@@ -510,6 +510,7 @@ as follows:
 	\label{eq:theta-1}
  \end{equation}
 
+\rev{Equation~\ref{eq:theta-1} means the posterior estimation of $\theta_{\gamma}$ is first controlled by the prior knowledge ($a_{\gamma}$ and $b_{\gamma}$) and then gradually adjusted by observed data ($n$ and $x_i$). }
 The MLE (Maximum Likelihood Estimation) of the scale parameter $\theta_{\gamma}$ is defined as:
 
 \begin{equation}
@@ -546,7 +547,7 @@ as $\Gamma(a_s, b_s)$, the MLE of $\theta_s$ is thus defined as follows:
 	\label{eq:mle_theta_s}
 \end{equation}
 
-We have assumed the task runtime, system overheads, and inter-arrival time between failures 
+We have assumed \rev{that }the task runtime, system overheads, and inter-arrival time between failures 
 are a function of task types. The reason is that tasks at different levels (the deepest depth from 
 the entry task to this task) are often of different types in scientific workflows. 
 Given $n$ independent tasks at the same workflow level and the distribution of the 
@@ -578,7 +579,7 @@ Therefore, the job runtime (regardless of whether it succeeds of fails) is defin
 
 Let $N$ be the retry time of clustered jobs. The process to run and retry a job is a Bernoulli trial 
 with exactly two possible outcomes: \emph{success} or \emph{failure}. Once a job fails, it will be 
-re-executed until it is eventually successfully executed (since failures are assumed transient). 
+re-executed until it is eventually successfully \rev{completed }(since failures are assumed transient). 
 For a given job runtime $d_i$, the retry time $N_i$ of a clustered job $i$ is defined as follows:
 \begin{eqnarray}
 	\displaystyle
@@ -615,12 +616,10 @@ has the same distribution parameters, therefore:
 \begin{eqnarray} 
 	\label{eq:MLE-M}
 	\bm{M}&=&\cfrac{1}{r} \times \sum\nolimits_{i=1}^{\tfrac{n}{k}}M_i\sim\Gamma \nonumber\\
-	MLE(\bm{M})&=&\tfrac{n}{rk} \times MLE(M_i)\\
+	MLE(\bm{M})&=&\tfrac{n}{rk} \times MLE(M_i)\nonumber\\
 	&=&\tfrac{n}{rk} \times MLE(d_i)e^{\left(MLE(d_i)MLE\left(\tfrac{1}{\theta_{\gamma}}\right)\right)^{\phi_{\gamma}}} 
 \end{eqnarray}
-where $r$ is the number of resources. 
-
-In this work, we consider a compute cluster as a homogeneous cluster, which is often the case 
+where $r$ is the number of resources. In this work, we consider a compute cluster as a homogeneous cluster, which is often the case 
 in dedicated clusters and cloud platforms. 
 
 Let $k^*$ be the optimal clustering size that minimizes Equation~\ref{eq:MLE-M}. $\arg min$  
@@ -646,12 +645,12 @@ i.e., the value of $k$ such that $MLE(\bm{M})$ attains its minimum value:
 	\label{fig:model-size}
 \end{figure}
 
-It is difficult to find a analytical solution of $k^*$. However, there are a few constraints that can 
+It is difficult to find \rev{an }analytical solution of $k^*$. However, there are a few constraints that can 
 simplify the estimation of $k^*$: (\emph{i}) $k$ can only be an integer in practice; (\emph{ii}) 
 $MLE(\bm{M})$ is continuous and has one minimum. Methods such as Newton's method can be 
 used to find the minimal $MLE(\bm{M})$ and the corresponding $k$. Fig.~\ref{fig:model-makespan} 
 shows an example of $MLE(\bm{M})$ using static estimation with a low task failure rate ($\theta_{\gamma}=40$s), 
-a medium task failure rate ($\theta_{\gamma}=30$s) and a high task failure rate ($\theta_{\gamma}=20$s). 
+a medium task failure rate ($\theta_{\gamma}=30$s) and a high task failure rate ($\theta_{\gamma}=20$s) \rev{respectively}. 
 Other parameters are $n=50$, $\phi_{t}=5$s and $\phi_{s}=50$s, and the scale parameter $\theta_{ts}$ is 
 defined as 2 for simplicity. These parameters are close to the parameters of tasks at the level of 
 the \texttt{mProjectPP} tasks of the Montage workflow (Section \ref{sec:experiments}).
