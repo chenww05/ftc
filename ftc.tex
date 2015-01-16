@@ -264,7 +264,7 @@ group fine-grained tasks according to the processing capacity and the network ba
 current available resources.
 
 \rev{Several works have addressed the workflow-mapping problem by
-using DAG scheduling heuristics~\cite{Topcuoglu2002, Blythe2005, Braun2001, Rubing2005, 
+using DAG scheduling heuristics~\cite{Topcuoglu2002, Blythe2005, Rubing2005, 
 Wieczorek2005, Kalayci2010}.
 In particular, HTCondor~\cite{Kalayci2010} uses matchmaking to avoid scheduling tasks to 
 compute nodes without sufficient resources (CPU power, etc.). In a previous work~\cite{Chen2012}, 
@@ -282,7 +282,7 @@ and online context, where none or few characteristics about the application or r
 in advance. Although these techniques significantly reduce the impact of the scheduling and queuing 
 overheads, they do not address the fault tolerance problem.
 
-Machine learning techniques have been used to predict execution time~\cite{Rubing2009, 1015660, 
+Machine learning techniques have been used to predict execution time~\cite{Rubing2009,  
 1542747, da2013toward} and system overheads~\cite{Chen2011}, and to develop probability distributions 
 for transient failure characteristics. Duan et.al.~\cite{Rubing2009} used Bayesian network to model and 
 predict workflow task runtimes. The important attributes (e.g. external load, arguments, etc.) are dynamically 
@@ -481,7 +481,6 @@ its foundations on prior works on failure and performance analyzes~\cite{Schroed
 Sun2003, Chen2011}.
 
 Therefore, once observed data $D$, the posterior distribution of $\theta$ is determined as follows:
-
 \begin{eqnarray}
 	\displaystyle  
 	p(\theta|D, a, b)&=&\tfrac{p(\theta|a, b)\times p(D|\theta)}{p(D|a, b)}\nonumber  \\
@@ -1279,7 +1278,7 @@ of tasks.}
 	\end{tabular}
 	\caption{\rev{(\emph{Experiment 1}): Average number of tasks for min and max values of $\theta_{\gamma}$ for each algorithm.}}
 	\label{tab:tasks}
-	\vspace{-10pt}
+	\vspace{-15pt}
 \end{table*}
 
 
@@ -1416,16 +1415,18 @@ experiments conducted on FutureGrid, which is supported by NSF under grant Futur
 % biographies
 %\newpage
 
-
+\vspace{-10pt}
 
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{rafael.eps}}]{Rafael Ferreira da Silva} is a Computer Scientist at the USC Information Sciences Institute. He received his PhD in Computer Science from INSA-Lyon, France, in 2013. His research focuses on the optimization of the execution of scientific workflows on heterogeneous distributed systems. See http://www.rafaelsilva.com for further information.
 \end{IEEEbiography}
 
-%\newpage
+\vspace{-10pt}
 
+%\newpage
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{deelman.eps}}]{Ewa Deelman} is a Research Associate Professor at the USC Computer Science Department and a Assistant Division Director at the USC Information Sciences Institute. Her research interests include the design and exploration of distributed scientific environments, with emphasis on workflow management. She received her PhD in Computer Science from the Rensselaer Polytechnic Institute in 1997. 
 \end{IEEEbiography}
 
+\vspace{-10pt}
 
 \begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{thomas.eps}}]{Thomas Fahringer} received the Ph.D. degree in 1993 from the Vienna University of Technology. Since 2003, he has been a full professor of computer science in the Institute of Computer Science, University of Innsbruck, Austria. His main research interests include software architectures, programming paradigms, compiler technology, performance analysis, and prediction for parallel and distributed systems. 
 \end{IEEEbiography}
