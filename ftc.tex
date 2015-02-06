@@ -84,7 +84,7 @@
 % papers don't need this extra clearance.)
 
 
-\newcommand{\rev}[1]{\color{blue} #1\color{black}}
+\newcommand{\rev}[1]{\color{black} #1\color{black}}
 \newcommand{\note}[1]{\color{red} \textbf{[TODO]} #1\color{black}}
 
 
@@ -94,20 +94,20 @@
 \IEEEcompsoctitleabstractindextext{%
 \begin{abstract}
 %\boldmath
-\rev{Task clustering has been proven to be an effective method to reduce execution overhead 
+Task clustering has been proven to be an effective method to reduce execution overhead 
 and improve the computational granularity of scientific workflow tasks executing on distributed 
-resources}. However, a job composed of multiple tasks may have a higher risk of suffering from 
+resources. However, a job composed of multiple tasks may have a higher risk of suffering from 
 failures than a single task job. Therefore, we conduct a theoretical analysis on the impact of 
 transient failures on the runtime performance of scientific workflow executions. We propose a 
 general task failure modeling framework that uses a Maximum Likelihood estimation-based 
 parameter estimation process to model these performance issues. We further propose 3 
-fault-tolerant static clustering strategies to improve the runtime performance of \rev{workflow 
-executions } in faulty execution environments. Experimental results show that failures can have 
+fault-tolerant static clustering strategies to improve the runtime performance of workflow 
+executions in faulty execution environments. Experimental results show that failures can have 
 significant impact on executions where task clustering policies are not fault-tolerant, and that our 
-\rev{solutions } yield makespan improvements in such scenarios. In addition, we propose a dynamic 
-task clustering strategy \rev{to optimize } the workflow's makespan by dynamically adjusting the 
-clustering granularity when failures arise. A trace-based simulation of \rev{five } real workflows shows 
-that our dynamic method is able to adapt \rev{to } unexpected behaviors, and yields better makespan 
+solutions yield makespan improvements in such scenarios. In addition, we propose a dynamic 
+task clustering strategy to optimize the workflow's makespan by dynamically adjusting the 
+clustering granularity when failures arise. A trace-based simulation of five real workflows shows 
+that our dynamic method is able to adapt to unexpected behaviors, and yields better makespan 
 when compared to static methods.
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
@@ -162,12 +162,12 @@ scientific workflows, fault tolerance, parameter estimation, failure, machine le
 \IEEEPARstart{S}{cientific} workflows can be composed of many fine computational granularity 
 tasks in which the runtime may be shorter than the system overhead---the 
 period of time during which miscellaneous work other than the user'€™s computation is performed. 
-Task clustering~\cite{Chen2013a, Singh2008, Chen2012, Ferreira-granularity-2013, Maheshwari2012, 
+Task clustering~\cite{Singh2008, Chen2012, Ferreira-granularity-2013, Maheshwari2012, 
 FerreiradaSilva-CCPE-2014, Integration2012} merges several short tasks into a single job such 
 that the job runtime is increased and the overall system overhead is decreased. Task clustering 
 \rev{is the most common technique } used to address execution overheads and increase the 
 computational granularity of workflow tasks \rev{executed } on distributed 
-resources~\cite{Singh2008, Chen2013a, Chen2012, Ferreira-granularity-2013}.
+resources~\cite{Singh2008, Chen2012, Ferreira-granularity-2013}.
 However, existing clustering strategies ignore or underestimate the impact of failures on the system, 
 despite \rev{their significant effect on } large-scale distributed 
 systems~\cite{Zhang2004, Tang1990, Schroeder2006, Sahoo2004}, such as 
@@ -238,7 +238,7 @@ of network system errors and failures~\cite{Sahoo2004}, and the development and
 analysis of techniques to prevent and mitigate service failures~\cite{Oppenheimer2002}.
 
 In scientific workflow management systems (WMS), fault tolerance issues have also 
-been addressed. For instance, the Pegasus WMS~\cite{Deelman2005, Deelman-FGCS-2014} has incorporated 
+been addressed. For instance, the Pegasus WMS~\cite{Deelman-FGCS-2014} has incorporated 
 a task-level monitoring system, which retries a job if a failure is detected. Provenance data
 is also tracked and used to analyze the cause of failures~\cite{Samak2011}. A survey of
 fault detection, prevention, and recovery techniques in current grid WMS
@@ -310,7 +310,7 @@ a workflow task, and the edges represent dependencies between the tasks that con
 in which tasks are executed. \emph{Dependencies} typically represent data-flow dependencies in the 
 application, where the output files produced by one task are used as inputs of another task. Each 
 \emph{task} is a computational program and a set of parameters that need to be executed. This model 
-fits several WMS such as Pegasus~\cite{Deelman2005, Deelman-FGCS-2014}, 
+fits several WMS such as Pegasus~\cite{Deelman-FGCS-2014}, 
 Askalon~\cite{fahringer2007askalon}, and Taverna~\cite{Oinn2004}. 
 
 In this work, we assume a single execution site with multiple compute resources, such as virtual machines 
@@ -707,7 +707,7 @@ task clustering methods---Selective Reclustering (\emph{SR}), Dynamic Reclusteri
 \rev{(\emph{k}) } of the jobs to reduce the impact of task failures on the workflow 
 execution. These methods are based on the Horizontal Clustering (HC)~\cite{Singh2008} 
 technique that has been implemented and used in the Pegasus 
-workflow management system (WMS)~\cite{Deelman2005, Deelman-FGCS-2014}.
+workflow management system (WMS)~\cite{Deelman-FGCS-2014}.
 
 \vspace{5pt}
 \noindent \textbf{Horizontal Clustering} (\emph{HC}). 
@@ -716,7 +716,7 @@ clustering granularity (number of tasks within a cluster) of a clustered job is 
 who defines either the number of tasks per clustered job (\emph{clusters.size}), or the number of 
 clustered jobs per horizontal level of the workflow (\emph{clusters.num}). For simplicity, we set 
 \emph{clusters.num} to be the same as the \rev{amount } of available resources. 
-In~\cite{Chen2013a,Chen2013b}, we have evaluated the runtime performance for different clustering 
+In~\cite{Chen2013b}, we have evaluated the runtime performance for different clustering 
 granularities. Algorithm~\ref{alg:evaluation-hc} shows the pseudocode for HC. The \texttt{Clustering} 
 and \texttt{Merge} procedures are \rev{invoked } in the initial task clustering process, while the 
 \texttt{Reclustering} procedure is invoked when a failed job is detected by the monitoring system. 
@@ -1030,7 +1030,7 @@ Epigenomics is shown in Fig.~\ref{fig:evaluation-shape-genome}.
 The SIPHT workflow~\cite{SIPHT} conducts a wide search for small untranslated RNAs (sRNAs) that 
 regulates several processes such as secretion or virulence in bacteria. The kingdom-wide prediction and 
 annotation of sRNA encoding genes involves a variety of individual programs that are executed in the 
-proper order using Pegasus~\cite{Deelman2005, Deelman-FGCS-2014}. These involve the prediction of $\rho$-independent 
+proper order using Pegasus~\cite{Deelman-FGCS-2014}. These involve the prediction of $\rho$-independent 
 transcriptional terminators, BLAST (Basic Local Alignment Search Tools~\cite{BLAST}) comparisons 
 of the inter genetic regions of different replicons and the annotations of any sRNAs that are found. 
 A simplified structure of the SIPHT workflow is shown in Fig.~\ref{fig:evaluation-shape-sipht}. 
