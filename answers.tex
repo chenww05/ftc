@@ -100,7 +100,7 @@ I'd like to see more quantified clarification on the ``scheduling overhead'' and
 In Page 3, the formula for $runtime_l$, $t_2$ and $t_3$ have no data dependency, they should be easily parallelized. However they are assumed for only sequential execution in order to make the formulator $runtime_l$ holds. It would be good to provide more use cases to justify the sequential assumption.
 \end{review}
 
-\answer{We agree that since $t_2$ and $t_3$ have no data dependency, they could be run in parallel. However, this is true only when $t_2 > s_2$ and $t_3 > s_3$, which is not always the case as shown in Table 1. We updated the text to compute the workflow on Fig. 3 (left) as $runtime_l= s_1+t_1+\max(s_2,s_3)+\max(t_2,t_3)+s_4+t_4$, and updated the condition that $runtime_l > runtime_r$ as long as $c_1 < \max(s_2,s_3)$.}
+\answer{We agree that since $t_2$ and $t_3$ have no data dependency, they could be run in parallel. However, this is true only when $t_2 > s_2$ and $t_3 > s_3$, which is not always the case as shown in Table 1. We updated the text to compute the workflow on Fig. 3 (left) as $runtime_l= s_1+t_1+\max(s_2 + t_2, s_3 + t_3)+ s_4+t_4$, and updated the condition that $runtime_l > runtime_r$ as long as $c_1 < \max(s_2,s_3)$.}
 
 
 
