@@ -84,7 +84,7 @@
 % papers don't need this extra clearance.)
 
 
-\newcommand{\rev}[1]{\color{black} #1\color{black}}
+\newcommand{\rev}[1]{\color{black} #1\color{blue}}
 \newcommand{\note}[1]{\color{red} \textbf{[TODO]} #1\color{black}}
 
 
@@ -164,12 +164,11 @@ tasks in which the runtime may be shorter than the system overhead---the
 period of time during which miscellaneous work other than the user'€™s computation is performed. 
 Task clustering~\cite{Singh2008, Chen2012, Ferreira-granularity-2013, Maheshwari2012, 
 FerreiradaSilva-CCPE-2014, Integration2012} merges several short tasks into a single job such 
-that the job runtime is increased and the overall system overhead is decreased. Task clustering 
-\rev{is the most common technique } used to address execution overheads and increase the 
-computational granularity of workflow tasks \rev{executed } on distributed 
+that the job runtime is increased and the overall system overhead is decreased. Task clustering is the most common technique used to address execution overheads and increase the 
+computational granularity of workflow tasks executed on distributed 
 resources~\cite{Singh2008, Chen2012, Ferreira-granularity-2013}.
 However, existing clustering strategies ignore or underestimate the impact of failures on the system, 
-despite \rev{their significant effect on } large-scale distributed 
+despite their significant effect on large-scale distributed 
 systems~\cite{Zhang2004, Tang1990, Schroeder2006, Sahoo2004}, such as 
 Grids~\cite{Bresnahan2011, Deelman2004, Rubing2005, FerreiradaSilva-CGWS-2013} and 
 Clouds~\cite{Deelman2008, Berriman2010, Bresnahan2011}. 
@@ -180,13 +179,13 @@ A clustered job consists of multiple tasks. If a task within a clustered job fai
 by unexpected events during its computation), the job is marked as failed, even though tasks 
 within the same job have successfully completed their execution. Several techniques have
 been developed to cope with the negative impact of job failures on the execution of scientific
-workflows. The most common technique is to \rev{retry } the failed job~\cite{5071878, 5671856, 4534303}. 
+workflows. The most common technique is to retry the failed job~\cite{5071878, 5671856, 4534303}. 
 However, retrying a clustered job can be expensive since completed tasks within the job should
 be recomputed, thereby resource cycles are wasted. In addition, there is no guarantee that 
-\rev{recomputed tasks will succeed}. As an alternative, jobs can be replicated to avoid failures 
+recomputed tasks will succeed. As an alternative, jobs can be replicated to avoid failures 
 specific to a worker node~\cite{Plankensteiner2009}. However, job replication
 may also waste resources, in particular for long-running jobs. To reduce resource waste, job
-executions can be periodically checkpointed to limit the \rev{amount of retried work}. However, 
+executions can be periodically checkpointed to limit the amount of retried work. However, 
 the overhead produced for performing checkpointing can limit its benefits~\cite{Zhang2004}. 
 
 In this work, we propose three fault-tolerant task clustering methods to improve existing 
@@ -207,12 +206,12 @@ affects the shape of a distribution, while the scale parameter affects the stret
 of a distribution. 
 
 The two first fault-tolerant task clustering methods were introduced and evaluated in~\cite{Chen2012} 
-on two real scientific workflows. In this work, we \rev{extend our } previous work by studying 
+on two real scientific workflows. In this work, we extend our previous work by studying 
 1) the performance gain of using fault-tolerant task clustering methods over an 
 existing task clustering technique on a larger set of workflows (five widely used scientific 
 applications); 2) the performance impact of the variance of the distribution of the 
 task runtimes, the system overheads, and the inter-arrival time of failures on the workflow's 
-makespan \rev{(turnaround time to execute all workflow tasks)}; and 3) the performance 
+makespan (turnaround time to execute all workflow tasks); and 3) the performance 
 impact of dynamic and static failure estimations with variation of the inter-arrival time of failures 
 on the workflow's execution.
 
@@ -230,7 +229,7 @@ manuscript closes with a discussion and conclusions.
 \section{Related Work}
 \label{sec:related}
 
-Failure analysis and modeling \rev{of } computer systems have been widely studied in 
+Failure analysis and modeling of computer systems have been widely studied in 
 the past two decades. These studies include, for instance, the classification of 
 common system failure characteristics and distributions~\cite{Tang1990}, root 
 cause analysis of failures~\cite{Schroeder2006}, empirical and statistical analysis 
@@ -263,14 +262,14 @@ network bandwidth. Liu and Liao~\cite{Liu2009} proposed an adaptive scheduling a
 group fine-grained tasks according to the processing capacity and the network bandwidth of the 
 current available resources.
 
-\rev{Several works have addressed the workflow-mapping problem by
+Several works have addressed the workflow-mapping problem by
 using DAG scheduling heuristics~\cite{Topcuoglu2002, Blythe2005, Rubing2005, 
 Wieczorek2005, Kalayci2010}.
 In particular, HTCondor~\cite{Kalayci2010} uses matchmaking to avoid scheduling tasks to 
 compute nodes without sufficient resources (CPU power, etc.). Previously, 
 we adopted a similar approach to avoid schedule workflow tasks to compute nodes with a high 
 failure rate~\cite{Chen2012}. In this work, we focus on the performance gain of task clustering, in particular on
-how to adjust the clustering size to balance the cost of task retry and of the scheduling overheads.}
+how to adjust the clustering size to balance the cost of task retry and of the scheduling overheads.
 
 The task granularity control has also been addressed in scientific workflows. For instance, Singh et 
 al.~\cite{Singh2008} proposed a level- and label-based clustering. In level-based clustering, tasks 
@@ -340,32 +339,31 @@ system and is composed of one or more tasks.
 \noindent \textbf{Workflow Engine.} Executes jobs defined by the workflow in order of their 
 dependencies. Only jobs that have all their parent jobs completed are submitted to the Job 
 Scheduler. The workflow engine relies on the resources (compute, storage, and network) 
-defined in the executable workflow to perform computations. \rev{The time span between the 
-job release and its submission to the } Job Scheduler is denoted as the \textbf{workflow 
+defined in the executable workflow to perform computations. The time span between the 
+job release and its submission to the Job Scheduler is denoted as the \textbf{workflow 
 engine delay}.
 
 \vspace{4pt}
 \noindent \textbf{Job Scheduler and Local Queue.} Manage individual workflow jobs and 
-supervise their execution on local and remote resources. The \rev{time span between the
-job submission to the scheduler and the beginning of its execution } in a worker node is 
-denoted as the \textbf{queue delay}. \rev{This delay } reflects both the efficiency of the 
+supervise their execution on local and remote resources. The time span between the
+job submission to the scheduler and the beginning of its execution in a worker node is 
+denoted as the \textbf{queue delay}. This delay reflects both the efficiency of the 
 scheduler and the resource availability. 
 
 \vspace{4pt}
-\noindent \textbf{Job Wrapper.} Extracts tasks from clustered jobs and executes them \rev{on } 
+\noindent \textbf{Job Wrapper.} Extracts tasks from clustered jobs and executes them on 
 the worker nodes. The \textbf{clustering delay} is the elapsed time of the extraction process.
 
 We extend the DAG model to be overhead aware (o-DAG). System overheads play an 
 important role in workflow execution and constitute a major part of the overall runtime when 
-tasks are poorly clustered~\cite{Chen2011}, \rev{in particular for tasks with very short runtimes. }
-Fig.~\ref{fig:model-odag} \rev{illustrates } how we augment a DAG to be an o-DAG with the
+tasks are poorly clustered~\cite{Chen2011}, in particular for tasks with very short runtimes. Fig.~\ref{fig:model-odag} illustrates how we augment a DAG to be an o-DAG with the
 capability to represent system overheads ($s$) such as the workflow engine and queue delays. 
-In addition, system overheads also include data transfer \rev{delays } caused by staging-in and 
+In addition, system overheads also include data transfer delays caused by staging-in and 
 staging-out data. This classification of system overheads is based on our prior study on 
-workflow analysis~\cite{Chen2011}. \rev{Table~\ref{tab:model-overheads} summarizes the 
+workflow analysis~\cite{Chen2011}. Table~\ref{tab:model-overheads} summarizes the 
 system overheads and task runtimes of three real scientific workflows executed on a real 
 distributed platform. Details about these scientific workflow applications will be presented 
-in Section~\ref{sec:applications}.}
+in Section~\ref{sec:applications}.
 
 \begin{figure}[!t]
 	\centering
@@ -403,14 +401,14 @@ has a unique child $t_b$.
 
 Fig.~\ref{fig:model-hc} shows a simple example on how to perform HC, in which two tasks $t_2$ 
 and $t_3$, without data dependency between them, are merged into a clustered job $j_1$. Job 
-wrappers are often used to execute clustered jobs, but they add an overhead \rev{defined as } the 
+wrappers are often used to execute clustered jobs, but they add an overhead defined as the 
 clustering delay $c$. The clustering delay measures the difference between the sum of the actual 
 task runtimes and the job runtime seen by the job scheduler. After horizontal clustering, $t_2$ and 
 $t_3$ in $j_1$ can be executed in sequence or in parallel, if parallelism is supported.
-\rev{In a parallel environment}, the overall runtime for the workflow in Fig.~\ref{fig:model-hc}~(left) 
-is \rev{$runtime_l= s_1+t_1+\max(s_2 + t_2, s_3 + t_3) +s_4+t_4$}, while the overall runtime for the 
+In a parallel environment, the overall runtime for the workflow in Fig.~\ref{fig:model-hc}~(left) 
+is $runtime_l= s_1+t_1+\max(s_2 + t_2, s_3 + t_3) +s_4+t_4$, while the overall runtime for the 
 clustered workflow in Fig.~\ref{fig:model-hc}~(right) is $runtime_r=s_1+t_1+s_2+c_1+t_2+t_3+s_4+t_4$.  
-$runtime_l > runtime_r$ as long as \rev{$c_1 < \max(s_2,s_3)$}, which is often the case in many distributed 
+$runtime_l > runtime_r$ as long as $c_1 < \max(s_2,s_3)$, which is often the case in many distributed 
 systems since the clustering delay within a single execution node is usually shorter than the scheduling 
 overhead across different execution nodes. 
 
@@ -436,7 +434,7 @@ system overheads $s_4$, $s_5$, $s_6$, and $s_7$ are removed.
 	\vspace{-15pt}
 \end{figure}
 
-\rev{In } situations where the scheduling and queue overheads are important, the use of task clustering 
+In situations where the scheduling and queue overheads are important, the use of task clustering 
 techniques can significantly improve the workflow execution performance. In an ideal scenario, where
 failures are absent, the number of tasks in a clustered job (clustering size, $k$) would be defined
 as the number of all tasks in the queue divided by the number of available resources. Such a na\"{i}ve 
@@ -455,8 +453,8 @@ runtime $\bm t$, the system overhead $\bm s$, and the inter-arrival time of task
 
 In our prior work~\cite{Chen2011}, we have verified that system overheads $s$ better fits a Gamma or 
 a Weibull distribution rather than an Exponential or Normal distribution. Schroeder et al.~\cite{Schroeder2006} 
-have verified that the inter-arrival time of task failures \rev{better fits a Weibull distribution (defined by a shape 
-parameter of 0.78) rather } than the Lognormal and Exponential distributions. In~\cite{McConnel}, transient 
+have verified that the inter-arrival time of task failures better fits a Weibull distribution (defined by a shape 
+parameter of 0.78) rather than the Lognormal and Exponential distributions. In~\cite{McConnel}, transient 
 errors also follow a Weibull distribution. In~\cite{Sun2003, Iosup2008}, Weibull, Gamma and Lognormal 
 distributions are among the best fit to estimate task runtimes for a set of workflow traces. Without loss of 
 generality, we choose the Gamma distribution to model the task runtime~($\bm t$) and the system 
@@ -465,8 +463,8 @@ $\bm s$, $\bm t$, and $\bm \gamma$ are random variables of all tasks instead of 
 
 Probability distributions such as Weibull and Gamma are usually described with two parameters: the 
 \emph{shape parameter}~($\phi$), and the \emph{scale parameter}~($\theta$). The shape parameter 
-affects the shape of a distribution\rev{, for example, whether it is symmetrical or not. }The scale parameter affects the stretching or shrinking of a 
-distribution\rev{, for example, whether it is approximately uniform or it has a peak. }Both parameters control the characteristics of a distribution. For example, the mean of a 
+affects the shape of a distribution, for example, whether it is symmetrical or not. The scale parameter affects the stretching or shrinking of a 
+distribution, for example, whether it is approximately uniform or it has a peak. Both parameters control the characteristics of a distribution. For example, the mean of a 
 Gamma distribution is $\phi\theta$ and the Maximum Likelihood Estimation (MLE) is $(\phi-1)\theta$. 
 
 Let $a$, $b$ be the parameters of the prior knowledge, $D$ the observed dataset, and $\theta$ the 
@@ -488,7 +486,7 @@ Therefore, once observed data $D$, the posterior distribution of $\theta$ is det
 \end{eqnarray}
 where $D$ is the observed inter-arrival time of failures~$X$, the observed task runtime~$RT$, 
 or the observed system overheads~$S$; $p(\theta|D,a, b)$ is the posterior we aim to compute; 
-$p(\theta|a, b)$ is the prior, which we \rev{have }already known from previous works; and $p(D|\theta)$ is 
+$p(\theta|a, b)$ is the prior, which we have already known from previous works; and $p(D|\theta)$ is 
 the likelihood. We define $X=\{x_1, x_2, \dots, x_n\}$ as the observed data of the inter-arrival time 
 of failures~$\bm\gamma$ during the execution. Similarly, we define $RT=\{t_1, t_2, \dots, t_n\}$, 
 and  $S=\{s_1, s_2, \dots, s_n\}$ as the observed data of task runtime~$\bm t$ and system 
@@ -509,8 +507,7 @@ as follows:
 	\label{eq:theta-1}
  \end{equation}
 
-\rev{Equation~\ref{eq:theta-1} means the posterior estimation of $\theta_{\gamma}$ is first controlled by the prior knowledge ($a_{\gamma}$ and $b_{\gamma}$) and then gradually adjusted by observed data ($n$ and $x_i$). }
-The MLE (Maximum Likelihood Estimation) of the scale parameter $\theta_{\gamma}$ is defined as:
+Equation~\ref{eq:theta-1} means the posterior estimation of $\theta_{\gamma}$ is first controlled by the prior knowledge ($a_{\gamma}$ and $b_{\gamma}$) and then gradually adjusted by observed data ($n$ and $x_i$). The MLE (Maximum Likelihood Estimation) of the scale parameter $\theta_{\gamma}$ is defined as:
 
 \begin{equation}
 	MLE(\theta_{\gamma})=\displaystyle\tfrac{b_{\gamma}+\displaystyle\sum\nolimits_{i=1}^n{x_i^{\phi_{\gamma}}}}{a_{\gamma}+n+1}
@@ -546,7 +543,7 @@ as $\Gamma(a_s, b_s)$, the MLE of $\theta_s$ is thus defined as follows:
 	\label{eq:mle_theta_s}
 \end{equation}
 
-We have assumed \rev{that }the task runtime, system overheads, and inter-arrival time between failures 
+We have assumed that the task runtime, system overheads, and inter-arrival time between failures 
 are a function of task types. The reason is that tasks at different levels (the deepest depth from 
 the entry task to this task) are often of different types in scientific workflows. 
 Given $n$ independent tasks at the same workflow level and the distribution of the 
@@ -578,7 +575,7 @@ Therefore, the job runtime (regardless of whether it succeeds of fails) is defin
 
 Let $N$ be the retry time of clustered jobs. The process to run and retry a job is a Bernoulli trial 
 with exactly two possible outcomes: \emph{success} or \emph{failure}. Once a job fails, it will be 
-re-executed until it is eventually successfully \rev{completed }(since failures are assumed transient). 
+re-executed until it is eventually successfully completed (since failures are assumed transient). 
 For a given job runtime $d_i$, the retry time $N_i$ of a clustered job $i$ is defined as follows:
 \begin{eqnarray}
 	\displaystyle
@@ -644,12 +641,12 @@ i.e., the value of $k$ such that $MLE(\bm{M})$ attains its minimum value:
 	\label{fig:model-size}
 \end{figure}
 
-It is difficult to find \rev{an }analytical solution of $k^*$. However, there are a few constraints that can 
+It is difficult to find an analytical solution of $k^*$. However, there are a few constraints that can 
 simplify the estimation of $k^*$: (\emph{i}) $k$ can only be an integer in practice; (\emph{ii}) 
 $MLE(\bm{M})$ is continuous and has one minimum. Methods such as Newton's method can be 
 used to find the minimal $MLE(\bm{M})$ and the corresponding $k$. Fig.~\ref{fig:model-makespan} 
 shows an example of $MLE(\bm{M})$ using static estimation with a low task failure rate ($\theta_{\gamma}=40$s), 
-a medium task failure rate ($\theta_{\gamma}=30$s) and a high task failure rate ($\theta_{\gamma}=20$s) \rev{respectively}. 
+a medium task failure rate ($\theta_{\gamma}=30$s) and a high task failure rate ($\theta_{\gamma}=20$s) respectively. 
 Other parameters are $n=50$, $\phi_{t}=5$s and $\phi_{s}=50$s, and the scale parameter $\theta_{ts}$ is 
 defined as 2 for simplicity. These parameters are close to the parameters of tasks at the level of 
 the \texttt{mProjectPP} tasks of the Montage workflow (Section \ref{sec:experiments}).
@@ -704,7 +701,7 @@ Inappropriate task clustering may negatively impact the workflow makespan
 in faulty distributed environments. In this section, we propose three fault-tolerant 
 task clustering methods---Selective Reclustering (\emph{SR}), Dynamic Reclustering 
 (\emph{DR}), and Vertical Reclustering (\emph{VR})---that adjust the clustering size 
-\rev{(\emph{k}) } of the jobs to reduce the impact of task failures on the workflow 
+(\emph{k}) of the jobs to reduce the impact of task failures on the workflow 
 execution. These methods are based on the Horizontal Clustering (HC)~\cite{Singh2008} 
 technique that has been implemented and used in the Pegasus 
 workflow management system (WMS)~\cite{Deelman-FGCS-2014}.
@@ -715,12 +712,12 @@ Horizontal clustering merges multiple tasks within the same horizontal level of 
 clustering granularity (number of tasks within a cluster) of a clustered job is controlled by the user, 
 who defines either the number of tasks per clustered job (\emph{clusters.size}), or the number of 
 clustered jobs per horizontal level of the workflow (\emph{clusters.num}). For simplicity, we set 
-\emph{clusters.num} to be the same as the \rev{amount } of available resources. 
+\emph{clusters.num} to be the same as the amount of available resources. 
 In~\cite{Chen2013b}, we have evaluated the runtime performance for different clustering 
 granularities. Algorithm~\ref{alg:evaluation-hc} shows the pseudocode for HC. The \texttt{Clustering} 
-and \texttt{Merge} procedures are \rev{invoked } in the initial task clustering process, while the 
+and \texttt{Merge} procedures are invoked in the initial task clustering process, while the 
 \texttt{Reclustering} procedure is invoked when a failed job is detected by the monitoring system. 
-Fig.~\ref{fig:clustering-hc} shows an example \rev{for $k$ = 4}. As a result,  there are four tasks in 
+Fig.~\ref{fig:clustering-hc} shows an example for $k$ = 4. As a result,  there are four tasks in 
 a clustered job. During execution, three out of these tasks ($t_1$, $t_2$, $t_3$) fail. Due to the lack 
 of an adaptive mechanism, HC keeps retrying all of the four tasks in the following attempts until all 
 of them succeed.
@@ -765,16 +762,16 @@ of them succeed.
 
 \vspace{5pt}
 \noindent \textbf{Selective Reclustering} (\emph{SR}).
-The selective re-clustering technique, on the other hand, \rev{merges only failed tasks within
-a clustered job } into a new clustered job. Algorithm~\ref{alg:evaluation-sr}
+The selective re-clustering technique, on the other hand, merges only failed tasks within
+a clustered job into a new clustered job. Algorithm~\ref{alg:evaluation-sr}
 shows the pseudocode of the \texttt{Reclustering} procedure for the SR method. The 
 \texttt{Clustering} and \texttt{Merge} procedures are the same as those for HC.
 Fig.~\ref{fig:clustering-sr} shows an example of the SR method. In the first attempt, the 
 clustered job, composed of 4 tasks, has 3 failed tasks ($t_1$, $t_2$, $t_3$). Three failed 
 tasks are merged into a new clustered job $j_2$ and retried. This approach does not intend 
-to adjust the clustering size \rev{$k$}, although the clustering size \rev{may } become smaller 
-after each attempt since \rev{subsequent clustered jobs may have fewer tasks}. In the example,  
-\rev{$k$ } has decreased from 4 to 3. However, the optimal clustering size may not be 3, which limits 
+to adjust the clustering size $k$, although the clustering size may become smaller 
+after each attempt since subsequent clustered jobs may have fewer tasks. In the example,  
+$k$ has decreased from 4 to 3. However, the optimal clustering size may not be 3, which limits 
 the workflow performance if the $\theta_{\gamma}$ is small and $k$ should be decreased 
 as much as possible. The advantage of SR is that it is simple to implement and can be 
 incorporated into existing WMS with minimum impact on the workflow execution efficiency 
@@ -783,13 +780,13 @@ as shown in Section~\ref{sec:experiments}.
 \vspace{5pt}
 \noindent \textbf{Dynamic Reclustering} (\emph{DR}).
 The Selective Reclustering method does not analyze the clustering size, rather it 
-uses a self-adjusted approach to reduce \rev{$k$ } to the number of failed tasks. 
+uses a self-adjusted approach to reduce $k$ to the number of failed tasks. 
 However, the actual optimal clustering size may be larger or smaller than the number of
 failed tasks. Therefore, we propose the Dynamic Reclustering method that merges failed
 tasks into new clustered jobs in which the clustering size is set to $k^*$ according to 
 Equation~\ref{eq:k_optimal}. Algorithm~\ref{alg:evaluation-dr} shows the pseudocode 
 for the \texttt{Reclustering} procedure for the DR method. Fig.~\ref{fig:clustering-dr} shows 
-an example where \rev{$k$ is initially set to 4}. In the first attempt, 3 tasks within the 
+an example where $k$ is initially set to 4. In the first attempt, 3 tasks within the 
 clustered job have failed. Therefore, there are only 3 tasks to be retried, and thus the 
 clustering size should be decreased to 2 accordingly. Two new clustered jobs $j_2$ 
 (containing $t_1$ and $t_2$) and $j_3$ (containing $t_3$) are created. Reducing the 
@@ -915,8 +912,8 @@ shows an example of VR where tasks within a pipeline are initially merged into a
 clustered job ($t_1$, $t_2$, $t_3$, $t_4$). $t_3$ fails at the first attempt assuming it is 
 a failure-prone task (i.e., its $\theta_{\gamma}$ is short). VR then retries only the failed task 
 ($t_3$) and tasks that have not been yet completed ($t_4$) by merging them into a new 
-job $j_2$. In the second attempt, $j_2$ fails and then it is divided into two \rev{single task jobs }
-($t_3$ and $t_4$). Since the clustering size is \rev{minimum ($k = 1$)}, VR 
+job $j_2$. In the second attempt, $j_2$ fails and then it is divided into two single task jobs
+($t_3$ and $t_4$). Since the clustering size is minimum ($k = 1$), VR 
 performs no vertical clustering and continue retrying $t_3$ and $t_4$ (but 
 still following their data dependency) until they succeed. Algorithm \ref{alg:evaluation-vr} 
 shows the pseudocode for the VR method. 
@@ -1076,70 +1073,70 @@ has been verified in~\cite{WorkflowSim}.
 The simulated computing platform is composed of 20 single homogeneous core virtual 
 machines (worker nodes), which is the quota per user of some typical distributed 
 environments such as Amazon EC2~\cite{AmazonAWS} and FutureGrid~\cite{FutureGrid}. 
-\rev{This assumption is also consistent with the setting of many real execution 
-experiments~\cite{Juve2013}}. Each simulated virtual machine (VM) has 512MB of memory 
+This assumption is also consistent with the setting of many real execution 
+experiments~\cite{Juve2013}. Each simulated virtual machine (VM) has 512MB of memory 
 and the capacity to process 1,000 million instructions per second. The default network 
 bandwidth is 15MB according to the execution environment in FutureGrid, where our 
-traces were collected. \rev{In our execution model, the network bandwidth is the maximum 
-allowed data transfer speed between a pair of virtual machines per file}. By default, tasks at 
+traces were collected. In our execution model, the network bandwidth is the maximum 
+allowed data transfer speed between a pair of virtual machines per file. By default, tasks at 
 the same horizontal level are merged into 20 clustered jobs, which is a simple granularity 
 control selection based on the strength of task clustering (as shown in~\cite{Chen2013b}).
 
 
 \vspace{5pt}
-\noindent \textbf{\rev{Workload Dataset}.}
+\noindent \textbf{Workload Dataset.}
 We collected workflow execution traces~\cite{Juve2013, Chen2011} (including overhead 
-and task runtime information) from real runs of the \rev{5 scientific workflow applications 
-previously described}. The traces are used to feed the Workflow Generator~\cite{rafael2014community} 
-toolkit to \rev{create } synthetic workflows. The toolkit uses \rev{statistical data } gathered 
-from \rev{traces of } actual scientific workflow executions to generate \rev{realistic}, synthetic 
-workflows \rev{that resemble the real applications}. The number of inputs to be processed, 
+and task runtime information) from real runs of the 5 scientific workflow applications 
+previously described. The traces are used to feed the Workflow Generator~\cite{rafael2014community} 
+toolkit to create synthetic workflows. The toolkit uses statistical data gathered 
+from traces of actual scientific workflow executions to generate realistic, synthetic 
+workflows that resemble the real applications. The number of inputs to be processed, 
 the number of tasks in the workflow, and their composition determine the structure of the 
-generated workflow. \rev{Traces, profile data, and characterizations are freely available 
+generated workflow. Traces, profile data, and characterizations are freely available 
 online for the community~\cite{WorkflowArchive}. For the experiments a synthetic workflow
 was generated for each workflow application according to the characteristics shown in 
-Table~\ref{tab:evaluation-workflows}}.
+Table~\ref{tab:evaluation-workflows}.
 
 
 \vspace{5pt}
-\noindent \textbf{\rev{Experiment Sets}.}
+\noindent \textbf{Experiment Sets.}
 Three sets of experiments are conducted. Experiment 1 evaluates the performance of 
 our fault-tolerant clustering methods (DR, VR, and SR) over an existing task clustering 
-method (HC), which \rev{is devoided } of fault-tolerant mechanisms. The goal of the 
+method (HC), which is devoided of fault-tolerant mechanisms. The goal of the 
 experiment is to identify conditions where each method works best and worst. We also 
 evaluate the performance improvement for different $\theta_{\gamma}$ values (the 
-\rev{scale parameter of the distribution of the } inter-arrival time of task failures). 
+scale parameter of the distribution of the inter-arrival time of task failures). 
 $\theta_{\gamma}$ ranges from 1 to 10 times of the average task runtime such that the 
 workflows do not run continuously and the performance difference is visually explicit. 
 
 Experiment 2 evaluates the performance impact of the variation of the average task runtime per level 
 (defined as the average of all the tasks per level), and the average system overheads per level for one 
 scientific workflow application (CyberShake). In particular, we are interested in the performance of DR 
-based on the results of Experiment~1. For this experiment, we \rev{define } $\theta_{\gamma}=100$ since it 
+based on the results of Experiment~1. For this experiment, we define $\theta_{\gamma}=100$ since it 
 better highlights the difference between the four methods. We vary the average task runtime of the 
 CyberShake workflow (originally of about 23 seconds, Table~\ref{tab:evaluation-workflows}) by using 
 a multiplier factor $f_r \in [0.5, 1.3]$. We also vary the average system overheads (originally of about 50 
 seconds) by using a multiplier factor $f_o \in [0.2, 1.8]$.  
 
 Experiment 3 evaluates the performance of the static and dynamic estimation. 
-In the static estimation process, only the prior knowledge \rev{(shape and scale 
+In the static estimation process, only the prior knowledge (shape and scale 
 parameters of a Inverse-Gamma distribution for the inter-arrival time of failures, and a 
-Gamma distribution for the task runtime and system overhead) } is used to estimate 
-the MLEs of the unknown parameters \rev{(scales parameters of the inter-arrival 
+Gamma distribution for the task runtime and system overhead) is used to estimate 
+the MLEs of the unknown parameters (scales parameters of the inter-arrival 
 failures $\theta_\gamma$, the task runtime $\theta_t$, and the system overhead 
-$\theta_s$)}. In contrast, the dynamic estimation process leverages the runtime 
+$\theta_s$). In contrast, the dynamic estimation process leverages the runtime 
 data collected during the execution and update the MLEs respectively.
-\rev{In this experiment, the prior knowledge such as the shape parameter $a_{\gamma}$, 
+In this experiment, the prior knowledge such as the shape parameter $a_{\gamma}$, 
 and the scale parameter $b_{\gamma}$ of the inter-arrival time of failures $\theta_{\gamma}$ 
 are set manually based on our experience and other researchers' work~\cite{Schroeder2006}. 
 The runtime data, such as the series of the actual inter-arrival time of tasks $x_i$, 
 are collected during the simulation execution and used to adjust all the MLEs 
 based on 
-Equations~\ref{eq:mle_theta-1},~\ref{eq:mle_theta_t},~\ref{eq:mle_theta_s},~\ref{eq:mle_theta_d},~\ref{eq:mle_1_theta}.}
+Equations~\ref{eq:mle_theta-1},~\ref{eq:mle_theta_t},~\ref{eq:mle_theta_s},~\ref{eq:mle_theta_d},~\ref{eq:mle_1_theta}.
 
 
 \vspace{5pt}
-\noindent \textbf{\rev{Inter-arrival Time of Failures Function ($\theta_\gamma(t)$)}.}
+\noindent \textbf{Inter-arrival Time of Failures Function ($\theta_\gamma(t)$).}
 The experiments use two sets of the $\theta_{\gamma}$ function. The first is a step 
 function (Fig.~\ref{fig:evaluation_step_signal}), in which $\theta_{\gamma}$ is 
 decreased from 500 seconds to 50 seconds at time $T_d$. The step function of 
@@ -1223,10 +1220,10 @@ $\tau$ from $0.1T_c$ to $0.5T_c$.
 Fig.~\ref{fig:exp1} shows the performance of the Horizontal Clustering (HC), Selective 
 Reclustering (SR), Dynamic Reclustering (DR), and Vertical Reclustering (VR) methods 
 for the five workflows. DR, SR, and VR significantly improve the makespan when compared 
-to HC in a large scale. By decreasing the inter-arrival time \rev{of failures}~($\theta_{\gamma}$) and 
-\rev{thereby } generating more task failures, the performance improvement of our methods 
+to HC in a large scale. By decreasing the inter-arrival time of failures~($\theta_{\gamma}$) and 
+thereby generating more task failures, the performance improvement of our methods 
 becomes more significant. Among the three methods, DR and VR 
-perform consistently better than SR, which fails to improve the \rev{overall } makespan when $\theta_{\gamma}$ 
+perform consistently better than SR, which fails to improve the overall makespan when $\theta_{\gamma}$ 
 is small. The reason is that SR does not adjust $k$ according to the occurrence of failures. 
 
 The performance of VR is tightly coupled to the workflow structure and the average task runtime. 
@@ -1239,8 +1236,8 @@ workflows. In contrast, vertical clustering does not improve makespan in the Cyb
 (Fig.~\ref{fig:exp1}.c) since it does not have many pipelines (Fig.~\ref{fig:evaluation-shape-cybershake}). 
 In addition, the average task runtime of the CyberShake workflow is relatively short (around 23 
 seconds). Compared to horizontal clustering methods such as HC, SR, and DR, vertical clustering 
-does not generate long jobs and thus the performance of VR is less sensitive to \rev{the variation of the
-scale parameter of the distribution of the inter-arrival time of failures } $\theta_{\gamma}$. 
+does not generate long jobs and thus the performance of VR is less sensitive to the variation of the
+scale parameter of the distribution of the inter-arrival time of failures $\theta_{\gamma}$. 
 
 \begin{figure}[!b]
 	\centering
@@ -1256,12 +1253,12 @@ scale parameter of the distribution of the inter-arrival time of failures } $\th
 	\label{fig:expr_d}
 \end{figure}
 
-\rev{Table~\ref{tab:tasks} shows the average number of tasks for the minimum 
+Table~\ref{tab:tasks} shows the average number of tasks for the minimum 
 (min($\theta_{\gamma}$)) and maximum (max($\theta_{\gamma}$)) values of 
 the scale parameter of the inter-arrival time of failures. Most of the algorithms 
 have same performance when the inter-arrival time of failures is sparse, except 
 for HC. For small $\theta_{\gamma}$ values, DR significantly reduces the number 
-of tasks.}
+of tasks.
 
 \begin{table*}[!htb]
 	\centering
@@ -1276,7 +1273,7 @@ of tasks.}
 		Epigenomics	& 6134	& 369	& 1016	& 311	& 3304	& 335	& 455	& 202 \\
 		SIPHT		&18803	& 1693	& 1158	& 1016	& 1640	& 1015	& 1113	& 1018 \\ \hline
 	\end{tabular}
-	\caption{\rev{(\emph{Experiment 1}): Average number of tasks for min and max values of $\theta_{\gamma}$ for each algorithm.}}
+	\caption{(\emph{Experiment 1}): Average number of tasks for min and max values of $\theta_{\gamma}$ for each algorithm.}
 	\label{tab:tasks}
 	\vspace{-15pt}
 \end{table*}
@@ -1291,7 +1288,7 @@ By increasing the task runtime, HC has the most negative impact on the workflow'
 since HC retries the entire clustered job. SR and VR, however, retry only failed tasks that are 
 merged into a new clustered job. Although the selective and vertical methods 
 significantly speedup the execution when compared to HC, they have no mechanism to
-adjust the clustering size to the actual optimal clustering size \rev{$k$}, which may be larger or smaller
+adjust the clustering size to the actual optimal clustering size $k$, which may be larger or smaller
 than the number of failed tasks. By dynamically adjusting the clustering size, DR yields better
 makespans, in particular for high values of $\theta_t$.
 
@@ -1299,7 +1296,7 @@ Fig.~\ref{fig:expr_d} shows the performance (for the CyberShake workflow) of the
 methods when the system overhead is varied by using a multiplier factor $\theta_s$. 
 Similarly, with the increase of the system overhead, HC is significantly impacted while SR and VR 
 perform better. Again, for high $\theta_s$ values DR performs best. Note that the improvement 
-\rev{gained } by the fault-tolerant methods is less significant than the performance improvements shown
+gained by the fault-tolerant methods is less significant than the performance improvements shown
 in Fig.~\ref{fig:expr_t}. The reason is that clustered jobs may have multiple tasks but only one 
 system overhead per job.
 
@@ -1325,14 +1322,14 @@ MLEs of $\theta_{\gamma}$ and adapt the clustering size.
 \end{figure}
 
 Fig.~\ref{fig:exp3} shows the performance evaluation of the dynamic and static estimations 
-with a pulse function of $\theta_{\gamma}$. For this experiment, we \rev{define the width of 
-the pulse } $\tau = 0.1 \cdot T_c$, $0.3 \cdot T_c$, $0.5 \cdot T_c$, \rev{where $T_c$ is the period 
-of the wave } (Equation~\ref{eq:pulse_function}). For $\tau = 0.1 \cdot T_c$ (Fig.~\ref{fig:exp3}.a), 
-the dynamic estimation improves the makespan by up to 25.7\% \rev{when } compared to the static estimation case. For $\tau=0.3 \cdot T_c$ (Fig.~\ref{fig:exp3}.b), 
+with a pulse function of $\theta_{\gamma}$. For this experiment, we define the width of 
+the pulse $\tau = 0.1 \cdot T_c$, $0.3 \cdot T_c$, $0.5 \cdot T_c$, where $T_c$ is the period 
+of the wave (Equation~\ref{eq:pulse_function}). For $\tau = 0.1 \cdot T_c$ (Fig.~\ref{fig:exp3}.a), 
+the dynamic estimation improves the makespan by up to 25.7\% when compared to the static estimation case. For $\tau=0.3 \cdot T_c$ (Fig.~\ref{fig:exp3}.b), 
 the performance gain of dynamic estimation over static estimation is up to 27.3\%. For $T_c~=~1000$, 
 the performance gain is not significant since the inter-arrival time of failures changes frequently and 
 then the dynamic estimation process is not able to update swiftly. For $T_c~=~10000$, the performance 
-difference is \rev{negligible } since the inter-arrival time is close to the workflow makespan. For 
+difference is negligible since the inter-arrival time is close to the workflow makespan. For 
 $\tau = 0.5 \cdot T_c$, the gain of dynamic over static estimation is negligible
 and nearly constant (up to 9.1\%) since $\theta_{\gamma}$ has equal influence on the failure occurrence
 regardless of its value. 
@@ -1350,12 +1347,12 @@ regardless of its value.
 	\vspace{-15pt}
 \end{figure}
 
-\rev{Our experimental results show that adaptive task re-clustering methods results in 
+Our experimental results show that adaptive task re-clustering methods results in 
 better performance than simple static methods that retry failed clustered jobs. However,
 the performance gain may be significantly impacted if the job clustering size is not 
 adjusted to the nearly optimal size. The Dynamic Reclustering algorithm outperforms
 most of the methods for the 5 workflow applications, however, it yields poorer 
-performance when the workflow structure is irregular (e.g., SIPHT workflow). In this case, Vertical Reclustering would be more suitable.}
+performance when the workflow structure is irregular (e.g., SIPHT workflow). In this case, Vertical Reclustering would be more suitable.
 
 
 
@@ -1364,17 +1361,17 @@ performance when the workflow structure is irregular (e.g., SIPHT workflow). In 
 %
 \section{Conclusion and Future Work}
 
-In this work, we \rev{modeled } transient failures in a distributed environment and assess their influence 
-on task clustering. We \rev{proposed } three dynamic clustering methods to improve the fault tolerance 
-of task clustering and \rev{applied } them to five widely used scientific workflows. Experimental results 
-\rev{showed } that the proposed methods significantly improve the workflow's makespan when compared 
+In this work, we modeled transient failures in a distributed environment and assess their influence 
+on task clustering. We proposed three dynamic clustering methods to improve the fault tolerance 
+of task clustering and applied them to five widely used scientific workflows. Experimental results 
+showed that the proposed methods significantly improve the workflow's makespan when compared 
 to an existing task clustering method used in workflow management systems. In particular, the 
-Dynamic Reclustering method \rev{performed } best among all methods since it \rev{could } adjust the clustering 
+Dynamic Reclustering method performed best among all methods since it could adjust the clustering 
 size based on the Maximum Likelihood Estimation of task runtime, system overheads, and the 
-inter-arrival time of failures. The Vertical Reclustering method significantly \rev{improved } the performance 
-for  workflows that \rev{had } short task runtimes. The dynamic estimation process, which \rev{used } data 
-collected during the workflow execution, \rev{could } further improve the overall runtime in a dynamic 
-environment where the inter-arrival time of failures \rev{was } fluctuant.
+inter-arrival time of failures. The Vertical Reclustering method significantly improved the performance 
+for  workflows that had short task runtimes. The dynamic estimation process, which used data 
+collected during the workflow execution, could further improve the overall runtime in a dynamic 
+environment where the inter-arrival time of failures was fluctuant.
 
 This work focused on the evaluation of fault-tolerant task clustering techniques on homogeneous 
 environments. In the future, we plan to combine our work with fault-tolerant scheduling in heterogeneous 
@@ -1384,9 +1381,10 @@ vertical clustering can be performed either before or after horizontal clusterin
 bring different performance improvement. 
 %Our dynamic estimation using on-going data collected from the workflow execution can further improve the fault tolerance in a dynamic environment where the inter-arrival time of failures is fluctuant. 
 
-We \rev{assumed } that the inter-arrival time of transient failures is a function of task type, which is one of 
+We assumed that the inter-arrival time of transient failures is a function of task type, which is one of 
 the major impact factors. In the future, we plan to consider other factors such as the execution 
-site, which may improve the accuracy of the model. 
+site, which may improve the accuracy of the model. \rev{We also assumed that the network bandwidth is the maximum allowed data
+transfer speed between a pair of virtual machines per file. In the future, we plan to consider other models of network bandwidth.}
 
 
 
