@@ -84,7 +84,7 @@
 % papers don't need this extra clearance.)
 
 
-\newcommand{\rev}[1]{\color{black} #1\color{blue}}
+\newcommand{\rev}[1]{\color{blue} #1\color{black}}
 \newcommand{\note}[1]{\color{red} \textbf{[TODO]} #1\color{black}}
 
 
@@ -101,7 +101,7 @@ failures than a single task job. Therefore, we conduct a theoretical analysis on
 transient failures on the runtime performance of scientific workflow executions. We propose a 
 general task failure modeling framework that uses a Maximum Likelihood estimation-based 
 parameter estimation process to model these performance issues. We further propose 3 
-fault-tolerant static clustering strategies to improve the runtime performance of workflow 
+fault-tolerant clustering strategies to improve the runtime performance of workflow 
 executions in faulty execution environments. Experimental results show that failures can have 
 significant impact on executions where task clustering policies are not fault-tolerant, and that our 
 solutions yield makespan improvements in such scenarios. In addition, we propose a dynamic 
@@ -451,7 +451,7 @@ runtime $\bm t$, the system overhead $\bm s$, and the inter-arrival time of task
 \subsection{Task Failure Model}
 \label{sec:task-failure-model}
 
-In our prior work~\cite{Chen2011}, we have verified that system overheads $s$ better fits a Gamma or 
+In our prior work~\cite{Chen2011}, we have verified that system overheads \rev{$\bm s$ }better fits a Gamma or 
 a Weibull distribution rather than an Exponential or Normal distribution. Schroeder et al.~\cite{Schroeder2006} 
 have verified that the inter-arrival time of task failures better fits a Weibull distribution (defined by a shape 
 parameter of 0.78) rather than the Lognormal and Exponential distributions. In~\cite{McConnel}, transient 
@@ -507,13 +507,13 @@ as follows:
 	\label{eq:theta-1}
  \end{equation}
 
-Equation~\ref{eq:theta-1} means the posterior estimation of $\theta_{\gamma}$ is first controlled by the prior knowledge ($a_{\gamma}$ and $b_{\gamma}$) and then gradually adjusted by observed data ($n$ and $x_i$). The MLE (Maximum Likelihood Estimation) of the scale parameter $\theta_{\gamma}$ is defined as:
+Equation~\ref{eq:theta-1} means the posterior estimation of $\theta_{\gamma}$ is \rev{initially }controlled by the prior knowledge ($a_{\gamma}$ and $b_{\gamma}$) and then gradually adjusted by observed data ($n$ and $x_i$). The MLE (Maximum Likelihood Estimation) of the scale parameter $\theta_{\gamma}$ is defined as:
 
 \begin{equation}
 	MLE(\theta_{\gamma})=\displaystyle\tfrac{b_{\gamma}+\displaystyle\sum\nolimits_{i=1}^n{x_i^{\phi_{\gamma}}}}{a_{\gamma}+n+1}
 	\label{eq:mle_theta-1}
 \end{equation}
-The understanding of the MLE is two fold: in the initial case there is no data, thus the MLE is determined
+The understanding of the MLE is two fold: in the initial case there is no \rev{observed }data, thus the MLE is determined
 by the prior knowledge, i.e. $\displaystyle\tfrac{b_{\gamma}}{a_{\gamma}+1}$; when $n~\to~\infty$, the 
 MLE~$\displaystyle\tfrac{\displaystyle\sum\nolimits_{i=1}^n{x_i^{\phi_{\gamma}}}}{n+1}\to\overline{x^{\phi_{\gamma}}}$, 
 which means it is determined by the observed data, and is close to the regularized average of the observed 
@@ -641,7 +641,7 @@ i.e., the value of $k$ such that $MLE(\bm{M})$ attains its minimum value:
 	\label{fig:model-size}
 \end{figure}
 
-It is difficult to find an analytical solution of $k^*$. However, there are a few constraints that can 
+It is \rev{not trivial }to find an analytical solution of $k^*$. However, there are a few constraints that can 
 simplify the estimation of $k^*$: (\emph{i}) $k$ can only be an integer in practice; (\emph{ii}) 
 $MLE(\bm{M})$ is continuous and has one minimum. Methods such as Newton's method can be 
 used to find the minimal $MLE(\bm{M})$ and the corresponding $k$. Fig.~\ref{fig:model-makespan} 
@@ -1107,10 +1107,10 @@ experiment is to identify conditions where each method works best and worst. We 
 evaluate the performance improvement for different $\theta_{\gamma}$ values (the 
 scale parameter of the distribution of the inter-arrival time of task failures). 
 $\theta_{\gamma}$ ranges from 1 to 10 times of the average task runtime such that the 
-workflows do not run continuously and the performance difference is visually explicit. 
+workflows do not run \rev{endlessly }and the performance difference is visually explicit. 
 
 Experiment 2 evaluates the performance impact of the variation of the average task runtime per level 
-(defined as the average of all the tasks per level), and the average system overheads per level for one 
+(defined as the average \rev{task runtime }of all the tasks per level), and the average system overheads per level for one 
 scientific workflow application (CyberShake). In particular, we are interested in the performance of DR 
 based on the results of Experiment~1. For this experiment, we define $\theta_{\gamma}=100$ since it 
 better highlights the difference between the four methods. We vary the average task runtime of the 
@@ -1282,8 +1282,7 @@ of tasks.
 \vspace{5pt}
 \noindent \textbf{Experiment 2.}
 Fig.~\ref{fig:expr_t} shows the performance (CyberShake workflow) of the task clustering 
-methods,  when the task runtime is varied by a multiplier factor $\theta_{t}$. 
-By increasing the task runtime, HC has the most negative impact on the workflow's makespan 
+methods,  when the task runtime is varied by a multiplier factor \rev{$f_{r}$. }By increasing the task runtime, HC has the most negative impact on the workflow's makespan 
 (increase from a scale of $10^4$ to $\sim10^6$). This is due to the lack of fault-tolerant mechanisms,
 since HC retries the entire clustered job. SR and VR, however, retry only failed tasks that are 
 merged into a new clustered job. Although the selective and vertical methods 
@@ -1293,7 +1292,7 @@ than the number of failed tasks. By dynamically adjusting the clustering size, D
 makespans, in particular for high values of $\theta_t$.
 
 Fig.~\ref{fig:expr_d} shows the performance (for the CyberShake workflow) of the task clustering 
-methods when the system overhead is varied by using a multiplier factor $\theta_s$. 
+methods when the system overhead is varied by using a multiplier factor \rev{$f_o$. }
 Similarly, with the increase of the system overhead, HC is significantly impacted while SR and VR 
 perform better. Again, for high $\theta_s$ values DR performs best. Note that the improvement 
 gained by the fault-tolerant methods is less significant than the performance improvements shown
