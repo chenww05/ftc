@@ -1,0 +1,60 @@
+\documentclass{letter}
+\usepackage{graphicx}
+\usepackage{color}
+\date{Mar 17, 2015}
+
+\newenvironment{review}%          environment name
+{\textbf{Reviewer comment:}\begin{quote}}% begin code
+{\end{quote}}%  
+
+\newcommand{\todo}[1]{%                                                                                                                            
+      \color{red}\textbf{[TODO]} #1\color{black}}
+
+\newcommand{\answer}[1]{%                                                                                                                            
+      \textbf{Answer:} #1}
+
+\usepackage{hyperref}
+
+\newcommand{\revised}[1]{\emph{#1}\color{black}}
+\newcommand{\rev}[1]{\color{blue} #1\color{black}}
+
+\begin{document}
+
+\begin{letter}{}
+
+\opening{Dear Editor and Reviewers,}
+
+We would like to thank you for your thorough review and the useful
+comments and suggestions formulated about our paper ``Dynamic and Fault-Tolerant Clustering for Scientific Workflows'' submitted to
+IEEE Transactions on Cloud Computing.
+
+The remainder of this letter contains our answers to your reviews. 
+
+We thank you again for your valuable review, and we remain available for any further information you may need.
+
+\vspace{0.5cm}
+
+Sincerely yours,
+
+\vspace{1cm}
+
+Weiwei Chen, Rafael Ferreira da Silva, Ewa Deelman, Thomas Fahringer
+
+\newpage
+
+%
+% Reviewer 1
+%
+\textbf{Reviewer 3}
+
+\begin{review}
+I had thought that to consider the network bandwidth competition can better improve the fidelity of the simulation. Given the added assumption in the revision. I think that could be put to the future work. Other than this, I think my previous comments are well addressed in the revision.
+\end{review}
+
+\answer{We updated our Future Work to include other models about network bandwidth.}
+
+\revised{}
+
+
+\end{letter}
+\end{document}
